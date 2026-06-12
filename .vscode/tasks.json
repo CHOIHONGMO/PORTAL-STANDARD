@@ -2,15 +2,15 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Maven Build & Deploy egov-portal",
+            "label": "Maven Build & Deploy eversrm",
             "type": "shell",
             "command": "cmd",
             "args": [
                 "/c",
-                "C:\\ST-onesIDE\\server\\apache-maven-3.9.16\\bin\\mvn.cmd clean package -DskipTests && copy /Y target\\Portal-Standard-1.0.0.war ${workspaceFolder}\\.tomcat\\egov-portal\\webapps\\ROOT.war"
+                "C:\\ST-onesIDE\\server\\apache-maven-3.9.16\\bin\\mvn.cmd clean package -DskipTests && copy /Y target\\Portal-Standard-1.0.0.war ${workspaceFolder}\\.tomcat\\eversrm\\webapps\\ROOT.war"
             ],
             "options": {
-                "cwd": "${workspaceFolder}\\egov-portal",
+                "cwd": "${workspaceFolder}\\eversrm",
                 "env": {
                     "JAVA_HOME": "C:\\ST-onesIDE\\java\\java-21"
                 }
