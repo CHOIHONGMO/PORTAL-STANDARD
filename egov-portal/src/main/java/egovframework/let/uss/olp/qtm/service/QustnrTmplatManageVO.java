@@ -65,6 +65,17 @@ public class QustnrTmplatManageVO implements Serializable {
 	/** 화면 명령 처리 */
 	private String cmd = "";
 
+	/** 설문템플 이미지 base64 값 */
+	private String qestnrTmplatImagepathnmVal = "";
+
+	public String getQestnrTmplatImagepathnmVal() {
+		return qestnrTmplatImagepathnmVal;
+	}
+
+	public void setQestnrTmplatImagepathnmVal(String qestnrTmplatImagepathnmVal) {
+		this.qestnrTmplatImagepathnmVal = qestnrTmplatImagepathnmVal;
+	}
+
 	/**
 	 * qestnrTmplatId attribute 를 리턴한다.
 	 * @return the String
@@ -95,6 +106,10 @@ public class QustnrTmplatManageVO implements Serializable {
 	 */
 	public void setQestnrTmplatTy(String qestnrTmplatTy) {
 		this.qestnrTmplatTy = qestnrTmplatTy;
+	}
+
+	public byte[] getQestnrTmplatImagepathnm() {
+		return qestnrTmplatImagepathnm;
 	}
 
 	/**

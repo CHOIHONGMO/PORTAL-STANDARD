@@ -17,6 +17,10 @@
 		<filter-name>encodingFilter</filter-name>
 		<url-pattern>*.do</url-pattern>
 	</filter-mapping>
+	<filter-mapping>
+		<filter-name>encodingFilter</filter-name>
+		<url-pattern>*.api</url-pattern>
+	</filter-mapping>
 
 	<!--
 		Tomcat 10 이상의 경우 multipart 사용 시 허용되는 최대 부분 수를 제한하는 구성을 위해 maxPartCount 추가
@@ -32,6 +36,10 @@
 		<filter-name>springMultipartFilter</filter-name>
 		<url-pattern>*.do</url-pattern>
 	</filter-mapping>
+	<filter-mapping>
+		<filter-name>springMultipartFilter</filter-name>
+		<url-pattern>*.api</url-pattern>
+	</filter-mapping>
 
 	<!--
 		HTMLTagFilter의 경우는 파라미터에 대하여 XSS 오류 방지를 위한 변환을 처리합니다.
@@ -45,6 +53,10 @@
 	<filter-mapping>
 		<filter-name>HTMLTagFilter</filter-name>
 		<url-pattern>*.do</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>HTMLTagFilter</filter-name>
+		<url-pattern>*.api</url-pattern>
 	</filter-mapping>
 
 	<!-- security start -->
@@ -94,10 +106,11 @@
 		<servlet-name>action</servlet-name>
 		<url-pattern>*.do</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>action</servlet-name>
+		<url-pattern>*.api</url-pattern>
+	</servlet-mapping>
 
-	<welcome-file-list>
-		<welcome-file>index.jsp</welcome-file>
-	</welcome-file-list>
 
 	<login-config>
 		<auth-method>BASIC</auth-method>
@@ -107,18 +120,5 @@
 		<session-timeout>600</session-timeout>
 		<tracking-mode>COOKIE</tracking-mode>
 	</session-config>
-
-	<error-page>
-		<exception-type>java.lang.Throwable</exception-type>
-		<location>/common/error.jsp</location>
-	</error-page>
-	<error-page>
-		<error-code>404</error-code>
-		<location>/common/error.jsp</location>
-	</error-page>
-	<error-page>
-		<error-code>500</error-code>
-		<location>/common/error.jsp</location>
-	</error-page>
 
 </web-app>

@@ -12,6 +12,62 @@ import FaqList from './pages/faq/FaqList';
 import FaqDetail from './pages/faq/FaqDetail';
 import FaqForm from './pages/faq/FaqForm';
 
+// Q&A
+import QnaList from './pages/qna/QnaList';
+import QnaDetail from './pages/qna/QnaDetail';
+import QnaForm from './pages/qna/QnaForm';
+import QnaPasswordConfirm from './pages/qna/QnaPasswordConfirm';
+
+// Q&A 답변 관리 (관리자용)
+import QnaAnswerList from './pages/qna/admin/QnaAnswerList';
+import QnaAnswerDetail from './pages/qna/admin/QnaAnswerDetail';
+import QnaAnswerForm from './pages/qna/admin/QnaAnswerForm';
+
+// 설문지 관리 (qmc)
+import QustnrList from './pages/olp/qmc/QustnrList';
+import QustnrDetail from './pages/olp/qmc/QustnrDetail';
+import QustnrForm from './pages/olp/qmc/QustnrForm';
+
+// 설문문항 관리 (qqm)
+import QustnrQestnList from './pages/olp/qqm/QustnrQestnList';
+import QustnrQestnDetail from './pages/olp/qqm/QustnrQestnDetail';
+import QustnrQestnForm from './pages/olp/qqm/QustnrQestnForm';
+
+// 설문항목 관리 (qim)
+import QustnrItemList from './pages/olp/qim/QustnrItemList';
+import QustnrItemDetail from './pages/olp/qim/QustnrItemDetail';
+import QustnrItemForm from './pages/olp/qim/QustnrItemForm';
+
+// 설문응답 및 통계 (qnn)
+import QustnrRespondList from './pages/olp/qnn/QustnrRespondList';
+import QustnrRespondForm from './pages/olp/qnn/QustnrRespondForm';
+import QustnrRespondStatistics from './pages/olp/qnn/QustnrRespondStatistics';
+
+// 설문템플릿 관리 (qtm)
+import QustnrTmplatManageList from './pages/olp/qtm/QustnrTmplatManageList';
+import QustnrTmplatManageDetail from './pages/olp/qtm/QustnrTmplatManageDetail';
+import QustnrTmplatManageForm from './pages/olp/qtm/QustnrTmplatManageForm';
+
+// 설문응답결과 관리 (qri)
+import QustnrRespondInfoList from './pages/olp/qri/QustnrRespondInfoList';
+import QustnrRespondInfoDetail from './pages/olp/qri/QustnrRespondInfoDetail';
+import QustnrRespondInfoForm from './pages/olp/qri/QustnrRespondInfoForm';
+
+// 설문응답자정보 관리 (qrm)
+import QustnrRespondManageList from './pages/olp/qrm/QustnrRespondManageList';
+import QustnrRespondManageDetail from './pages/olp/qrm/QustnrRespondManageDetail';
+import QustnrRespondManageForm from './pages/olp/qrm/QustnrRespondManageForm';
+
+// 개인정보보호정책 관리 (ipm)
+import IndvdlInfoPolicyList from './pages/sam/ipm/IndvdlInfoPolicyList';
+import IndvdlInfoPolicyDetail from './pages/sam/ipm/IndvdlInfoPolicyDetail';
+import IndvdlInfoPolicyForm from './pages/sam/ipm/IndvdlInfoPolicyForm';
+
+// 이용약관 관리 (stp)
+import StplatList from './pages/sam/stp/StplatList';
+import StplatDetail from './pages/sam/stp/StplatDetail';
+import StplatForm from './pages/sam/stp/StplatForm';
+
 // 공통 에러 페이지
 import AccessDenied from './pages/cmm/error/AccessDenied';
 import DataAccessFailure from './pages/cmm/error/DataAccessFailure';
@@ -110,6 +166,71 @@ function App() {
           <Route path="faq/new" element={<FaqForm />} />
           <Route path="faq/:id" element={<FaqDetail />} />
           <Route path="faq/:id/edit" element={<FaqForm />} />
+
+          {/* Q&A */}
+          <Route path="qna" element={<QnaList />} />
+          <Route path="qna/new" element={<QnaForm />} />
+          <Route path="qna/:id" element={<QnaDetail />} />
+          <Route path="qna/:id/edit" element={<QnaForm />} />
+          <Route path="qna/:id/confirm" element={<QnaPasswordConfirm />} />
+
+          {/* Q&A 답변 관리 */}
+          <Route path="admin/qna" element={<QnaAnswerList />} />
+          <Route path="admin/qna/:id" element={<QnaAnswerDetail />} />
+          <Route path="admin/qna/:id/answer" element={<QnaAnswerForm />} />
+
+          {/* 설문지 관리 */}
+          <Route path="admin/qustnr" element={<QustnrList />} />
+          <Route path="admin/qustnr/new" element={<QustnrForm />} />
+          <Route path="admin/qustnr/:id" element={<QustnrDetail />} />
+          <Route path="admin/qustnr/:id/edit" element={<QustnrForm />} />
+
+          {/* 설문문항 관리 */}
+          <Route path="admin/qustnr-qestn" element={<QustnrQestnList />} />
+          <Route path="admin/qustnr-qestn/new" element={<QustnrQestnForm />} />
+          <Route path="admin/qustnr-qestn/:id" element={<QustnrQestnDetail />} />
+          <Route path="admin/qustnr-qestn/:id/edit" element={<QustnrQestnForm />} />
+
+          {/* 설문항목 관리 */}
+          <Route path="admin/qustnr-item" element={<QustnrItemList />} />
+          <Route path="admin/qustnr-item/new" element={<QustnrItemForm />} />
+          <Route path="admin/qustnr-item/:id" element={<QustnrItemDetail />} />
+          <Route path="admin/qustnr-item/:id/edit" element={<QustnrItemForm />} />
+
+          {/* 설문응답 및 통계 */}
+          <Route path="qustnr-respond" element={<QustnrRespondList />} />
+          <Route path="qustnr-respond/:id/participate" element={<QustnrRespondForm />} />
+          <Route path="qustnr-respond/:id/statistics" element={<QustnrRespondStatistics />} />
+
+          {/* 설문템플릿 관리 */}
+          <Route path="admin/qustnr-tmplat" element={<QustnrTmplatManageList />} />
+          <Route path="admin/qustnr-tmplat/new" element={<QustnrTmplatManageForm />} />
+          <Route path="admin/qustnr-tmplat/:id" element={<QustnrTmplatManageDetail />} />
+          <Route path="admin/qustnr-tmplat/:id/edit" element={<QustnrTmplatManageForm />} />
+
+          {/* 설문응답결과 관리 */}
+          <Route path="admin/qustnr-respond-info" element={<QustnrRespondInfoList />} />
+          <Route path="admin/qustnr-respond-info/new" element={<QustnrRespondInfoForm />} />
+          <Route path="admin/qustnr-respond-info/:id" element={<QustnrRespondInfoDetail />} />
+          <Route path="admin/qustnr-respond-info/:id/edit" element={<QustnrRespondInfoForm />} />
+
+          {/* 설문응답자정보 관리 */}
+          <Route path="admin/qustnr-respond-manage" element={<QustnrRespondManageList />} />
+          <Route path="admin/qustnr-respond-manage/new" element={<QustnrRespondManageForm />} />
+          <Route path="admin/qustnr-respond-manage/:id" element={<QustnrRespondManageDetail />} />
+          <Route path="admin/qustnr-respond-manage/:id/edit" element={<QustnrRespondManageForm />} />
+
+          {/* 개인정보보호정책 관리 */}
+          <Route path="admin/policy" element={<IndvdlInfoPolicyList />} />
+          <Route path="admin/policy/new" element={<IndvdlInfoPolicyForm />} />
+          <Route path="admin/policy/:id" element={<IndvdlInfoPolicyDetail />} />
+          <Route path="admin/policy/:id/edit" element={<IndvdlInfoPolicyForm />} />
+
+          {/* 이용약관 관리 */}
+          <Route path="admin/stplat" element={<StplatList />} />
+          <Route path="admin/stplat/new" element={<StplatForm />} />
+          <Route path="admin/stplat/:id" element={<StplatDetail />} />
+          <Route path="admin/stplat/:id/edit" element={<StplatForm />} />
 
           {/* 에러 페이지 */}
           <Route path="cmm/error/accessDenied" element={<AccessDenied />} />

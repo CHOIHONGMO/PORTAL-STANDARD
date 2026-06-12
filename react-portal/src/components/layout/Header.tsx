@@ -31,10 +31,19 @@ const Header = () => {
             <li><Link to="/service/issuance" className="nav-item">민원광장</Link></li>
             <li><Link to="/board/notice" className="nav-item">정보마당</Link></li>
             <li><Link to="/faq" className="nav-item">고객지원</Link></li>
+            <li><Link to="/qna" className="nav-item">Q&A</Link></li>
+            <li><Link to="/qustnr-respond" className="nav-item">설문참여</Link></li>
             <li><Link to="/admin/member" className="nav-item">회원관리</Link></li>
             <li><Link to="/admin/board" className="nav-item">게시판생성관리</Link></li>
             <li><Link to="/admin/usage" className="nav-item">게시판사용관리</Link></li>
             <li><Link to="/admin/template" className="nav-item">템플릿관리</Link></li>
+            <li><Link to="/admin/qna" className="nav-item">Q&A답변관리</Link></li>
+            <li><Link to="/admin/qustnr" className="nav-item">설문지관리</Link></li>
+            <li><Link to="/admin/qustnr-tmplat" className="nav-item">설문템플릿관리</Link></li>
+            <li><Link to="/admin/qustnr-respond-info" className="nav-item">설문응답결과</Link></li>
+            <li><Link to="/admin/qustnr-respond-manage" className="nav-item">설문응답자정보</Link></li>
+            <li><Link to="/admin/policy" className="nav-item">개인정보보호</Link></li>
+            <li><Link to="/admin/stplat" className="nav-item">약관관리</Link></li>
           </ul>
         </nav>
         <div className="header-utils">
