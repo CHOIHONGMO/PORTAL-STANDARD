@@ -1,112 +1,112 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Layout from './components/layout/Layout';
-import MainPage from './pages/MainPage';
+import Layout from '@/components/layout/Layout';
+import MainPage from '@/pages/MainPage';
 
-import LoginUsr from './pages/login/LoginUsr';
+import LoginUsr from '@/pages/auth/LoginUsr';
 
-import NoticeList from './pages/board/NoticeList';
-import NoticeDetail from './pages/board/NoticeDetail';
-import NoticeForm from './pages/board/NoticeForm';
+import NoticeList from '@/pages/board/notice/NoticeList';
+import NoticeDetail from '@/pages/board/notice/NoticeDetail';
+import NoticeForm from '@/pages/board/notice/NoticeForm';
 
-import FaqList from './pages/faq/FaqList';
-import FaqDetail from './pages/faq/FaqDetail';
-import FaqForm from './pages/faq/FaqForm';
+import FaqList from '@/pages/user/olh/faq/FaqList';
+import FaqDetail from '@/pages/user/olh/faq/FaqDetail';
+import FaqForm from '@/pages/user/olh/faq/FaqForm';
 
 // Q&A
-import QnaList from './pages/qna/QnaList';
-import QnaDetail from './pages/qna/QnaDetail';
-import QnaForm from './pages/qna/QnaForm';
-import QnaPasswordConfirm from './pages/qna/QnaPasswordConfirm';
+import QnaList from '@/pages/user/olh/qna/QnaList';
+import QnaDetail from '@/pages/user/olh/qna/QnaDetail';
+import QnaForm from '@/pages/user/olh/qna/QnaForm';
+import QnaPasswordConfirm from '@/pages/user/olh/qna/QnaPasswordConfirm';
 
 // Q&A 답변 관리 (관리자용)
-import QnaAnswerList from './pages/qna/admin/QnaAnswerList';
-import QnaAnswerDetail from './pages/qna/admin/QnaAnswerDetail';
-import QnaAnswerForm from './pages/qna/admin/QnaAnswerForm';
+import QnaAnswerList from '@/pages/user/olh/qna/admin/QnaAnswerList';
+import QnaAnswerDetail from '@/pages/user/olh/qna/admin/QnaAnswerDetail';
+import QnaAnswerForm from '@/pages/user/olh/qna/admin/QnaAnswerForm';
 
 // 설문지 관리 (qmc)
-import QustnrList from './pages/olp/qmc/QustnrList';
-import QustnrDetail from './pages/olp/qmc/QustnrDetail';
-import QustnrForm from './pages/olp/qmc/QustnrForm';
+import QustnrList from '@/pages/user/olp/qmc/QustnrList';
+import QustnrDetail from '@/pages/user/olp/qmc/QustnrDetail';
+import QustnrForm from '@/pages/user/olp/qmc/QustnrForm';
 
 // 설문문항 관리 (qqm)
-import QustnrQestnList from './pages/olp/qqm/QustnrQestnList';
-import QustnrQestnDetail from './pages/olp/qqm/QustnrQestnDetail';
-import QustnrQestnForm from './pages/olp/qqm/QustnrQestnForm';
+import QustnrQestnList from '@/pages/user/olp/qqm/QustnrQestnList';
+import QustnrQestnDetail from '@/pages/user/olp/qqm/QustnrQestnDetail';
+import QustnrQestnForm from '@/pages/user/olp/qqm/QustnrQestnForm';
 
 // 설문항목 관리 (qim)
-import QustnrItemList from './pages/olp/qim/QustnrItemList';
-import QustnrItemDetail from './pages/olp/qim/QustnrItemDetail';
-import QustnrItemForm from './pages/olp/qim/QustnrItemForm';
+import QustnrItemList from '@/pages/user/olp/qim/QustnrItemList';
+import QustnrItemDetail from '@/pages/user/olp/qim/QustnrItemDetail';
+import QustnrItemForm from '@/pages/user/olp/qim/QustnrItemForm';
 
 // 설문응답 및 통계 (qnn)
-import QustnrRespondList from './pages/olp/qnn/QustnrRespondList';
-import QustnrRespondForm from './pages/olp/qnn/QustnrRespondForm';
-import QustnrRespondStatistics from './pages/olp/qnn/QustnrRespondStatistics';
+import QustnrRespondList from '@/pages/user/olp/qnn/QustnrRespondList';
+import QustnrRespondForm from '@/pages/user/olp/qnn/QustnrRespondForm';
+import QustnrRespondStatistics from '@/pages/user/olp/qnn/QustnrRespondStatistics';
 
 // 설문템플릿 관리 (qtm)
-import QustnrTmplatManageList from './pages/olp/qtm/QustnrTmplatManageList';
-import QustnrTmplatManageDetail from './pages/olp/qtm/QustnrTmplatManageDetail';
-import QustnrTmplatManageForm from './pages/olp/qtm/QustnrTmplatManageForm';
+import QustnrTmplatManageList from '@/pages/user/olp/qtm/QustnrTmplatManageList';
+import QustnrTmplatManageDetail from '@/pages/user/olp/qtm/QustnrTmplatManageDetail';
+import QustnrTmplatManageForm from '@/pages/user/olp/qtm/QustnrTmplatManageForm';
 
 // 설문응답결과 관리 (qri)
-import QustnrRespondInfoList from './pages/olp/qri/QustnrRespondInfoList';
-import QustnrRespondInfoDetail from './pages/olp/qri/QustnrRespondInfoDetail';
-import QustnrRespondInfoForm from './pages/olp/qri/QustnrRespondInfoForm';
+import QustnrRespondInfoList from '@/pages/user/olp/qri/QustnrRespondInfoList';
+import QustnrRespondInfoDetail from '@/pages/user/olp/qri/QustnrRespondInfoDetail';
+import QustnrRespondInfoForm from '@/pages/user/olp/qri/QustnrRespondInfoForm';
 
 // 설문응답자정보 관리 (qrm)
-import QustnrRespondManageList from './pages/olp/qrm/QustnrRespondManageList';
-import QustnrRespondManageDetail from './pages/olp/qrm/QustnrRespondManageDetail';
-import QustnrRespondManageForm from './pages/olp/qrm/QustnrRespondManageForm';
+import QustnrRespondManageList from '@/pages/user/olp/qrm/QustnrRespondManageList';
+import QustnrRespondManageDetail from '@/pages/user/olp/qrm/QustnrRespondManageDetail';
+import QustnrRespondManageForm from '@/pages/user/olp/qrm/QustnrRespondManageForm';
 
 // 개인정보보호정책 관리 (ipm)
-import IndvdlInfoPolicyList from './pages/sam/ipm/IndvdlInfoPolicyList';
-import IndvdlInfoPolicyDetail from './pages/sam/ipm/IndvdlInfoPolicyDetail';
-import IndvdlInfoPolicyForm from './pages/sam/ipm/IndvdlInfoPolicyForm';
+import IndvdlInfoPolicyList from '@/pages/user/sam/ipm/IndvdlInfoPolicyList';
+import IndvdlInfoPolicyDetail from '@/pages/user/sam/ipm/IndvdlInfoPolicyDetail';
+import IndvdlInfoPolicyForm from '@/pages/user/sam/ipm/IndvdlInfoPolicyForm';
 
 // 이용약관 관리 (stp)
-import StplatList from './pages/sam/stp/StplatList';
-import StplatDetail from './pages/sam/stp/StplatDetail';
-import StplatForm from './pages/sam/stp/StplatForm';
+import StplatList from '@/pages/user/sam/stp/StplatList';
+import StplatDetail from '@/pages/user/sam/stp/StplatDetail';
+import StplatForm from '@/pages/user/sam/stp/StplatForm';
 
 // 공통 에러 페이지
-import AccessDenied from './pages/cmm/error/AccessDenied';
-import DataAccessFailure from './pages/cmm/error/DataAccessFailure';
-import EgovBizException from './pages/cmm/error/EgovBizException';
-import EgovError from './pages/cmm/error/EgovError';
-import TransactionFailure from './pages/cmm/error/TransactionFailure';
+import AccessDenied from '@/pages/common/error/AccessDenied';
+import DataAccessFailure from '@/pages/common/error/DataAccessFailure';
+import EgovBizException from '@/pages/common/error/EgovBizException';
+import EgovError from '@/pages/common/error/EgovError';
+import TransactionFailure from '@/pages/common/error/TransactionFailure';
 
 // 회원 및 회원관리 페이지
-import EgovMberSbscrb from './pages/cmm/uss/umt/EgovMberSbscrb';
-import EgovMberManage from './pages/cmm/uss/umt/EgovMberManage';
-import EgovMberInsert from './pages/cmm/uss/umt/EgovMberInsert';
-import EgovMberSelectUpdt from './pages/cmm/uss/umt/EgovMberSelectUpdt';
-import EgovMberPasswordUpdt from './pages/cmm/uss/umt/EgovMberPasswordUpdt';
+import EgovMberSbscrb from '@/pages/user/umt/EgovMberSbscrb';
+import EgovMberManage from '@/pages/user/umt/EgovMberManage';
+import EgovMberInsert from '@/pages/user/umt/EgovMberInsert';
+import EgovMberSelectUpdt from '@/pages/user/umt/EgovMberSelectUpdt';
+import EgovMberPasswordUpdt from '@/pages/user/umt/EgovMberPasswordUpdt';
 
 // 게시판 마스터 관리
-import EgovBoardMstrList from './pages/cop/bbs/EgovBoardMstrList';
-import EgovBoardMstrRegist from './pages/cop/bbs/EgovBoardMstrRegist';
-import EgovBoardMstrUpdt from './pages/cop/bbs/EgovBoardMstrUpdt';
+import EgovBoardMstrList from '@/pages/board/bbs/EgovBoardMstrList';
+import EgovBoardMstrRegist from '@/pages/board/bbs/EgovBoardMstrRegist';
+import EgovBoardMstrUpdt from '@/pages/board/bbs/EgovBoardMstrUpdt';
 
 // 게시판 사용관리 & 템플릿 관리
-import EgovBoardUseInfList from './pages/cop/com/EgovBoardUseInfList';
-import EgovBoardUseInfRegist from './pages/cop/com/EgovBoardUseInfRegist';
-import EgovBoardUseInfInqire from './pages/cop/com/EgovBoardUseInfInqire';
-import EgovTemplateList from './pages/cop/com/EgovTemplateList';
-import EgovTemplateRegist from './pages/cop/com/EgovTemplateRegist';
-import EgovTemplateUpdt from './pages/cop/com/EgovTemplateUpdt';
+import EgovBoardUseInfList from '@/pages/board/com/EgovBoardUseInfList';
+import EgovBoardUseInfRegist from '@/pages/board/com/EgovBoardUseInfRegist';
+import EgovBoardUseInfInqire from '@/pages/board/com/EgovBoardUseInfInqire';
+import EgovTemplateList from '@/pages/board/com/EgovTemplateList';
+import EgovTemplateRegist from '@/pages/board/com/EgovTemplateRegist';
+import EgovTemplateUpdt from '@/pages/board/com/EgovTemplateUpdt';
 
-import AboutLayout from './components/layout/AboutLayout';
-import EgovAboutSite from './pages/about/EgovAboutSite';
-import EgovHistory from './pages/about/EgovHistory';
-import EgovOrganization from './pages/about/EgovOrganization';
-import EgovLocation from './pages/about/EgovLocation';
+import AboutLayout from '@/components/layout/AboutLayout';
+import EgovAboutSite from '@/pages/about/EgovAboutSite';
+import EgovHistory from '@/pages/about/EgovHistory';
+import EgovOrganization from '@/pages/about/EgovOrganization';
+import EgovLocation from '@/pages/about/EgovLocation';
 
-import ServiceLayout from './components/layout/ServiceLayout';
-import EgovServiceIssuance from './pages/service/EgovServiceIssuance';
-import EgovServiceManage from './pages/service/EgovServiceManage';
-import EgovServiceResult from './pages/service/EgovServiceResult';
+import ServiceLayout from '@/components/layout/ServiceLayout';
+import EgovServiceIssuance from '@/pages/service/EgovServiceIssuance';
+import EgovServiceManage from '@/pages/service/EgovServiceManage';
+import EgovServiceResult from '@/pages/service/EgovServiceResult';
 
-import './index.css';
+import '@/index.css';
 
 function App() {
   return (

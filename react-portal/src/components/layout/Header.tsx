@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import IntroModal from '../main/IntroModal';
-import './layout.css';
+import IntroModal from '@/components/main/IntroModal';
+import '@/components/layout/layout.css';
 
 const Header = () => {
   const [isIntroOpen, setIsIntroOpen] = useState(false);

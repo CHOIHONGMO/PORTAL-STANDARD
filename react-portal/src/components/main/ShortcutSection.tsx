@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import './main.css';
+import '@/components/main/main.css';
 
 const ShortcutSection = () => {
   return (

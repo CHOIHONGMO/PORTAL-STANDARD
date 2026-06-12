@@ -1,4 +1,4 @@
-import './main.css';
+import '@/components/main/main.css';
 
 const VisualBanner = () => {
   return (

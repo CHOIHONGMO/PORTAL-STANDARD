@@ -48,7 +48,7 @@
 	-->
 	<filter>
 		<filter-name>HTMLTagFilter</filter-name>
-		<filter-class>egovframework.com.cmm.filter.HTMLTagFilter</filter-class>
+		<filter-class>com.portal.common.filter.HTMLTagFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>HTMLTagFilter</filter-name>
@@ -80,7 +80,7 @@
 
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>classpath*:egovframework/spring/com/context-*.xml</param-value>
+		<param-value>classpath*:spring/common/context-*.xml</param-value>
 	</context-param>
 
 	<listener>
@@ -92,7 +92,7 @@
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<init-param>
 			<param-name>contextConfigLocation</param-name>
-			<param-value>/WEB-INF/config/egovframework/springmvc/*.xml</param-value>
+			<param-value>/WEB-INF/config/springmvc/*.xml</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 		<!-- Spring Framework 6.2.8 multipart 설정 -->

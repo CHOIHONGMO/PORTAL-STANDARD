@@ -1,4 +1,4 @@
-import './main.css';
+import '@/components/main/main.css';
 
 const MOCK_FAQ = [
   { id: 1, q: '표준프레임워크 경량화 버전을 적용하려면?', a: '기존 프로젝트에서 불필요한 의존성을 제거하고 핵심 모듈만 남기는 방법으로...' },

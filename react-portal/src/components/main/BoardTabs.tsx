@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import './main.css';
+import '@/components/main/main.css';
 
 const MOCK_NOTICES = [
   { id: 1, title: '전자정부 표준프레임워크 v4.0.0 릴리즈 안내', desc: '새로운 스프링 부트 기반의 4.0.0 버전이 릴리즈 되었습니다.', date: '2026-06-11' },

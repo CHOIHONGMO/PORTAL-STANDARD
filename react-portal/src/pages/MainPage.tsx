@@ -1,7 +1,7 @@
-import VisualBanner from '../components/main/VisualBanner';
-import BoardTabs from '../components/main/BoardTabs';
-import FaqSection from '../components/main/FaqSection';
-import ShortcutSection from '../components/main/ShortcutSection';
+import VisualBanner from '@/components/main/VisualBanner';
+import BoardTabs from '@/components/main/BoardTabs';
+import FaqSection from '@/components/main/FaqSection';
+import ShortcutSection from '@/components/main/ShortcutSection';
 
 const MainPage = () => {
   return (
