@@ -32,7 +32,7 @@ const NoticeForm = () => {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const url = isEdit ? '/cop/bbs/updateBoardArticle.api' : '/cop/bbs/insertBoardArticle.api';
+      const url = isEdit ? '/board/bbs/updateBoardArticle.api' : '/board/bbs/insertBoardArticle.api';
       const payload = {
         bbsId: 'BBSMSTR_AAAAAAAAAAAA',
         nttSj: title,

@@ -17,11 +17,11 @@ import com.portal.common.ComDefaultVO;
 import com.portal.common.LoginVO;
 import com.portal.board.bbs.service.BoardVO;
 import com.portal.board.bbs.service.BBSManageService;
-import com.portal.system.mnu.mpm.service.MenuManageService;
-import com.portal.system.mnu.mpm.service.MenuManageVO;
-import com.portal.user.olh.faq.service.FaqManageService;
-import com.portal.user.olh.faq.service.FaqManageDefaultVO;
-import com.portal.user.olp.qri.service.QustnrRespondInfoService;
+import com.portal.system.menu.mpm.service.MenuManageService;
+import com.portal.system.menu.mpm.service.MenuManageVO;
+import com.portal.user.help.faq.service.FaqManageService;
+import com.portal.user.help.faq.service.FaqManageDefaultVO;
+import com.portal.user.poll.qri.service.QustnrRespondInfoService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 

@@ -20,7 +20,7 @@ const EgovTemplateRegist: React.FC = () => {
 
   const fetchCodes = async () => {
     try {
-      const response: any = await apiClient.get('/cop/com/selectTemplateCodes.api');
+      const response: any = await apiClient.get('/board/com/selectTemplateCodes.api');
       if (response.resultCode === 'SUCCESS') {
         setSeCodeList(response.resultList || []);
       }
@@ -53,7 +53,7 @@ const EgovTemplateRegist: React.FC = () => {
         useAt,
       };
 
-      const response: any = await apiClient.post('/cop/com/insertTemplateInf.api', payload);
+      const response: any = await apiClient.post('/board/com/insertTemplateInf.api', payload);
       if (response.resultCode === 'SUCCESS') {
         alert('템플릿 정보가 등록되었습니다.');
         navigate('/admin/template');

@@ -24,7 +24,7 @@ const NoticeList = () => {
     try {
       setLoading(true);
       // REST API 호출: 공지사항 게시판 ID (BBSMSTR_AAAAAAAAAAAA)
-      const response: any = await apiClient.get('/cop/bbs/selectBoardList.api?bbsId=BBSMSTR_AAAAAAAAAAAA');
+      const response: any = await apiClient.get('/board/bbs/selectBoardList.api?bbsId=BBSMSTR_AAAAAAAAAAAA');
       
       if (response.resultCode === 'SUCCESS') {
         setDataList(response.result);

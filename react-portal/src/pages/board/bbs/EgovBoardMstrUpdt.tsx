@@ -65,7 +65,7 @@ const EgovBoardMstrUpdt: React.FC = () => {
   const handleDelete = async () => {
     if (window.confirm('정말 삭제하시겠습니까?')) {
       try {
-        const response: any = await apiClient.post('/cop/bbs/DeleteBBSMasterInf.api', { bbsId });
+        const response: any = await apiClient.post('/board/bbs/DeleteBBSMasterInf.api', { bbsId });
         if (response.resultCode === 'SUCCESS') {
           alert('삭제되었습니다.');
           navigate('/admin/board');
@@ -107,7 +107,7 @@ const EgovBoardMstrUpdt: React.FC = () => {
         tmplatId,
       };
 
-      const response: any = await apiClient.post('/cop/bbs/UpdateBBSMasterInf.api', payload);
+      const response: any = await apiClient.post('/board/bbs/UpdateBBSMasterInf.api', payload);
       if (response.resultCode === 'SUCCESS') {
         alert('게시판 정보가 수정되었습니다.');
         navigate('/admin/board');

@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.portal.common.WebUtil;
-import com.portal.util.fcc.service.StringUtil;
+import com.portal.util.common.service.StringUtil;
 import jakarta.annotation.Resource;
 
 /**

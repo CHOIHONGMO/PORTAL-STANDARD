@@ -5,9 +5,9 @@ import org.springframework.stereotype.Service;
 
 import com.portal.common.LoginVO;
 import com.portal.auth.uia.service.LoginService;
-import com.portal.util.fcc.service.NumberUtil;
-import com.portal.util.fcc.service.StringUtil;
-import com.portal.util.sim.service.FileScrty;
+import com.portal.util.common.service.NumberUtil;
+import com.portal.util.common.service.StringUtil;
+import com.portal.util.crypto.service.FileScrty;
 import jakarta.annotation.Resource;
 
 /**

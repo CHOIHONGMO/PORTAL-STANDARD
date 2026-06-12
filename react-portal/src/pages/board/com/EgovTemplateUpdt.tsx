@@ -25,7 +25,7 @@ const EgovTemplateUpdt: React.FC = () => {
     try {
       setLoading(true);
       // Fetch common codes first
-      const codeResponse: any = await apiClient.get('/cop/com/selectTemplateCodes.api');
+      const codeResponse: any = await apiClient.get('/board/com/selectTemplateCodes.api');
       if (codeResponse.resultCode === 'SUCCESS') {
         setSeCodeList(codeResponse.resultList || []);
       }
@@ -52,7 +52,7 @@ const EgovTemplateUpdt: React.FC = () => {
   const handleDelete = async () => {
     if (window.confirm('정말 삭제하시겠습니까?')) {
       try {
-        const response: any = await apiClient.post('/cop/com/deleteTemplateInf.api', { tmplatId });
+        const response: any = await apiClient.post('/board/com/deleteTemplateInf.api', { tmplatId });
         if (response.resultCode === 'SUCCESS') {
           alert('삭제되었습니다.');
           navigate('/admin/template');
@@ -90,7 +90,7 @@ const EgovTemplateUpdt: React.FC = () => {
         useAt,
       };
 
-      const response: any = await apiClient.post('/cop/com/updateTemplateInf.api', payload);
+      const response: any = await apiClient.post('/board/com/updateTemplateInf.api', payload);
       if (response.resultCode === 'SUCCESS') {
         alert('템플릿 정보가 수정되었습니다.');
         navigate('/admin/template');

@@ -30,7 +30,7 @@ const EgovBoardMstrRegist: React.FC = () => {
 
   const fetchCodes = async () => {
     try {
-      const response: any = await apiClient.get('/cop/bbs/selectBBSCodeDetails.api');
+      const response: any = await apiClient.get('/board/bbs/selectBBSCodeDetails.api');
       if (response.resultCode === 'SUCCESS') {
         setTypeList(response.result.typeList || []);
         setAttrbList(response.result.attrbList || []);
@@ -81,7 +81,7 @@ const EgovBoardMstrRegist: React.FC = () => {
         tmplatId,
       };
 
-      const response: any = await apiClient.post('/cop/bbs/insertBBSMasterInf.api', payload);
+      const response: any = await apiClient.post('/board/bbs/insertBBSMasterInf.api', payload);
       if (response.resultCode === 'SUCCESS') {
         alert('게시판 마스터가 등록되었습니다.');
         navigate('/admin/board');

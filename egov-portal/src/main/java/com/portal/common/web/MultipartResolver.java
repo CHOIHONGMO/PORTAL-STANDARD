@@ -27,7 +27,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 
 import com.portal.common.service.PortalProperties;
-import com.portal.util.fcc.service.FileUploadUtil;
+import com.portal.util.common.service.FileUploadUtil;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**

@@ -49,7 +49,7 @@ const EgovBoardUseInfRegist: React.FC = () => {
         trgetType,
       };
 
-      const response: any = await apiClient.post('/cop/com/insertBBSUseInf.api', payload);
+      const response: any = await apiClient.post('/board/com/insertBBSUseInf.api', payload);
       if (response.resultCode === 'SUCCESS') {
         alert('게시판 사용 정보가 등록되었습니다.');
         navigate('/admin/usage');

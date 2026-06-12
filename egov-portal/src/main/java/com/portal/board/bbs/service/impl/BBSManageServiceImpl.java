@@ -15,7 +15,7 @@ import com.portal.common.service.FileVO;
 import com.portal.board.bbs.service.Board;
 import com.portal.board.bbs.service.BoardVO;
 import com.portal.board.bbs.service.BBSManageService;
-import com.portal.util.fcc.service.DateUtil;
+import com.portal.util.common.service.DateUtil;
 import jakarta.annotation.Resource;
 
 /**

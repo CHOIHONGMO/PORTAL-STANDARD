@@ -41,7 +41,7 @@ const NoticeDetail = () => {
   const handleDelete = async () => {
     if (window.confirm('정말 삭제하시겠습니까?')) {
       try {
-        const response: any = await apiClient.post('/cop/bbs/deleteBoardArticle.api', {
+        const response: any = await apiClient.post('/board/bbs/deleteBoardArticle.api', {
           bbsId: 'BBSMSTR_AAAAAAAAAAAA',
           nttId: id
         });

@@ -41,7 +41,7 @@ const EgovBoardUseInfInqire: React.FC = () => {
   const handleDelete = async () => {
     if (window.confirm('정말 삭제하시겠습니까?')) {
       try {
-        const response: any = await apiClient.post('/cop/com/deleteBBSUseInf.api', { bbsId, trgetId });
+        const response: any = await apiClient.post('/board/com/deleteBBSUseInf.api', { bbsId, trgetId });
         if (response.resultCode === 'SUCCESS') {
           alert('삭제되었습니다.');
           navigate('/admin/usage');
@@ -64,7 +64,7 @@ const EgovBoardUseInfInqire: React.FC = () => {
         useAt,
       };
 
-      const response: any = await apiClient.post('/cop/com/updateBBSUseInf.api', payload);
+      const response: any = await apiClient.post('/board/com/updateBBSUseInf.api', payload);
       if (response.resultCode === 'SUCCESS') {
         alert('사용 정보가 수정되었습니다.');
         navigate('/admin/usage');
