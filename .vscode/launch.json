@@ -1,0 +1,25 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Debug egov-portal (Tomcat)",
+            "request": "launch",
+            "mainClass": "org.apache.catalina.startup.Bootstrap",
+            "args": ["start"],
+            "vmArgs": [
+                "-Dcatalina.base=${workspaceFolder}\\.tomcat\\egov-portal",
+                "-Dcatalina.home=C:\\ST-onesIDE\\server\\apache-tomcat-10.1.55",
+                "-Djava.util.logging.config.file=${workspaceFolder}\\.tomcat\\egov-portal\\conf\\logging.properties",
+                "-Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager",
+                "-Dfile.encoding=UTF-8"
+            ],
+            "classPaths": [
+                "C:\\ST-onesIDE\\server\\apache-tomcat-10.1.55\\bin\\bootstrap.jar",
+                "C:\\ST-onesIDE\\server\\apache-tomcat-10.1.55\\bin\\tomcat-juli.jar"
+            ],
+            "console": "internalConsole",
+            "preLaunchTask": "Maven Build & Deploy egov-portal"
+        }
+    ]
+}

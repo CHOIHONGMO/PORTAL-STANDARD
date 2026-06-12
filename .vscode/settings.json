@@ -1,0 +1,19 @@
+{
+    "java.configuration.runtimes": [
+        {
+            "name": "JavaSE-1.8",
+            "path": "C:\\ST-onesIDE\\java\\java-1.8"
+        },
+        {
+            "name": "JavaSE-17",
+            "path": "C:\\ST-onesIDE\\java\\java-21",
+            "default": true
+        },
+        {
+            "name": "JavaSE-21",
+            "path": "C:\\ST-onesIDE\\java\\java-21"
+        }
+    ],
+    "java.compile.nullAnalysis.mode": "automatic",
+    "java.configuration.updateBuildConfiguration": "interactive"
+}

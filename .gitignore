@@ -1,0 +1,42 @@
+# System / OS
+.DS_Store
+Thumbs.db
+
+# Tomcat server and temporary files
+.tomcat/
+
+# Maven build output
+**/target/
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Compiled Java files
+*.class
+
+# Node / JS
+**/node_modules/
+**/dist/
+**/dist-ssr/
+*.local
+
+# Logs
+*.log
+**/logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Crash reports
+crashed.out
+
+# IDEs
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
