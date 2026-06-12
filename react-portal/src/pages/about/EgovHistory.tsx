@@ -13,13 +13,13 @@ const EgovHistory = () => {
       </div>
 
       <p style={{ fontSize: '1.125rem', color: 'var(--text-muted)', marginBottom: '32px' }}>
-        표준프레임워크 경량환경 포털사이트를 소개합니다.
+        ST-ones Portal을 소개합니다.
       </p>
 
       <div className="glass" style={{ padding: '32px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-color)', backgroundColor: 'var(--surface-color)', lineHeight: '1.8' }}>
-        <h3 style={{ fontSize: '1.25rem', fontWeight: 800, marginBottom: '16px', color: 'var(--primary-color)' }}>표준프레임워크센터 연혁</h3>
+        <h3 style={{ fontSize: '1.25rem', fontWeight: 800, marginBottom: '16px', color: 'var(--primary-color)' }}>ST-ones Portal 연혁</h3>
         <p style={{ fontSize: '1.05rem', color: 'var(--text-main)', wordBreak: 'keep-all' }}>
-          표준프레임워크 활성화 전담조직으로 한국정보화진흥원(NIA)에 2010년 11월 4일 「표준프레임워크센터」가 설립되었으며 
+          ST-ones Portal 활성화 전담조직으로 한국정보화진흥원(NIA)에 2010년 11월 4일 「ST-ones Portal 센터」가 설립되었으며 
           정책지원, 글로벌 확산 등을 담당할 NIA 인력과 R&D, 기술지원 등을 담당할 외부 민간 전문가로 구성되었습니다.
         </p>
       </div>

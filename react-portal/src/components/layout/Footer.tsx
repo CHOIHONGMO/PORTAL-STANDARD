@@ -12,7 +12,7 @@ const Footer = () => {
         <div className="footer-info">
           <p>대표전화 : 1566-0000 | 팩스 : 02-0000-0000</p>
           <p>서울특별시 중구 세종대로 000 (우)00000</p>
-          <p className="copyright">Copyright © 2026 eGovFramework. All Rights Reserved.</p>
+          <p className="copyright">Copyright © 2026 ST-ones Portal. All Rights Reserved.</p>
         </div>
       </div>
     </footer>

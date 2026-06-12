@@ -38,24 +38,28 @@
   display: inline-block;
 }
 
-.gnb ul {
+.gnb > ul {
   display: flex;
+  align-items: center;
   gap: 32px;
 }
 
 .nav-item {
+  display: inline-flex;
+  align-items: center;
   font-weight: 600;
   font-size: 1rem;
   color: var(--text-muted);
   padding: 8px 0;
   position: relative;
+  white-space: nowrap;
 }
 
 .nav-item:hover {
   color: var(--primary-color);
 }
 
-.nav-item::after {
+.nav-item::before {
   content: '';
   position: absolute;
   bottom: 0;
@@ -66,7 +70,7 @@
   transition: width var(--transition-normal);
 }
 
-.nav-item:hover::after {
+.nav-item:hover::before {
   width: 100%;
 }
 
@@ -146,4 +150,87 @@
 .copyright {
   margin-top: 8px;
   font-size: 0.8125rem;
+}
+
+/* Dropdown Menu Styles */
+.dropdown {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.dropdown-trigger {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+
+.dropdown-trigger::after {
+  content: '';
+  display: inline-block;
+  width: 0;
+  height: 0;
+  margin-left: 6px;
+  vertical-align: middle;
+  border-top: 4px solid var(--text-muted);
+  border-right: 4px solid transparent;
+  border-left: 4px solid transparent;
+  transition: transform var(--transition-fast), border-color var(--transition-fast);
+}
+
+.dropdown:hover .dropdown-trigger::after {
+  transform: rotate(180deg);
+  border-top-color: var(--primary-color);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: 12px 0;
+  min-width: 180px;
+  display: none;
+  z-index: 1000;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Invisible helper block to bridge the gap during hover */
+.dropdown-menu::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  background: transparent;
+}
+
+.dropdown:hover .dropdown-menu {
+  display: flex;
+}
+
+.dropdown-menu li {
+  width: 100%;
+}
+
+.dropdown-menu li a {
+  display: block;
+  padding: 10px 20px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+  text-align: left;
+}
+
+.dropdown-menu li a:hover {
+  background-color: var(--primary-light);
+  color: var(--primary-color);
 }

@@ -13,7 +13,7 @@ const EgovLocation = () => {
       </div>
 
       <p style={{ fontSize: '1.125rem', color: 'var(--text-muted)', marginBottom: '24px' }}>
-        표준프레임워크 경량환경 포털사이트를 소개합니다.
+        ST-ones Portal을 소개합니다.
       </p>
 
       {/* Map Image */}
@@ -30,7 +30,7 @@ const EgovLocation = () => {
         {/* Left Side: Addresses & QR */}
         <div className="glass" style={{ padding: '24px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-color)', backgroundColor: 'var(--surface-color)', display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <div>
-            <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--primary-color)', marginBottom: '12px' }}>표준프레임워크센터 주소</h3>
+            <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--primary-color)', marginBottom: '12px' }}>ST-ones Portal 주소</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               <div>
                 <strong style={{ display: 'inline-block', width: '90px', color: 'var(--text-muted)' }}>도로명주소</strong>
@@ -85,7 +85,7 @@ const EgovLocation = () => {
               </div>
               <div>
                 <strong style={{ display: 'inline-block', width: '80px', color: 'var(--text-muted)' }}>이메일</strong>
-                <span style={{ color: 'var(--text-main)' }}>egovframesupport@gmail.com</span>
+                <span style={{ color: 'var(--text-main)' }}>support@st-ones.com</span>
               </div>
             </div>
           </div>
