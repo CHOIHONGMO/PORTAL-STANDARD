@@ -68,6 +68,15 @@ import StplatList from '@/pages/user/policy/stp/StplatList';
 import StplatDetail from '@/pages/user/policy/stp/StplatDetail';
 import StplatForm from '@/pages/user/policy/stp/StplatForm';
 
+// 보안 관리 - 롤/권한/그룹
+import RoleList from '@/pages/security/role/RoleList';
+import RoleForm from '@/pages/security/role/RoleForm';
+import AuthorList from '@/pages/security/author/AuthorList';
+import AuthorForm from '@/pages/security/author/AuthorForm';
+import GroupList from '@/pages/security/group/GroupList';
+import GroupForm from '@/pages/security/group/GroupForm';
+import AuthorGroupList from '@/pages/security/authorgroup/AuthorGroupList';
+
 // 공통 에러 페이지
 import AccessDenied from '@/pages/common/error/AccessDenied';
 import DataAccessFailure from '@/pages/common/error/DataAccessFailure';
@@ -231,6 +240,15 @@ function App() {
           <Route path="admin/stplat/new" element={<StplatForm />} />
           <Route path="admin/stplat/:id" element={<StplatDetail />} />
           <Route path="admin/stplat/:id/edit" element={<StplatForm />} />
+
+          {/* 보안 관리 - 롤/권한/그룹 */}
+          <Route path="admin/role" element={<RoleList />} />
+          <Route path="admin/role/:id" element={<RoleForm />} />
+          <Route path="admin/author" element={<AuthorList />} />
+          <Route path="admin/author/:id" element={<AuthorForm />} />
+          <Route path="admin/group" element={<GroupList />} />
+          <Route path="admin/group/:id" element={<GroupForm />} />
+          <Route path="admin/author-group" element={<AuthorGroupList />} />
 
           {/* 에러 페이지 */}
           <Route path="cmm/error/accessDenied" element={<AccessDenied />} />

@@ -47,6 +47,11 @@ const Header = () => {
                 <li><Link to="/admin/qustnr-respond-manage">설문응답자정보</Link></li>
                 <li><Link to="/admin/policy">개인정보보호</Link></li>
                 <li><Link to="/admin/stplat">약관관리</Link></li>
+                <li style={{ borderTop: '1px solid var(--border-color)', margin: '4px 0' }}></li>
+                <li><Link to="/admin/role">롤관리</Link></li>
+                <li><Link to="/admin/author">권한관리</Link></li>
+                <li><Link to="/admin/group">그룹관리</Link></li>
+                <li><Link to="/admin/author-group">그룹권한관리</Link></li>
               </ul>
             </li>
           </ul>
