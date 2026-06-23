@@ -11,7 +11,7 @@
 		<property name="configLocation" value="classpath:/mapper/config/mapper-config.xml" />
 		<property name="mapperLocations">
 			<list>
-				<value>classpath:/egovframework/mapper/let/**/*_${Globals.DbType}.xml</value>
+				<value>classpath:/mapper/com/portal/**/*_${Globals.DbType}.xml</value>
 			</list>
 		</property>
 	</bean>

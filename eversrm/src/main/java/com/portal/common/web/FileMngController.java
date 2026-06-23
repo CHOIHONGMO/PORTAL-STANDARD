@@ -9,8 +9,8 @@ import org.egovframe.rte.fdl.crypto.EgovCryptoService;
 import org.egovframe.rte.fdl.security.userdetails.util.EgovUserDetailsHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RestController;
+import java.util.HashMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,7 +44,7 @@ import jakarta.servlet.http.HttpServletRequest;
  *
  *      </pre>
  */
-@Controller
+@RestController
 public class FileMngController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FileMngController.class);
@@ -74,9 +74,11 @@ public class FileMngController {
 	 * @throws Exception
 	 */
 	@GetMapping("/cmm/fms/selectFileInfs.do")
-	public String selectFileInfs(@ModelAttribute("searchVO") FileVO fileVO,
+	public Map<String, Object> selectFileInfs(@ModelAttribute("searchVO") FileVO fileVO,
 			HttpServletRequest request,
-			@RequestParam Map<String, Object> commandMap, ModelMap model) throws Exception {
+			@RequestParam Map<String, Object> commandMap) throws Exception {
+
+		Map<String, Object> resultMap = new HashMap<>();
 
 		String param_atchFileId = (String) commandMap.get("param_atchFileId");
 		byte[] encrypted_atchFileId = Base64.getDecoder().decode(param_atchFileId);
@@ -96,12 +98,12 @@ public class FileMngController {
 					cryptoService.encrypt(toEncrypt.getBytes(), ALGORITHM_KEY)));
 		}
 
-		model.addAttribute("fileList", result);
-		model.addAttribute("updateFlag", "N");
-		model.addAttribute("fileListCnt", result.size());
-		model.addAttribute("atchFileId", param_atchFileId);
+		resultMap.put("fileList", result);
+		resultMap.put("updateFlag", "N");
+		resultMap.put("fileListCnt", result.size());
+		resultMap.put("atchFileId", param_atchFileId);
 
-		return "cmm/fms/EgovFileList";
+		return resultMap;
 	}
 
 	/**
@@ -115,10 +117,11 @@ public class FileMngController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/cmm/fms/selectFileInfsForUpdate.do", method = {RequestMethod.GET, RequestMethod.POST})
-	public String selectFileInfsForUpdate(@ModelAttribute("searchVO") FileVO fileVO,
+	public Map<String, Object> selectFileInfsForUpdate(@ModelAttribute("searchVO") FileVO fileVO,
 			@RequestParam Map<String, Object> commandMap,
-			HttpServletRequest request,
-			ModelMap model) throws Exception {
+			HttpServletRequest request) throws Exception {
+
+		Map<String, Object> resultMap = new HashMap<>();
 
 		String param_atchFileId = (String) commandMap.get("param_atchFileId");
 		byte[] encrypted_atchFileId = Base64.getDecoder().decode(param_atchFileId);
@@ -139,12 +142,12 @@ public class FileMngController {
 					cryptoService.encrypt(toEncrypt.getBytes(), ALGORITHM_KEY)));
 		}
 
-		model.addAttribute("fileList", result);
-		model.addAttribute("updateFlag", "Y");
-		model.addAttribute("fileListCnt", result.size());
-		model.addAttribute("atchFileId", param_atchFileId);
+		resultMap.put("fileList", result);
+		resultMap.put("updateFlag", "Y");
+		resultMap.put("fileListCnt", result.size());
+		resultMap.put("atchFileId", param_atchFileId);
 
-		return "cmm/fms/EgovFileList";
+		return resultMap;
 	}
 
 	/**
@@ -158,9 +161,11 @@ public class FileMngController {
 	 * @throws Exception
 	 */
 	@PostMapping("/cmm/fms/deleteFileInfs.do")
-	public String deleteFileInf(@ModelAttribute("searchVO") FileVO fileVO, @RequestParam("returnUrl") String returnUrl,
-			HttpServletRequest request, ModelMap model)
+	public Map<String, Object> deleteFileInf(@ModelAttribute("searchVO") FileVO fileVO, @RequestParam("returnUrl") String returnUrl,
+			HttpServletRequest request)
 			throws Exception {
+
+		Map<String, Object> resultMap = new HashMap<>();
 
 		Boolean isAuthenticated = EgovUserDetailsHelper.isAuthenticated();
 
@@ -168,25 +173,8 @@ public class FileMngController {
 			fileService.deleteFileInf(fileVO);
 		}
 
-		// --------------------------------------------
-		// contextRoot가 있는 경우 제외 시켜야 함
-		// --------------------------------------------
-		//// return "forward:/cmm/fms/selectFileInfs.do";
-		// return "forward:" + returnUrl;
-
-		String contextPath = request.getContextPath() == null ? "" : request.getContextPath();
-		String redirectUrl = returnUrl;
-
-		if (StringUtils.isBlank(contextPath) || "/".equals(contextPath)) {
-			return "redirect:" + redirectUrl;
-		}
-
-		if (redirectUrl.startsWith(contextPath)) {
-			redirectUrl = redirectUrl.substring(contextPath.length());
-		}
-
-		return "redirect:" + redirectUrl;
-		//// ------------------------------------------
+		resultMap.put("success", true);
+		return resultMap;
 	}
 
 	/**
@@ -200,10 +188,11 @@ public class FileMngController {
 	 * @throws Exception
 	 */
 	@GetMapping("/cmm/fms/selectImageFileInfs.do")
-	public String selectImageFileInfs(@ModelAttribute("searchVO") FileVO fileVO,
+	public Map<String, Object> selectImageFileInfs(@ModelAttribute("searchVO") FileVO fileVO,
 			@RequestParam Map<String, Object> commandMap,
-			HttpServletRequest request,
-			ModelMap model) throws Exception {
+			HttpServletRequest request) throws Exception {
+
+		Map<String, Object> resultMap = new HashMap<>();
 
 		String param_atchFileId = (String) commandMap.get("atchFileId");
 		String decodedAtchFileId = "";
@@ -224,9 +213,9 @@ public class FileMngController {
 					Base64.getEncoder().encodeToString(cryptoService.encrypt(toEncrypt.getBytes(), ALGORITHM_KEY)));
 		}
 
-		model.addAttribute("fileList", result);
+		resultMap.put("fileList", result);
 
-		return "cmm/fms/EgovImgFileList";
+		return resultMap;
 	}
 
 	/**

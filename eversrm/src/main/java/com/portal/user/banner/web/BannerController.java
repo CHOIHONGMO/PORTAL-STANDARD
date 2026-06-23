@@ -7,8 +7,8 @@ import java.util.Map;
 import org.egovframe.rte.fdl.idgnr.EgovIdGnrService;
 import org.egovframe.rte.fdl.security.userdetails.util.EgovUserDetailsHelper;
 import org.egovframe.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RestController;
+import java.util.HashMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,7 +48,7 @@ import jakarta.validation.Valid;
  *
  *      </pre>
  */
-@Controller
+@RestController
 public class BannerController {
 
 	@Resource(name = "egovMessageSource")
@@ -68,18 +68,6 @@ public class BannerController {
 	private EgovIdGnrService egovBannerIdGnrService;
 
 	/**
-	 * 배너 목록화면 이동
-	 * 
-	 * @return String
-	 * @exception Exception
-	 */
-	@RequestMapping("/uss/ion/bnr/selectBannerListView.do")
-	public String selectBannerListView() throws Exception {
-
-		return "/uss/ion/bnr/EgovBannerList";
-	}
-
-	/**
 	 * 배너를 관리하기 위해 등록된 배너목록을 조회한다.
 	 * 
 	 * @param bannerVO - 배너 VO
@@ -87,8 +75,9 @@ public class BannerController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/uss/ion/bnr/selectBannerList.do")
-	public String selectBannerList(@ModelAttribute("bannerVO") BannerVO bannerVO, ModelMap model) throws Exception {
+	public Map<String, Object> selectBannerList(@ModelAttribute("bannerVO") BannerVO bannerVO) throws Exception {
 
+		Map<String, Object> resultMap = new HashMap<>();
 		/** paging */
 		PaginationInfo paginationInfo = new PaginationInfo();
 		paginationInfo.setCurrentPageNo(bannerVO.getPageIndex());
@@ -101,15 +90,15 @@ public class BannerController {
 
 		bannerVO.setBannerList(egovBannerService.selectBannerList(bannerVO));
 
-		model.addAttribute("bannerList", bannerVO.getBannerList());
+		resultMap.put("bannerList", bannerVO.getBannerList());
 
 		int totCnt = egovBannerService.selectBannerListTotCnt(bannerVO);
 		paginationInfo.setTotalRecordCount(totCnt);
-		model.addAttribute("paginationInfo", paginationInfo);
+		resultMap.put("paginationInfo", paginationInfo);
 
-		model.addAttribute("message", egovMessageSource.getMessage("success.common.select"));
+		resultMap.put("message", egovMessageSource.getMessage("success.common.select"));
 
-		return "/uss/ion/bnr/EgovBannerList";
+		return resultMap;
 	}
 
 	/**
@@ -119,28 +108,15 @@ public class BannerController {
 	 * @return String - 리턴 Url
 	 */
 	@RequestMapping(value = "/uss/ion/bnr/getBanner.do")
-	public String selectBanner(@RequestParam("bannerId") String bannerId, @ModelAttribute("bannerVO") BannerVO bannerVO,
-			ModelMap model) throws Exception {
+	public Map<String, Object> selectBanner(@RequestParam("bannerId") String bannerId, @ModelAttribute("bannerVO") BannerVO bannerVO) throws Exception {
 
+		Map<String, Object> resultMap = new HashMap<>();
 		bannerVO.setBannerId(bannerId);
 
-		model.addAttribute("banner", egovBannerService.selectBanner(bannerVO));
-		model.addAttribute("message", egovMessageSource.getMessage("success.common.select"));
+		resultMap.put("banner", egovBannerService.selectBanner(bannerVO));
+		resultMap.put("message", egovMessageSource.getMessage("success.common.select"));
 
-		return "/uss/ion/bnr/EgovBannerUpdt";
-	}
-
-	/**
-	 * 배너등록 화면으로 이동한다.
-	 * 
-	 * @param banner - 배너 model
-	 * @return String - 리턴 Url
-	 */
-	@RequestMapping(value = "/uss/ion/bnr/addViewBanner.do")
-	public String insertViewBanner(@ModelAttribute("bannerVO") BannerVO bannerVO, ModelMap model) throws Exception {
-
-		model.addAttribute("banner", bannerVO);
-		return "/uss/ion/bnr/EgovBannerRegist";
+		return resultMap;
 	}
 
 	/**
@@ -150,13 +126,15 @@ public class BannerController {
 	 * @return String - 리턴 Url
 	 */
 	@RequestMapping(value = "/uss/ion/bnr/addBanner.do")
-	public String insertBanner(final MultipartHttpServletRequest multiRequest,
+	public Map<String, Object> insertBanner(final MultipartHttpServletRequest multiRequest,
 			@Valid @ModelAttribute("banner") Banner banner, BindingResult bindingResult,
-			@ModelAttribute("bannerVO") BannerVO bannerVO, SessionStatus status, ModelMap model) throws Exception {
+			@ModelAttribute("bannerVO") BannerVO bannerVO, SessionStatus status) throws Exception {
 
+		Map<String, Object> resultMap = new HashMap<>();
 		if (bindingResult.hasErrors()) {
-			model.addAttribute("bannerVO", bannerVO);
-			return "/uss/ion/bnr/EgovBannerRegist";
+			resultMap.put("bannerVO", bannerVO);
+			resultMap.put("success", false);
+			return resultMap;
 		} else {
 			List<FileVO> result = null;
 
@@ -187,10 +165,11 @@ public class BannerController {
 			banner.setUserId(user.getId());
 			bannerVO.setBannerId(banner.getBannerId());
 			status.setComplete();
-			model.addAttribute("message", egovMessageSource.getMessage("success.common.insert"));
-			model.addAttribute("banner", egovBannerService.insertBanner(banner, bannerVO));
+			resultMap.put("success", true);
+			resultMap.put("message", egovMessageSource.getMessage("success.common.insert"));
+			resultMap.put("banner", egovBannerService.insertBanner(banner, bannerVO));
 
-			return "/uss/ion/bnr/EgovBannerUpdt";
+			return resultMap;
 
 		}
 	}
@@ -202,13 +181,14 @@ public class BannerController {
 	 * @return String - 리턴 Url
 	 */
 	@RequestMapping(value = "/uss/ion/bnr/updtBanner.do")
-	public String updateBanner(final MultipartHttpServletRequest multiRequest,
-			@Valid @ModelAttribute("banner") Banner banner, BindingResult bindingResult, SessionStatus status,
-			ModelMap model) throws Exception {
+	public Map<String, Object> updateBanner(final MultipartHttpServletRequest multiRequest,
+			@Valid @ModelAttribute("banner") Banner banner, BindingResult bindingResult, SessionStatus status) throws Exception {
 
+		Map<String, Object> resultMap = new HashMap<>();
 		if (bindingResult.hasErrors()) {
-			model.addAttribute("bannerVO", banner);
-			return "/uss/ion/bnr/EgovBannerUpdt";
+			resultMap.put("bannerVO", banner);
+			resultMap.put("success", false);
+			return resultMap;
 		} else {
 
 			List<FileVO> result = null;
@@ -247,7 +227,8 @@ public class BannerController {
 
 			egovBannerService.updateBanner(banner);
 
-			return "forward:/uss/ion/bnr/getBanner.do";
+			resultMap.put("success", true);
+			return resultMap;
 
 		}
 	}
@@ -260,15 +241,17 @@ public class BannerController {
 	 * @exception Exception
 	 */
 	@RequestMapping(value = "/uss/ion/bnr/removeBanner.do")
-	public String deleteBanner(@RequestParam("bannerId") String bannerId, @ModelAttribute("banner") Banner banner,
-			SessionStatus status, ModelMap model) throws Exception {
+	public Map<String, Object> deleteBanner(@RequestParam("bannerId") String bannerId, @ModelAttribute("banner") Banner banner,
+			SessionStatus status) throws Exception {
 
+		Map<String, Object> resultMap = new HashMap<>();
 		banner.setBannerId(bannerId);
 		egovBannerService.deleteBanner(banner);
 		status.setComplete();
-		model.addAttribute("message", egovMessageSource.getMessage("success.common.delete"));
+		resultMap.put("success", true);
+		resultMap.put("message", egovMessageSource.getMessage("success.common.delete"));
 
-		return "forward:/uss/ion/bnr/selectBannerList.do";
+		return resultMap;
 	}
 
 	/**
@@ -280,15 +263,17 @@ public class BannerController {
 	 * @exception Exception
 	 */
 	@RequestMapping(value = "/uss/ion/bnr/removeBannerList.do")
-	public String deleteBannerList(@RequestParam("bannerIds") String bannerIds, @ModelAttribute("banner") Banner banner,
-			SessionStatus status, ModelMap model) throws Exception {
+	public Map<String, Object> deleteBannerList(@RequestParam("bannerIds") String bannerIds, @ModelAttribute("banner") Banner banner,
+			SessionStatus status) throws Exception {
 
+		Map<String, Object> resultMap = new HashMap<>();
 		// 26.03.24 KISA 보안취약점 조치 : null check 추가
 		String[] strBannerIds = bannerIds != null ? bannerIds.split(";") : new String[0];
 
 		if (strBannerIds.length == 0) {
-			model.addAttribute("message", egovMessageSource.getMessage("fail.common.delete"));
-			return "forward:/uss/ion/bnr/selectBannerList.do";
+			resultMap.put("success", false);
+			resultMap.put("message", egovMessageSource.getMessage("fail.common.delete"));
+			return resultMap;
 		}
 
 		for (int i = 0; i < strBannerIds.length; i++) {
@@ -297,9 +282,10 @@ public class BannerController {
 		}
 
 		status.setComplete();
-		model.addAttribute("message", egovMessageSource.getMessage("success.common.delete"));
+		resultMap.put("success", true);
+		resultMap.put("message", egovMessageSource.getMessage("success.common.delete"));
 
-		return "forward:/uss/ion/bnr/selectBannerList.do";
+		return resultMap;
 	}
 
 	/**
@@ -309,13 +295,14 @@ public class BannerController {
 	 * @return String - 리턴 Url
 	 */
 	@RequestMapping(value = "/uss/ion/bnr/getBannerImage.do")
-	public String selectBannerResult(@ModelAttribute("bannerVO") BannerVO bannerVO, ModelMap model) throws Exception {
+	public Map<String, Object> selectBannerResult(@ModelAttribute("bannerVO") BannerVO bannerVO) throws Exception {
 
+		Map<String, Object> resultMap = new HashMap<>();
 		List<BannerVO> fileList = egovBannerService.selectBannerResult(bannerVO);
-		model.addAttribute("fileList", fileList);
-		model.addAttribute("resultType", bannerVO.getResultType());
+		resultMap.put("fileList", fileList);
+		resultMap.put("resultType", bannerVO.getResultType());
 
-		return "/uss/ion/bnr/EgovBannerView";
+		return resultMap;
 	}
 
 	/**
@@ -326,8 +313,9 @@ public class BannerController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/uss/ion/bnr/selectBannerMainList.do")
-	public String selectBannerMainList(@ModelAttribute("bannerVO") BannerVO bannerVO, ModelMap model) throws Exception {
+	public Map<String, Object> selectBannerMainList(@ModelAttribute("bannerVO") BannerVO bannerVO) throws Exception {
 
+		Map<String, Object> resultMap = new HashMap<>();
 		/** paging */
 		PaginationInfo paginationInfo = new PaginationInfo();
 		paginationInfo.setCurrentPageNo(bannerVO.getPageIndex());
@@ -340,8 +328,8 @@ public class BannerController {
 
 		bannerVO.setBannerList(egovBannerService.selectBannerList(bannerVO));
 
-		model.addAttribute("bannerList", bannerVO.getBannerList());
+		resultMap.put("bannerList", bannerVO.getBannerList());
 
-		return "/uss/ion/bnr/EgovBannerMainList";
+		return resultMap;
 	}
 }

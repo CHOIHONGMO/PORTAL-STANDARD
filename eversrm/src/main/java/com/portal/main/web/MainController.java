@@ -6,12 +6,12 @@ import org.egovframe.rte.fdl.security.userdetails.util.EgovUserDetailsHelper;
 import org.egovframe.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import java.util.HashMap;
 
 import com.portal.common.ComDefaultVO;
 import com.portal.common.LoginVO;
@@ -42,7 +42,8 @@ import jakarta.servlet.http.HttpServletRequest;
  *
  * </pre>
  */
-@Controller@SessionAttributes(types = ComDefaultVO.class)
+@RestController
+@SessionAttributes(types = ComDefaultVO.class)
 public class MainController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
@@ -65,30 +66,10 @@ public class MainController {
 	@Resource(name = "egovQustnrRespondInfoService")
 	private QustnrRespondInfoService egovQustnrRespondInfoService;
 
-	/**
-	 * 메인 페이지에서 각 업무 화면으로 연계하는 기능을 제공한다.
-	 *
-	 * @param request
-	 * @param commandMap
-	 * @exception Exception Exception
-	 */
-	@RequestMapping(value = "/cmm/forwardPage.do")
-	public String forwardPageWithMenuNo(HttpServletRequest request, @RequestParam Map<String, Object> commandMap)
-	  throws Exception{
-		return "";
-	}
-
-	/**
-	 * 템플릿 메인 페이지 조회
-	 * @return 메인페이지 정보 Map [key : 항목명]
-	 *
-	 * @param request
-	 * @param model
-	 * @exception Exception Exception
-	 */
 	@RequestMapping(value = "/cmm/main/mainPage.do")
-	public String getMgtMainPage(HttpServletRequest request, ModelMap model)
+	public Map<String, Object> getMgtMainPage(HttpServletRequest request)
 	  throws Exception{
+		Map<String, Object> resultMap = new HashMap<>();
 		
 		// 공지사항 메인 컨텐츠 조회 시작 ---------------------------------
 		BoardVO boardVO = new BoardVO();
@@ -108,7 +89,7 @@ public class MainController {
 		boardVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
 
 		Map<String, Object> map = bbsMngService.selectBoardArticles(boardVO, "BBSA02");
-		model.addAttribute("notiList", map.get("resultList"));
+		resultMap.put("notiList", map.get("resultList"));
 
 
 		// 공지사항 메인컨텐츠 조회 끝 -----------------------------------
@@ -126,7 +107,7 @@ public class MainController {
 		boardVO.setLastIndex(paginationInfo.getLastRecordIndex());
 		boardVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
 
-		model.addAttribute("bbsList", bbsMngService.selectBoardArticles(boardVO, "BBSA02").get("resultList"));
+		resultMap.put("bbsList", bbsMngService.selectBoardArticles(boardVO, "BBSA02").get("resultList"));
 
 		// 자유게시판 메인컨텐츠 조회 끝 -----------------------------------
 
@@ -145,7 +126,7 @@ public class MainController {
 		searchVO.setLastIndex(paginationInfo.getLastRecordIndex());
 		searchVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
 
-        model.addAttribute("faqList", faqManageService.selectFaqList(searchVO));
+        resultMap.put("faqList", faqManageService.selectFaqList(searchVO));
 
 		// FAQ 메인 컨텐츠 조회 끝 -----------------------------------
 
@@ -163,25 +144,26 @@ public class MainController {
 		qVO.setLastIndex(paginationInfo.getLastRecordIndex());
 		qVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
 
-        model.addAttribute("qriList", egovQustnrRespondInfoService.selectQustnrRespondInfoManageList(qVO));
+        resultMap.put("qriList", egovQustnrRespondInfoService.selectQustnrRespondInfoManageList(qVO));
 
      // 설문참여 메인 컨텐츠 조회 끝 -----------------------------------
 
-		return "main/EgovMainView";
+		return resultMap;
 	}
 
 	/**
      * Header Page를 조회한다.
      * @param menuManageVO MenuManageVO
-     * @return 출력페이지정보 "EgovIncHeader"
+     * @return Header data
      * @exception Exception
      */
 	@RequestMapping(value="/sym/mms/EgovHeader.do")
-    public String selectHeader(
+    public Map<String, Object> selectHeader(
     		@ModelAttribute("menuManageVO") MenuManageVO menuManageVO,
-    		@RequestParam(value="flag", required=false) String flag,
-    		ModelMap model)
+    		@RequestParam(value="flag", required=false) String flag)
             throws Exception {
+            
+        Map<String, Object> resultMap = new HashMap<>();
 
 		LoginVO user =  EgovUserDetailsHelper.isAuthenticated()? (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser():null;
 
@@ -193,62 +175,25 @@ public class MainController {
         	menuManageVO.setTmp_Email(user.getEmail());
         	menuManageVO.setTmp_OrgnztId(user.getOrgnztId());
         	menuManageVO.setTmp_UniqId(user.getUniqId());
-    		model.addAttribute("list_headmenu", menuManageService.selectMainMenuHead(menuManageVO));
-    		model.addAttribute("list_menulist", menuManageService.selectMainMenuLeft(menuManageVO));
+    		resultMap.put("list_headmenu", menuManageService.selectMainMenuHead(menuManageVO));
+    		resultMap.put("list_menulist", menuManageService.selectMainMenuLeft(menuManageVO));
     	}else{
     		menuManageVO.setAuthorCode("ROLE_ANONYMOUS");
-    		model.addAttribute("list_headmenu", menuManageService.selectMainMenuHeadByAuthor(menuManageVO));
-    		model.addAttribute("list_menulist", menuManageService.selectMainMenuLeftByAuthor(menuManageVO));
+    		resultMap.put("list_headmenu", menuManageService.selectMainMenuHeadByAuthor(menuManageVO));
+    		resultMap.put("list_menulist", menuManageService.selectMainMenuLeftByAuthor(menuManageVO));
     	}
 
-    	return "main/inc/EgovIncHeader"; // 업무화면의 상단메뉴 화면
+    	return resultMap;
 
     }
 
-	/**
-     * Footer Page를 조회한다.
-     * @param 
-     * @return 출력페이지정보 "EgovIncFooter"
-     * @exception Exception
-     */
-	@RequestMapping(value="/sym/mms/EgovFooter.do")
-    public String selectFooter(ModelMap model) throws Exception {
-    	return "main/inc/EgovIncFooter";
-    }
-    
-    /**
-     * 좌측메뉴를 조회한다.
-     * @param 
-     * @return 출력페이지정보 "EgovIncLeftmenu"
-     * @exception Exception
-     */
-	@RequestMapping(value="/sym/mms/EgovMenuLeft.do")
-    public String selectMenuLeft(ModelMap model) throws Exception {
-
-    	//LoginVO user = EgovUserDetailsHelper.isAuthenticated()? (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser():null;
-
-    	//LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
-    	if(EgovUserDetailsHelper.isAuthenticated()){
-    		//인증된 경우 처리할 사항 추가 ...
-    		model.addAttribute("lastLogoutDateTime", "로그아웃 타임: 2021-08-12 11:30");
-    		//최근 로그아웃 시간 등에 대한 확보 후 메인 컨텐츠로 활용
-    	}
-
-      	return "main/inc/EgovIncLeftmenu";
-    }
-
-	/**
-     * Head메뉴를 조회한다.
-     * @param menuManageVO MenuManageVO
-     * @return 출력페이지정보 "main_headG", "main_head"
-     * @exception Exception
-     */
 	@RequestMapping(value="/sym/mms/EgovMainMenuHead.do")
-    public String selectMainMenuHead(
+    public Map<String, Object> selectMainMenuHead(
     		@ModelAttribute("menuManageVO") MenuManageVO menuManageVO,
-    		@RequestParam(value="flag", required=false) String flag,
-    		ModelMap model)
+    		@RequestParam(value="flag", required=false) String flag)
             throws Exception {
+            
+        Map<String, Object> resultMap = new HashMap<>();
 
     	LoginVO user =
     		EgovUserDetailsHelper.isAuthenticated()? (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser():null;
@@ -260,46 +205,15 @@ public class MainController {
         	menuManageVO.setTmp_Email(user.getEmail());
         	menuManageVO.setTmp_OrgnztId(user.getOrgnztId());
         	menuManageVO.setTmp_UniqId(user.getUniqId());
-    		model.addAttribute("list_headmenu", menuManageService.selectMainMenuHead(menuManageVO));
-    		model.addAttribute("list_menulist", menuManageService.selectMainMenuLeft(menuManageVO));
+    		resultMap.put("list_headmenu", menuManageService.selectMainMenuHead(menuManageVO));
+    		resultMap.put("list_menulist", menuManageService.selectMainMenuLeft(menuManageVO));
     	}else{
     		menuManageVO.setAuthorCode("ROLE_ANONYMOUS");
-    		model.addAttribute("list_headmenu", menuManageService.selectMainMenuHeadByAuthor(menuManageVO));
-    		model.addAttribute("list_menulist", menuManageService.selectMainMenuLeftByAuthor(menuManageVO));
+    		resultMap.put("list_headmenu", menuManageService.selectMainMenuHeadByAuthor(menuManageVO));
+    		resultMap.put("list_menulist", menuManageService.selectMainMenuLeftByAuthor(menuManageVO));
     	}
 
-    	if(flag==null){
-    		return "main/inc/EgovIncSubHeaderOld"; // 업무화면의 상단메뉴 화면
-    	}else if(flag.equals("MAIN")){
-    		return "main/inc/EgovIncHeaderOld"; // 메인화면의 상단메뉴 화면
-    	}else{
-    		return "main/inc/EgovIncSubHeaderOld"; // 업무화면의 상단메뉴 화면
-    	}
-    }
-
-
-    /**
-     * 좌측메뉴를 조회한다.
-     * @param menuManageVO MenuManageVO
-     * @param vStartP      String
-     * @return 출력페이지정보 "main_left"
-     * @exception Exception
-     */
-	@RequestMapping(value="/sym/mms/EgovMainMenuLeft.do")
-    public String selectMainMenuLeft(
-    		ModelMap model)
-            throws Exception {
-
-    	//LoginVO user = EgovUserDetailsHelper.isAuthenticated()? (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser():null;
-
-    	//LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
-    	if(EgovUserDetailsHelper.isAuthenticated()){
-    		//인증된 경우 처리할 사항 추가 ...
-    		model.addAttribute("lastLogoutDateTime", "로그아웃 타임: 2011-11-10 11:30");
-    		//최근 로그아웃 시간 등에 대한 확보 후 메인 컨텐츠로 활용
-    	}
-
-      	return "main/inc/EgovIncLeftmenuOld";
+    	return resultMap;
     }
 
 }

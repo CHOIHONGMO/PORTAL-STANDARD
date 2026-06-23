@@ -22,8 +22,8 @@
 	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
 		<property name="basenames">
 			<list>
-				<value>classpath:/message/common/message-common</value>
-				<value>classpath:/message/common/message-validation</value>
+				<value>classpath:/message/message-common</value>
+				<value>classpath:/message/message-validation</value>
 				<value>classpath:/org/egovframe/rte/fdl/idgnr/messages/idgnr</value>
 				<value>classpath:/org/egovframe/rte/fdl/property/messages/properties</value>
 			</list>

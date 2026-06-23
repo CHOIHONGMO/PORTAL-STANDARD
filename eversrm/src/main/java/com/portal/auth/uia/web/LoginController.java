@@ -9,10 +9,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.SecurityContextRepository;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import java.util.Map;
+import java.util.HashMap;
 
 import com.portal.common.PortalMessageSource;
 import com.portal.common.LoginVO;
@@ -38,7 +40,7 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  *  </pre>
  */
-@Controller
+@RestController
 public class LoginController {
 
 	/** LoginService */
@@ -65,17 +67,6 @@ public class LoginController {
     	this.securityContextRepository = securityContextRepository;
     }
 
-    /**
-	 * 로그인 화면으로 들어간다
-	 * @param vo - 로그인후 이동할 URL이 담긴 LoginVO
-	 * @return 로그인 페이지
-	 * @exception Exception
-	 */
-    @RequestMapping(value="/uat/uia/egovLoginUsr.do")
-	public String loginUsrView(@ModelAttribute("loginVO") LoginVO loginVO, HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception {
-    	return "uat/uia/EgovLoginUsr";
-	}
-
 	/**
 	 * 일반(스프링 시큐리티) 로그인을 처리한다
 	 * @param vo - 아이디, 비밀번호가 담긴 LoginVO
@@ -84,17 +75,20 @@ public class LoginController {
 	 * @exception Exception
 	 */
     @RequestMapping(value="/uat/uia/actionSecurityLogin.do")
-    public String actionSecurityLogin(@ModelAttribute("loginVO") LoginVO loginVO, HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception {
+    public Map<String, Object> actionSecurityLogin(@ModelAttribute("loginVO") LoginVO loginVO, HttpServletRequest request, HttpServletResponse response) throws Exception {
     	// 일반 로그인 처리
         LoginVO resultVO = loginService.actionLogin(loginVO);
+        Map<String, Object> resultMap = new HashMap<>();
 
 		if (resultVO != null && resultVO.getId() != null && !resultVO.getId().equals("")) {
         	actionSecurityProcess(resultVO, request, response);
-        	return "forward:/cmm/main/mainPage.do";	// 성공 시 페이지.. (redirect 불가)
+            resultMap.put("success", true);
+            resultMap.put("resultVO", resultVO);
         } else {
-        	model.addAttribute("message", egovMessageSource.getMessage("fail.common.login"));
-        	return "uat/uia/EgovLoginUsr";
+            resultMap.put("success", false);
+            resultMap.put("message", egovMessageSource.getMessage("fail.common.login"));
         }
+        return resultMap;
     }
 
     @RequestMapping(value="/uat/uia/actionSecurityProcess.do")
@@ -116,31 +110,12 @@ public class LoginController {
     }
 
     /**
-	 * 로그인 후 메인화면으로 들어간다
-	 * @param
-	 * @return 로그인 페이지
-	 * @exception Exception
-	 */
-    @RequestMapping(value="/uat/uia/actionMain.do")
-	public String actionMain(ModelMap model) throws Exception {
-    	// 1. 사용자 인증 처리
-    	Boolean isAuthenticated = EgovUserDetailsHelper.isAuthenticated();
-    	if(!isAuthenticated) {
-    		model.addAttribute("message", egovMessageSource.getMessage("fail.common.login"));
-        	return "uat/uia/EgovLoginUsr";
-    	}
-    	
-		// 2. 메인 페이지 이동
-    	return "forward:/cmm/main/mainPage.do";
-	}
-
-    /**
 	 * 로그아웃한다.
 	 * @return String
 	 * @exception Exception
 	 */
     @RequestMapping(value="/uat/uia/actionLogout.do")
-	public void actionLogout(HttpServletRequest request, ModelMap model) throws Exception {
+	public void actionLogout(HttpServletRequest request) throws Exception {
     	request.getSession().setAttribute("LoginVO", null);
     	SecurityContextHolder.clearContext();
     }

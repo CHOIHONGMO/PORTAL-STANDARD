@@ -19,7 +19,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.annotation.InitBinder;
 
 import com.portal.common.PortalMessageSource;
@@ -33,7 +33,7 @@ import jakarta.validation.ValidatorFactory;
  * @author 공통서비스 개발팀
  * @since 2024
  */
-@ControllerAdvice
+@RestControllerAdvice
 public class ValidationControllerAdvice {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ValidationControllerAdvice.class);

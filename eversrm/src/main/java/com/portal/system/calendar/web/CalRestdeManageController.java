@@ -8,7 +8,9 @@ import java.util.Map;
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.egovframe.rte.fdl.property.EgovPropertyService;
 import org.egovframe.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -25,23 +27,23 @@ import jakarta.annotation.Resource;
 
 /**
  * 
- * 공휴일에 관한 요청을 받아 서비스 클래스로 요청을 전달하고 서비스클래스에서 처리한 결과를 웹 화면으로 전달을 위한 Controller를 정의한다
- * @author 공통서비스 개발팀 이중호
+ * 공휴?�에 관???�청??받아 ?�비???�래?�로 ?�청???�달?�고 ?�비?�클?�스?�서 처리??결과�????�면?�로 ?�달???�한 Controller�??�의?�다
+ * @author 공통?�비??개발?� ?�중??
  * @since 2009.04.01
  * @version 1.0
  * @see
  *
  * <pre>
- * << 개정이력(Modification Information) >>
+ * << 개정?�력(Modification Information) >>
  *   
- *   수정일      수정자           수정내용
+ *   ?�정??     ?�정??          ?�정?�용
  *  -------    --------    ---------------------------
- *   2009.04.01  이중호          최초 생성
- *   2011.08.31  JJY            경량환경 템플릿 커스터마이징버전 생성 
+ *   2009.04.01  ?�중??         최초 ?�성
+ *   2011.08.31  JJY            경량?�경 ?�플�?커스?�마?�징버전 ?�성 
  *
  * </pre>
  */
-@Controller
+@RestController
 public class CalRestdeManageController {
 
 	/** RestdeManageService */
@@ -57,24 +59,26 @@ public class CalRestdeManageController {
 	private CmmUseService cmmUseService;
 
 	/**
-	 * 달력 메인창을 호출한다.
+	 * ?�력 메인창을 ?�출?�다.
 	 * @param model
 	 * @return "/cmm/sym/cal/EgovNormalCalPopup"
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/sym/cmm/callCalPopup.do")
-	public String callCalendar(ModelMap model) throws Exception {
-		return "/cmm/sym/cal/EgovCalPopup";
+	public Map<String, Object> callCalendar() throws Exception {
+		Map<String, Object> resultMap = new HashMap<>();
+		return resultMap;
 	}    
 	
 	/**
-	 * 달력을 호출한다.
+	 * ?�력???�출?�다.
 	 * @param model
 	 * @return "/cmm/sym/cal/EgovNormalCalPopup"
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/sym/cmm/callCal.do")
-	public String callCal(Restde restde, ModelMap model) throws Exception {
+	public Map<String, Object> callCal(Restde restde) throws Exception {
+		Map<String, Object> resultMap = new HashMap<>();
 
 		Calendar cal = Calendar.getInstance();
 
@@ -154,31 +158,33 @@ public class CalRestdeManageController {
 		 * 계산... END		
 		 */
 		
-        model.addAttribute("resultList", CalInfoList);
+        resultMap.put("resultList", CalInfoList);
 		
-		return "/cmm/sym/cal/EgovCalendar";
+		return resultMap;
 	}    
 	
 	/**
-	 * 일반달력 팝업 메인창을 호출한다.
+	 * ?�반?�력 ?�업 메인창을 ?�출?�다.
 	 * @param model
 	 * @return "/cmm/sym/cal/EgovNormalCalPopup"
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/sym/cmm/EgovNormalCalPopup.do")
-	public String callNormalCalPopup(ModelMap model) throws Exception {
-		return "/sym/cal/EgovNormalCalPopup";
+	public Map<String, Object> callNormalCalPopup() throws Exception {
+		Map<String, Object> resultMap = new HashMap<>();
+		return resultMap;
 	}    
 
 	/**
-	 * 일반달력 팝업 정보를 조회한다.
+	 * ?�반?�력 ?�업 ?�보�?조회?�다.
 	 * @param restde
 	 * @param model
 	 * @return "/cmm/sym/cal/EgovNormalCalendar"
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/sym/cmm/EgovselectNormalCalendar.do")
-	public String selectNormalRestdePopup(Restde restde, ModelMap model) throws Exception {
+	public Map<String, Object> selectNormalRestdePopup(Restde restde) throws Exception {
+		Map<String, Object> resultMap = new HashMap<>();
 
 		Calendar cal = Calendar.getInstance();
 
@@ -208,7 +214,7 @@ public class CalRestdeManageController {
 			iMonth = 12;
 		}
 		
-		/* DB를 사용할 경우 처리
+		/* DB�??�용??경우 처리
 		restde.setYear(Integer.toString(iYear));
 		restde.setMonth(Integer.toString(iMonth));
 		
@@ -271,31 +277,33 @@ public class CalRestdeManageController {
          */
 		
 		
-        model.addAttribute("resultList", CalInfoList);
-		return "/sym/cal/EgovNormalCalendar";
+        resultMap.put("resultList", CalInfoList);
+		return resultMap;
 	}
 	
 	
 	/**
-	 * 행정달력 팝업 메인창을 호출한다.
+	 * ?�정?�력 ?�업 메인창을 ?�출?�다.
 	 * @param model
 	 * @return "/cmm/sym/cal/EgovAdministCalPopup"
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/sym/cmm/EgovAdministCalPopup.do")
-	public String callAdministCalPopup(ModelMap model) throws Exception {
-		return "/cmm/sym/cal/EgovAdministCalPopup";
+	public Map<String, Object> callAdministCalPopup() throws Exception {
+		Map<String, Object> resultMap = new HashMap<>();
+		return resultMap;
 	}    
 	
 	/**
-	 * 행정달력 팝업 정보를 조회한다.
+	 * ?�정?�력 ?�업 ?�보�?조회?�다.
 	 * @param restde
 	 * @param model
 	 * @return "/cmm/sym/cal/EgovAdministCalendar"
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/sym/cmm/EgovselectAdministCalendar.do")
-	public String selectAdministRestdePopup(Restde restde, ModelMap model) throws Exception {
+	public Map<String, Object> selectAdministRestdePopup(Restde restde) throws Exception {
+		Map<String, Object> resultMap = new HashMap<>();
 
 		Calendar cal = Calendar.getInstance();
 
@@ -332,20 +340,21 @@ public class CalRestdeManageController {
 		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
 		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
 
-        model.addAttribute("resultList", restdeManageService.selectAdministRestdePopup(restde));
+        resultMap.put("resultList", restdeManageService.selectAdministRestdePopup(restde));
 		
-		return "/cmm/sym/cal/EgovAdministCalendar";
+		return resultMap;
 	}
 
 	/**
-	 * 일반달력 일간
+	 * ?�반?�력 ?�간
 	 * @param restde
 	 * @param model
 	 * @return "/cmm/sym/cal/EgovNormalDayCalendar"
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/sym/cal/EgovNormalDayCalendar.do")
-	public String selectNormalDayCalendar(Restde restde, ModelMap model) throws Exception {
+	public Map<String, Object> selectNormalDayCalendar(Restde restde) throws Exception {
+		Map<String, Object> resultMap = new HashMap<>();
 
 		Calendar cal = Calendar.getInstance();
 
@@ -398,21 +407,22 @@ public class CalRestdeManageController {
 		//List CalInfoList          = restdeManageService.selectNormalDayCal(restde);
         //List NormalWeekRestdeList = restdeManageService.selectNormalDayRestde(restde);
 
-        model.addAttribute("resultList", restdeManageService.selectNormalDayCal(restde));
-        model.addAttribute("RestdeList", restdeManageService.selectNormalDayRestde(restde));
+        resultMap.put("resultList", restdeManageService.selectNormalDayCal(restde));
+        resultMap.put("RestdeList", restdeManageService.selectNormalDayRestde(restde));
         
-		return "/cmm/sym/cal/EgovNormalDayCalendar";
+		return resultMap;
 	}
 	
 	/**
-	 * 일반달력 주간
+	 * ?�반?�력 주간
 	 * @param restde
 	 * @param model
 	 * @return "/cmm/sym/cal/EgovNormalWeekCalendar"
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/sym/cal/EgovNormalWeekCalendar.do")
-	public String selectNormalWeekCalendar(Restde restde, ModelMap model) throws Exception {
+	public Map<String, Object> selectNormalWeekCalendar(Restde restde) throws Exception {
+		Map<String, Object> resultMap = new HashMap<>();
 
 		Calendar cal = Calendar.getInstance();
 
@@ -481,34 +491,34 @@ public class CalRestdeManageController {
 
 		iDayWeek  = weekCal.get(Calendar.DAY_OF_WEEK);
 
-		// 일요일
+		// ?�요??
 		weekCal.add(Calendar.DATE, (-1)*(iDayWeek-1));
 		vo.setYear(Integer.toString(weekCal.get(Calendar.YEAR)));
 		vo.setMonth(Integer.toString(weekCal.get(Calendar.MONTH)+1));
 		vo.setDay(Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
 		vo.setWeek(weekCal.get(Calendar.DAY_OF_WEEK));
-		model.addAttribute("resultList_1", restdeManageService.selectNormalDayCal(vo));
-        model.addAttribute("RestdeList_1", restdeManageService.selectNormalDayRestde(vo));
+		resultMap.put("resultList_1", restdeManageService.selectNormalDayCal(vo));
+        resultMap.put("RestdeList_1", restdeManageService.selectNormalDayRestde(vo));
         
-		// 월요일
+		// ?�요??
 		weekCal.add(Calendar.DATE, 1);
 		vo.setYear(Integer.toString(weekCal.get(Calendar.YEAR)));
 		vo.setMonth(Integer.toString(weekCal.get(Calendar.MONTH)+1));
 		vo.setDay(Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
 		vo.setWeek(weekCal.get(Calendar.DAY_OF_WEEK));
-        model.addAttribute("resultList_2", restdeManageService.selectNormalDayCal(vo));
-        model.addAttribute("RestdeList_2", restdeManageService.selectNormalDayRestde(vo));
+        resultMap.put("resultList_2", restdeManageService.selectNormalDayCal(vo));
+        resultMap.put("RestdeList_2", restdeManageService.selectNormalDayRestde(vo));
 
-        // 화요일
+        // ?�요??
 		weekCal.add(Calendar.DATE, 1);
 		vo.setYear(Integer.toString(weekCal.get(Calendar.YEAR)));
 		vo.setMonth(Integer.toString(weekCal.get(Calendar.MONTH)+1));
 		vo.setDay(Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
 		vo.setWeek(weekCal.get(Calendar.DAY_OF_WEEK));
-        model.addAttribute("resultList_3", restdeManageService.selectNormalDayCal(vo));
-        model.addAttribute("RestdeList_3", restdeManageService.selectNormalDayRestde(vo));
+        resultMap.put("resultList_3", restdeManageService.selectNormalDayCal(vo));
+        resultMap.put("RestdeList_3", restdeManageService.selectNormalDayRestde(vo));
 
-        // 수요일
+        // ?�요??
 		weekCal.add(Calendar.DATE, 1);
 		vo.setYear(Integer.toString(weekCal.get(Calendar.YEAR)));
 		vo.setMonth(Integer.toString(weekCal.get(Calendar.MONTH)+1));
@@ -516,50 +526,51 @@ public class CalRestdeManageController {
 		vo.setWeek(weekCal.get(Calendar.DAY_OF_WEEK));
 		//List CalInfoList_4          = restdeManageService.selectNormalDayCal(vo);
         //List NormalWeekRestdeList_4 = restdeManageService.selectNormalDayRestde(vo);
-        model.addAttribute("resultList_4", restdeManageService.selectNormalDayCal(vo));
-        model.addAttribute("RestdeList_4", restdeManageService.selectNormalDayRestde(vo));
+        resultMap.put("resultList_4", restdeManageService.selectNormalDayCal(vo));
+        resultMap.put("RestdeList_4", restdeManageService.selectNormalDayRestde(vo));
 
-        // 목요일
+        // 목요??
 		weekCal.add(Calendar.DATE, 1);
 		vo.setYear(Integer.toString(weekCal.get(Calendar.YEAR)));
 		vo.setMonth(Integer.toString(weekCal.get(Calendar.MONTH)+1));
 		vo.setDay(Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
 		vo.setWeek(weekCal.get(Calendar.DAY_OF_WEEK));
-        model.addAttribute("resultList_5", restdeManageService.selectNormalDayCal(vo));
-        model.addAttribute("RestdeList_5", restdeManageService.selectNormalDayRestde(vo));
+        resultMap.put("resultList_5", restdeManageService.selectNormalDayCal(vo));
+        resultMap.put("RestdeList_5", restdeManageService.selectNormalDayRestde(vo));
 
-        // 금요일
+        // 금요??
 		weekCal.add(Calendar.DATE, 1);
 		vo.setYear(Integer.toString(weekCal.get(Calendar.YEAR)));
 		vo.setMonth(Integer.toString(weekCal.get(Calendar.MONTH)+1));
 		vo.setDay(Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
 		vo.setWeek(weekCal.get(Calendar.DAY_OF_WEEK));
-        model.addAttribute("resultList_6", restdeManageService.selectNormalDayCal(vo));
-        model.addAttribute("RestdeList_6", restdeManageService.selectNormalDayRestde(vo));
+        resultMap.put("resultList_6", restdeManageService.selectNormalDayCal(vo));
+        resultMap.put("RestdeList_6", restdeManageService.selectNormalDayRestde(vo));
 		
-        // 토요일
+        // ?�요??
 		weekCal.add(Calendar.DATE, 1);
 		vo.setYear(Integer.toString(weekCal.get(Calendar.YEAR)));
 		vo.setMonth(Integer.toString(weekCal.get(Calendar.MONTH)+1));
 		vo.setDay(Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
 		vo.setWeek(weekCal.get(Calendar.DAY_OF_WEEK));
-        model.addAttribute("resultList_7", restdeManageService.selectNormalDayCal(vo));
-        model.addAttribute("RestdeList_7", restdeManageService.selectNormalDayRestde(vo));
+        resultMap.put("resultList_7", restdeManageService.selectNormalDayCal(vo));
+        resultMap.put("RestdeList_7", restdeManageService.selectNormalDayRestde(vo));
 
-        model.addAttribute("resultList", restdeManageService.selectNormalDayCal(restde));
+        resultMap.put("resultList", restdeManageService.selectNormalDayCal(restde));
         
-        return "/cmm/sym/cal/EgovNormalWeekCalendar";
+        return resultMap;
 	}	
 
 	/**
-	 * 일반달력 월간
+	 * ?�반?�력 ?�간
 	 * @param restde
 	 * @param model
 	 * @return "/cmm/sym/cal/EgovNormalMonthCalendar"
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/sym/cal/EgovNormalMonthCalendar.do")
-	public String selectNormalMonthCalendar(Restde restde, ModelMap model) throws Exception {
+	public Map<String, Object> selectNormalMonthCalendar(Restde restde) throws Exception {
+		Map<String, Object> resultMap = new HashMap<>();
 
 		Calendar cal = Calendar.getInstance();
 
@@ -596,21 +607,22 @@ public class CalRestdeManageController {
 		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
 		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
 
-        model.addAttribute("resultList", restdeManageService.selectNormalRestdePopup(restde));
-        model.addAttribute("RestdeList", restdeManageService.selectNormalMonthRestde(restde));
+        resultMap.put("resultList", restdeManageService.selectNormalRestdePopup(restde));
+        resultMap.put("RestdeList", restdeManageService.selectNormalMonthRestde(restde));
 
-        return "/cmm/sym/cal/EgovNormalMonthCalendar";
+        return resultMap;
 	}	
 	
 	/**
-	 * 일반달력 연간
+	 * ?�반?�력 ?�간
 	 * @param restde
 	 * @param model
 	 * @return "/cmm/sym/cal/EgovNormalYearCalendar"
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/sym/cal/EgovNormalYearCalendar.do")
-	public String selectNormalYearCalendar(Restde restde, ModelMap model) throws Exception {
+	public Map<String, Object> selectNormalYearCalendar(Restde restde) throws Exception {
+		Map<String, Object> resultMap = new HashMap<>();
 
 		Calendar cal = Calendar.getInstance();
 
@@ -641,129 +653,130 @@ public class CalRestdeManageController {
 		}
 		restde.setYear(Integer.toString(iYear));
 		
-		/* 월별확인 */
+		/* ?�별?�인 */
 
-		/* 1월 */
+		/* 1??*/
 		iMonth = 1;
 		restde.setMonth(Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
 		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
 		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        model.addAttribute("resultList_1" , restdeManageService.selectNormalRestdePopup(restde) );
-        model.addAttribute("RestdeList_1" , restdeManageService.selectNormalMonthRestde(restde) );
+        resultMap.put("resultList_1" , restdeManageService.selectNormalRestdePopup(restde) );
+        resultMap.put("RestdeList_1" , restdeManageService.selectNormalMonthRestde(restde) );
 
-		/* 2월 */
+		/* 2??*/
 		iMonth = 2;
 		restde.setMonth(Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
 		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
 		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        model.addAttribute("resultList_2" , restdeManageService.selectNormalRestdePopup(restde) );
-        model.addAttribute("RestdeList_2" , restdeManageService.selectNormalMonthRestde(restde) );
+        resultMap.put("resultList_2" , restdeManageService.selectNormalRestdePopup(restde) );
+        resultMap.put("RestdeList_2" , restdeManageService.selectNormalMonthRestde(restde) );
 
-		/* 3월 */
+		/* 3??*/
 		iMonth = 3;
 		restde.setMonth(Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
 		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
 		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        model.addAttribute("resultList_3" , restdeManageService.selectNormalRestdePopup(restde) );
-        model.addAttribute("RestdeList_3" , restdeManageService.selectNormalMonthRestde(restde) );
+        resultMap.put("resultList_3" , restdeManageService.selectNormalRestdePopup(restde) );
+        resultMap.put("RestdeList_3" , restdeManageService.selectNormalMonthRestde(restde) );
 
-		/* 4월 */
+		/* 4??*/
 		iMonth = 4;
 		restde.setMonth(Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
 		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
 		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        model.addAttribute("resultList_4" , restdeManageService.selectNormalRestdePopup(restde) );
-        model.addAttribute("RestdeList_4" , restdeManageService.selectNormalMonthRestde(restde) );
+        resultMap.put("resultList_4" , restdeManageService.selectNormalRestdePopup(restde) );
+        resultMap.put("RestdeList_4" , restdeManageService.selectNormalMonthRestde(restde) );
 
-		/* 5월 */
+		/* 5??*/
 		iMonth = 5;
 		restde.setMonth(Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
 		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
 		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        model.addAttribute("resultList_5" , restdeManageService.selectNormalRestdePopup(restde) );
-        model.addAttribute("RestdeList_5" , restdeManageService.selectNormalMonthRestde(restde) );
+        resultMap.put("resultList_5" , restdeManageService.selectNormalRestdePopup(restde) );
+        resultMap.put("RestdeList_5" , restdeManageService.selectNormalMonthRestde(restde) );
 
-		/* 6월 */
+		/* 6??*/
 		iMonth = 6;
 		restde.setMonth(Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
 		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
 		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        model.addAttribute("resultList_6" , restdeManageService.selectNormalRestdePopup(restde) );
-        model.addAttribute("RestdeList_6" , restdeManageService.selectNormalMonthRestde(restde) );
+        resultMap.put("resultList_6" , restdeManageService.selectNormalRestdePopup(restde) );
+        resultMap.put("RestdeList_6" , restdeManageService.selectNormalMonthRestde(restde) );
 
-		/* 7월 */
+		/* 7??*/
 		iMonth = 7;
 		restde.setMonth(Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
 		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
 		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        model.addAttribute("resultList_7" , restdeManageService.selectNormalRestdePopup(restde) );
-        model.addAttribute("RestdeList_7" , restdeManageService.selectNormalMonthRestde(restde) );
+        resultMap.put("resultList_7" , restdeManageService.selectNormalRestdePopup(restde) );
+        resultMap.put("RestdeList_7" , restdeManageService.selectNormalMonthRestde(restde) );
 
-		/* 8월 */
+		/* 8??*/
 		iMonth = 8;
 		restde.setMonth(Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
 		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
 		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        model.addAttribute("resultList_8" , restdeManageService.selectNormalRestdePopup(restde) );
-        model.addAttribute("RestdeList_8" , restdeManageService.selectNormalMonthRestde(restde) );
+        resultMap.put("resultList_8" , restdeManageService.selectNormalRestdePopup(restde) );
+        resultMap.put("RestdeList_8" , restdeManageService.selectNormalMonthRestde(restde) );
 
-		/* 9월 */
+		/* 9??*/
 		iMonth = 9;
 		restde.setMonth(Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
 		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
 		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        model.addAttribute("resultList_9" , restdeManageService.selectNormalRestdePopup(restde) );
-        model.addAttribute("RestdeList_9" , restdeManageService.selectNormalMonthRestde(restde) );
+        resultMap.put("resultList_9" , restdeManageService.selectNormalRestdePopup(restde) );
+        resultMap.put("RestdeList_9" , restdeManageService.selectNormalMonthRestde(restde) );
 
-		/* 10월 */
+		/* 10??*/
 		iMonth = 10;
 		restde.setMonth(Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
 		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
 		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        model.addAttribute("resultList_10", restdeManageService.selectNormalRestdePopup(restde));
-        model.addAttribute("RestdeList_10", restdeManageService.selectNormalMonthRestde(restde));
+        resultMap.put("resultList_10", restdeManageService.selectNormalRestdePopup(restde));
+        resultMap.put("RestdeList_10", restdeManageService.selectNormalMonthRestde(restde));
 
-		/* 11월 */
+		/* 11??*/
 		iMonth = 11;
 		restde.setMonth(Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
 		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
 		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        model.addAttribute("resultList_11", restdeManageService.selectNormalRestdePopup(restde));
-        model.addAttribute("RestdeList_11", restdeManageService.selectNormalMonthRestde(restde));
+        resultMap.put("resultList_11", restdeManageService.selectNormalRestdePopup(restde));
+        resultMap.put("RestdeList_11", restdeManageService.selectNormalMonthRestde(restde));
 
-		/* 12월 */
+		/* 12??*/
 		iMonth = 12;
 		restde.setMonth(Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
 		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
 		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        model.addAttribute("resultList_12", restdeManageService.selectNormalRestdePopup(restde));
-        model.addAttribute("RestdeList_12", restdeManageService.selectNormalMonthRestde(restde));
+        resultMap.put("resultList_12", restdeManageService.selectNormalRestdePopup(restde));
+        resultMap.put("RestdeList_12", restdeManageService.selectNormalMonthRestde(restde));
 
-        return "/cmm/sym/cal/EgovNormalYearCalendar";
+        return resultMap;
 	}	
 	
 
 	/**
-	 * 행정달력 일간
+	 * ?�정?�력 ?�간
 	 * @param restde
 	 * @param model
 	 * @return "/cmm/sym/cal/EgovAdministDayCalendar"
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/sym/cal/EgovAdministDayCalendar.do")
-	public String selectAdministDayCalendar(Restde restde, ModelMap model) throws Exception {
+	public Map<String, Object> selectAdministDayCalendar(Restde restde) throws Exception {
+		Map<String, Object> resultMap = new HashMap<>();
 
 		Calendar cal = Calendar.getInstance();
 
@@ -813,22 +826,23 @@ public class CalRestdeManageController {
 		restde.setWeek(cal.get(Calendar.DAY_OF_WEEK));
 		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
 		
-        model.addAttribute("resultList", restdeManageService.selectAdministDayCal(restde));
-        model.addAttribute("RestdeList", restdeManageService.selectAdministDayRestde(restde));
+        resultMap.put("resultList", restdeManageService.selectAdministDayCal(restde));
+        resultMap.put("RestdeList", restdeManageService.selectAdministDayRestde(restde));
         
-		return "/cmm/sym/cal/EgovAdministDayCalendar";
+		return resultMap;
 	}
 	
 
 	/**
-	 * 행정달력 주간
+	 * ?�정?�력 주간
 	 * @param restde
 	 * @param model
 	 * @return "/cmm/sym/cal/EgovAdministWeekCalendar"
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/sym/cal/EgovAdministWeekCalendar.do")
-	public String selectAdministWeekCalendar(Restde restde, ModelMap model) throws Exception {
+	public Map<String, Object> selectAdministWeekCalendar(Restde restde) throws Exception {
+		Map<String, Object> resultMap = new HashMap<>();
 
 		Calendar cal = Calendar.getInstance();
 
@@ -895,11 +909,11 @@ public class CalRestdeManageController {
 			restde.setDay(Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)+1));
 		}
 		//List CalInfoList = restdeManageService.selectAdministDayCal(restde);
-		model.addAttribute("resultList", restdeManageService.selectAdministDayCal(restde));
+		resultMap.put("resultList", restdeManageService.selectAdministDayCal(restde));
 		
 		iDayWeek  = weekCal.get(Calendar.DAY_OF_WEEK);
 
-		// 일요일
+		// ?�요??
 		weekCal.add(Calendar.DATE, (-1)*(iDayWeek-1));
 		vo.setYear(Integer.toString(weekCal.get(Calendar.YEAR)));
 		vo.setMonth(Integer.toString(weekCal.get(Calendar.MONTH)+1));
@@ -907,76 +921,77 @@ public class CalRestdeManageController {
 		vo.setWeek(weekCal.get(Calendar.DAY_OF_WEEK));
 		//List CalInfoList_1          = restdeManageService.selectAdministDayCal(vo);
         //List AdministWeekRestdeList_1 = restdeManageService.selectAdministDayRestde(vo);
-        model.addAttribute("resultList_1", restdeManageService.selectAdministDayCal(vo));
-        model.addAttribute("RestdeList_1", restdeManageService.selectAdministDayRestde(vo));
+        resultMap.put("resultList_1", restdeManageService.selectAdministDayCal(vo));
+        resultMap.put("RestdeList_1", restdeManageService.selectAdministDayRestde(vo));
         
-		// 월요일
+		// ?�요??
 		weekCal.add(Calendar.DATE, 1);
 		vo.setYear(Integer.toString(weekCal.get(Calendar.YEAR)));
 		vo.setMonth(Integer.toString(weekCal.get(Calendar.MONTH)+1));
 		vo.setDay(Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
 		vo.setWeek(weekCal.get(Calendar.DAY_OF_WEEK));
-        model.addAttribute("resultList_2", restdeManageService.selectAdministDayCal(vo));
-        model.addAttribute("RestdeList_2", restdeManageService.selectAdministDayRestde(vo));
+        resultMap.put("resultList_2", restdeManageService.selectAdministDayCal(vo));
+        resultMap.put("RestdeList_2", restdeManageService.selectAdministDayRestde(vo));
 
-		// 화요일
+		// ?�요??
 		weekCal.add(Calendar.DATE, 1);
 		vo.setYear(Integer.toString(weekCal.get(Calendar.YEAR)));
 		vo.setMonth(Integer.toString(weekCal.get(Calendar.MONTH)+1));
 		vo.setDay(Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
 		vo.setWeek(weekCal.get(Calendar.DAY_OF_WEEK));
-        model.addAttribute("resultList_3", restdeManageService.selectAdministDayCal(vo));
-        model.addAttribute("RestdeList_3", restdeManageService.selectAdministDayRestde(vo));
+        resultMap.put("resultList_3", restdeManageService.selectAdministDayCal(vo));
+        resultMap.put("RestdeList_3", restdeManageService.selectAdministDayRestde(vo));
 
-		// 수요일
+		// ?�요??
 		weekCal.add(Calendar.DATE, 1);
 		vo.setYear(Integer.toString(weekCal.get(Calendar.YEAR)));
 		vo.setMonth(Integer.toString(weekCal.get(Calendar.MONTH)+1));
 		vo.setDay(Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
 		vo.setWeek(weekCal.get(Calendar.DAY_OF_WEEK));
-        model.addAttribute("resultList_4", restdeManageService.selectAdministDayCal(vo));
-        model.addAttribute("RestdeList_4", restdeManageService.selectAdministDayRestde(vo));
+        resultMap.put("resultList_4", restdeManageService.selectAdministDayCal(vo));
+        resultMap.put("RestdeList_4", restdeManageService.selectAdministDayRestde(vo));
 
-		// 목요일
+		// 목요??
 		weekCal.add(Calendar.DATE, 1);
 		vo.setYear(Integer.toString(weekCal.get(Calendar.YEAR)));
 		vo.setMonth(Integer.toString(weekCal.get(Calendar.MONTH)+1));
 		vo.setDay(Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
 		vo.setWeek(weekCal.get(Calendar.DAY_OF_WEEK));
-        model.addAttribute("resultList_5", restdeManageService.selectAdministDayCal(vo));
-        model.addAttribute("RestdeList_5", restdeManageService.selectAdministDayRestde(vo));
+        resultMap.put("resultList_5", restdeManageService.selectAdministDayCal(vo));
+        resultMap.put("RestdeList_5", restdeManageService.selectAdministDayRestde(vo));
 
-		// 금요일
+		// 금요??
 		weekCal.add(Calendar.DATE, 1);
 		vo.setYear(Integer.toString(weekCal.get(Calendar.YEAR)));
 		vo.setMonth(Integer.toString(weekCal.get(Calendar.MONTH)+1));
 		vo.setDay(Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
 		vo.setWeek(weekCal.get(Calendar.DAY_OF_WEEK));
-        model.addAttribute("resultList_6", restdeManageService.selectAdministDayCal(vo));
-        model.addAttribute("RestdeList_6", restdeManageService.selectAdministDayRestde(vo));
+        resultMap.put("resultList_6", restdeManageService.selectAdministDayCal(vo));
+        resultMap.put("RestdeList_6", restdeManageService.selectAdministDayRestde(vo));
 
-		// 토요일
+		// ?�요??
 		weekCal.add(Calendar.DATE, 1);
 		vo.setYear(Integer.toString(weekCal.get(Calendar.YEAR)));
 		vo.setMonth(Integer.toString(weekCal.get(Calendar.MONTH)+1));
 		vo.setDay(Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
 		vo.setWeek(weekCal.get(Calendar.DAY_OF_WEEK));
 
-        model.addAttribute("resultList_7", restdeManageService.selectAdministDayCal(vo));
-        model.addAttribute("RestdeList_7", restdeManageService.selectAdministDayRestde(vo));
+        resultMap.put("resultList_7", restdeManageService.selectAdministDayCal(vo));
+        resultMap.put("RestdeList_7", restdeManageService.selectAdministDayRestde(vo));
 
-		return "/cmm/sym/cal/EgovAdministWeekCalendar";
+		return resultMap;
 	}
 	
 	/**
-	 * 행정달력 월간
+	 * ?�정?�력 ?�간
 	 * @param restde
 	 * @param model
 	 * @return "/cmm/sym/cal/EgovAdministMonthCalendar"
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/sym/cal/EgovAdministMonthCalendar.do")
-	public String selectAdministMonthCalendar(Restde restde, ModelMap model) throws Exception {
+	public Map<String, Object> selectAdministMonthCalendar(Restde restde) throws Exception {
+		Map<String, Object> resultMap = new HashMap<>();
 
 		Calendar cal = Calendar.getInstance();
 
@@ -1013,22 +1028,23 @@ public class CalRestdeManageController {
 		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
 		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
 
-        model.addAttribute("resultList", restdeManageService.selectAdministRestdePopup(restde));
-        model.addAttribute("RestdeList", restdeManageService.selectAdministMonthRestde(restde));
+        resultMap.put("resultList", restdeManageService.selectAdministRestdePopup(restde));
+        resultMap.put("RestdeList", restdeManageService.selectAdministMonthRestde(restde));
 
-        return "/cmm/sym/cal/EgovAdministMonthCalendar";
+        return resultMap;
 	}	
 
 
 	/**
-	 * 행정달력 연간
+	 * ?�정?�력 ?�간
 	 * @param restde
 	 * @param model
 	 * @return "/cmm/sym/cal/EgovAdministYearCalendar"
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/sym/cal/EgovAdministYearCalendar.do")
-	public String selectAdministYearCalendar(Restde restde, ModelMap model) throws Exception {
+	public Map<String, Object> selectAdministYearCalendar(Restde restde) throws Exception {
+		Map<String, Object> resultMap = new HashMap<>();
 
 		Calendar cal = Calendar.getInstance();
 
@@ -1059,123 +1075,123 @@ public class CalRestdeManageController {
 		}
 		restde.setYear(Integer.toString(iYear));
 		
-		/* 월별확인 */
+		/* ?�별?�인 */
 
-		/* 1월 */
+		/* 1??*/
 		iMonth = 1;
 		restde.setMonth(Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
 		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
 		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        model.addAttribute("resultList_1" , restdeManageService.selectAdministRestdePopup(restde) );
-        model.addAttribute("RestdeList_1" , restdeManageService.selectAdministMonthRestde(restde) );
+        resultMap.put("resultList_1" , restdeManageService.selectAdministRestdePopup(restde) );
+        resultMap.put("RestdeList_1" , restdeManageService.selectAdministMonthRestde(restde) );
         
-		/* 2월 */
+		/* 2??*/
 		iMonth = 2;
 		restde.setMonth(Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
 		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
 		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        model.addAttribute("resultList_2" , restdeManageService.selectAdministRestdePopup(restde) );
-        model.addAttribute("RestdeList_2" , restdeManageService.selectAdministMonthRestde(restde) );
+        resultMap.put("resultList_2" , restdeManageService.selectAdministRestdePopup(restde) );
+        resultMap.put("RestdeList_2" , restdeManageService.selectAdministMonthRestde(restde) );
         
-		/* 3월 */
+		/* 3??*/
 		iMonth = 3;
 		restde.setMonth(Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
 		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
 		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        model.addAttribute("resultList_3" , restdeManageService.selectAdministRestdePopup(restde) );
-        model.addAttribute("RestdeList_3" , restdeManageService.selectAdministMonthRestde(restde) );
+        resultMap.put("resultList_3" , restdeManageService.selectAdministRestdePopup(restde) );
+        resultMap.put("RestdeList_3" , restdeManageService.selectAdministMonthRestde(restde) );
         
-		/* 4월 */
+		/* 4??*/
 		iMonth = 4;
 		restde.setMonth(Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
 		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
 		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        model.addAttribute("resultList_4" , restdeManageService.selectAdministRestdePopup(restde) );
-        model.addAttribute("RestdeList_4" , restdeManageService.selectAdministMonthRestde(restde) );
+        resultMap.put("resultList_4" , restdeManageService.selectAdministRestdePopup(restde) );
+        resultMap.put("RestdeList_4" , restdeManageService.selectAdministMonthRestde(restde) );
         
-		/* 5월 */
+		/* 5??*/
 		iMonth = 5;
 		restde.setMonth(Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
 		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
 		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        model.addAttribute("resultList_5" , restdeManageService.selectAdministRestdePopup(restde) );
-        model.addAttribute("RestdeList_5" , restdeManageService.selectAdministMonthRestde(restde) );
+        resultMap.put("resultList_5" , restdeManageService.selectAdministRestdePopup(restde) );
+        resultMap.put("RestdeList_5" , restdeManageService.selectAdministMonthRestde(restde) );
         
-		/* 6월 */
+		/* 6??*/
 		iMonth = 6;
 		restde.setMonth(Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
 		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
 		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        model.addAttribute("resultList_6" , restdeManageService.selectAdministRestdePopup(restde) );
-        model.addAttribute("RestdeList_6" , restdeManageService.selectAdministMonthRestde(restde) );
+        resultMap.put("resultList_6" , restdeManageService.selectAdministRestdePopup(restde) );
+        resultMap.put("RestdeList_6" , restdeManageService.selectAdministMonthRestde(restde) );
         
-		/* 7월 */
+		/* 7??*/
 		iMonth = 7;
 		restde.setMonth(Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
 		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
 		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        model.addAttribute("resultList_7" , restdeManageService.selectAdministRestdePopup(restde) );
-        model.addAttribute("RestdeList_7" , restdeManageService.selectAdministMonthRestde(restde) );
+        resultMap.put("resultList_7" , restdeManageService.selectAdministRestdePopup(restde) );
+        resultMap.put("RestdeList_7" , restdeManageService.selectAdministMonthRestde(restde) );
         
-		/* 8월 */
+		/* 8??*/
 		iMonth = 8;
 		restde.setMonth(Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
 		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
 		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        model.addAttribute("resultList_8" , restdeManageService.selectAdministRestdePopup(restde) );
-        model.addAttribute("RestdeList_8" , restdeManageService.selectAdministMonthRestde(restde) );
+        resultMap.put("resultList_8" , restdeManageService.selectAdministRestdePopup(restde) );
+        resultMap.put("RestdeList_8" , restdeManageService.selectAdministMonthRestde(restde) );
         
-		/* 9월 */
+		/* 9??*/
 		iMonth = 9;
 		restde.setMonth(Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
 		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
 		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        model.addAttribute("resultList_9" , restdeManageService.selectAdministRestdePopup(restde) );
-        model.addAttribute("RestdeList_9" , restdeManageService.selectAdministMonthRestde(restde) );
+        resultMap.put("resultList_9" , restdeManageService.selectAdministRestdePopup(restde) );
+        resultMap.put("RestdeList_9" , restdeManageService.selectAdministMonthRestde(restde) );
         
-		/* 10월 */
+		/* 10??*/
 		iMonth = 10;
 		restde.setMonth(Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
 		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
 		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        model.addAttribute("resultList_10", restdeManageService.selectAdministRestdePopup(restde));
-        model.addAttribute("RestdeList_10", restdeManageService.selectAdministMonthRestde(restde));
+        resultMap.put("resultList_10", restdeManageService.selectAdministRestdePopup(restde));
+        resultMap.put("RestdeList_10", restdeManageService.selectAdministMonthRestde(restde));
         
-		/* 11월 */
+		/* 11??*/
 		iMonth = 11;
 		restde.setMonth(Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
 		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
 		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        model.addAttribute("resultList_11", restdeManageService.selectAdministRestdePopup(restde));
-        model.addAttribute("RestdeList_11", restdeManageService.selectAdministMonthRestde(restde));
+        resultMap.put("resultList_11", restdeManageService.selectAdministRestdePopup(restde));
+        resultMap.put("RestdeList_11", restdeManageService.selectAdministMonthRestde(restde));
         
-		/* 12월 */
+		/* 12??*/
 		iMonth = 12;
 		restde.setMonth(Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
 		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
 		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
         
-        model.addAttribute("resultList_12", restdeManageService.selectAdministRestdePopup(restde));
-        model.addAttribute("RestdeList_12", restdeManageService.selectAdministMonthRestde(restde));
+        resultMap.put("resultList_12", restdeManageService.selectAdministRestdePopup(restde));
+        resultMap.put("RestdeList_12", restdeManageService.selectAdministMonthRestde(restde));
 
-        return "/cmm/sym/cal/EgovAdministYearCalendar";
+        return resultMap;
 	}	
 	
 
 	/**
-	 * 휴일을 삭제한다.
+	 * ?�일????��?�다.
 	 * @param loginVO
 	 * @param restde
 	 * @param model
@@ -1183,15 +1199,15 @@ public class CalRestdeManageController {
 	 * @throws Exception
 	 */
     @RequestMapping(value="/sym/cal/EgovRestdeRemove.do")
-	public String deleteRestde(@ModelAttribute("loginVO") LoginVO loginVO, Restde restde, ModelMap model) throws Exception {
+	public String deleteRestde(@ModelAttribute("loginVO") LoginVO loginVO, Restde restde) throws Exception {
     	restdeManageService.deleteRestde(restde);
-        return "forward:/sym/cal/EgovRestdeList.do";
+        return resultMap;
 	}
 
 
 
     /**
-     * 휴일 세부내역을 조회한다.
+     * ?�일 ?��??�역??조회?�다.
      * @param loginVO
      * @param restde
      * @param model
@@ -1199,15 +1215,15 @@ public class CalRestdeManageController {
      * @throws Exception
      */
 	@RequestMapping(value="/sym/cal/EgovRestdeDetail.do")
-	public String selectRestdeDetail(@ModelAttribute("loginVO") LoginVO loginVO, Restde restde, ModelMap model) throws Exception {
+	public String selectRestdeDetail(@ModelAttribute("loginVO") LoginVO loginVO, Restde restde) throws Exception {
 		Restde vo = restdeManageService.selectRestdeDetail(restde);
-		model.addAttribute("result", vo);
+		resultMap.put("result", vo);
 		
-		return "/cmm/sym/cal/EgovRestdeDetail";
+		return resultMap;
 	}
 
     /**
-	 * 휴일 리스트를 조회한다.
+	 * ?�일 리스?��? 조회?�다.
      * @param loginVO
      * @param searchVO
      * @param model
@@ -1215,7 +1231,7 @@ public class CalRestdeManageController {
      * @throws Exception
      */
     @RequestMapping(value="/sym/cal/EgovRestdeList.do")
-	public String selectRestdeList(@ModelAttribute("loginVO") LoginVO loginVO, @ModelAttribute("searchVO") RestdeVO searchVO, ModelMap model) throws Exception {
+	public String selectRestdeList(@ModelAttribute("loginVO") LoginVO loginVO, @ModelAttribute("searchVO") RestdeVO searchVO) throws Exception {
     	/** EgovPropertyService.sample */
     	searchVO.setPageUnit(propertiesService.getInt("pageUnit"));
     	searchVO.setPageSize(propertiesService.getInt("pageSize"));
@@ -1230,17 +1246,17 @@ public class CalRestdeManageController {
 		searchVO.setLastIndex(paginationInfo.getLastRecordIndex());
 		searchVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
 		
-        model.addAttribute("resultList", restdeManageService.selectRestdeList(searchVO));
+        resultMap.put("resultList", restdeManageService.selectRestdeList(searchVO));
         
         int totCnt = restdeManageService.selectRestdeListTotCnt(searchVO);
 		paginationInfo.setTotalRecordCount(totCnt);
-        model.addAttribute("paginationInfo", paginationInfo);
+        resultMap.put("paginationInfo", paginationInfo);
         
-        return "/cmm/sym/cal/EgovRestdeList";
+        return resultMap;
 	}
 
     /**
-	 * 휴일을 수정한다.
+	 * ?�일???�정?�다.
      * @param loginVO
      * @param restde
      * @param bindingResult
@@ -1254,34 +1270,35 @@ public class CalRestdeManageController {
 			, @ModelAttribute("restde") Restde restde
 			, BindingResult bindingResult
 	, @RequestParam Map<String, Object> commandMap
-	, ModelMap model) throws Exception {
+	) throws Exception {
 		String sCmd = commandMap.get("cmd") == null ? "" : (String) commandMap.get("cmd");
 		if (sCmd.equals("")) {
 			Restde vo = restdeManageService.selectRestdeDetail(restde);
-			model.addAttribute("restde", vo);
+			resultMap.put("restde", vo);
 
     		ComDefaultCodeVO CodeVO = new ComDefaultCodeVO();
     		CodeVO.setCodeId("COM017");
-            model.addAttribute("restdeCode", cmmUseService.selectCmmCodeDetail(CodeVO));
+            resultMap.put("restdeCode", cmmUseService.selectCmmCodeDetail(CodeVO));
 
-            return "/cmm/sym/cal/EgovRestdeModify";
+            return resultMap;
     	} else if (sCmd.equals("Modify")) {
 
     		if (bindingResult.hasErrors()){
         		ComDefaultCodeVO CodeVO = new ComDefaultCodeVO();
         		CodeVO.setCodeId("COM017");
-                model.addAttribute("restdeCode", cmmUseService.selectCmmCodeDetail(CodeVO));
+                resultMap.put("restdeCode", cmmUseService.selectCmmCodeDetail(CodeVO));
 
-                return "/cmm/sym/cal/EgovRestdeModify";
+                return resultMap;
     		}
 
     		restde.setLastUpdusrId(loginVO.getUniqId());
     		restdeManageService.updateRestde(restde);
-	        return "forward:/sym/cal/EgovRestdeList.do";
+	        return resultMap;
     	} else {
-    		return "forward:/sym/cal/EgovRestdeList.do";
+    		return resultMap;
     	}
     }
 
 	
 }
+

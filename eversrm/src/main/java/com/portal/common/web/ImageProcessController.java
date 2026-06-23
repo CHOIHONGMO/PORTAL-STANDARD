@@ -12,8 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.egovframe.rte.fdl.crypto.EgovCryptoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -42,7 +41,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * @see
  *
  */
-@Controller
+@RestController
 public class ImageProcessController extends HttpServlet {
 
 	/**
@@ -73,7 +72,7 @@ public class ImageProcessController extends HttpServlet {
 	 * @throws Exception
 	 */
 	@RequestMapping("/cmm/fms/getImage.do")
-	public void getImageInf(SessionVO sessionVO, ModelMap model, @RequestParam Map<String, Object> commandMap, HttpServletResponse response) throws Exception {
+	public void getImageInf(SessionVO sessionVO, @RequestParam Map<String, Object> commandMap, HttpServletResponse response) throws Exception {
 
 		String param_atchFileId = (String) commandMap.get("atchFileId");
 		param_atchFileId = param_atchFileId.replaceAll(" ", "+");

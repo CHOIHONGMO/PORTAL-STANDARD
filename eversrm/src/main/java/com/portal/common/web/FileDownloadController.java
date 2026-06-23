@@ -14,7 +14,7 @@ import org.egovframe.rte.fdl.crypto.EgovCryptoService;
 import org.egovframe.rte.fdl.security.userdetails.util.EgovUserDetailsHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -48,7 +48,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * Copyright (C) 2009 by MOPAS  All right reserved.
  *      </pre>
  */
-@Controller
+@RestController
 public class FileDownloadController {
 
 	/** 로그설정 */
@@ -197,7 +197,7 @@ public class FileDownloadController {
 				}
 
 			} else {
-				request.getRequestDispatcher("/cmm/error/egovBizException.jsp").forward(request, response);
+				response.sendError(HttpServletResponse.SC_NOT_FOUND, "File not found");
 			}
 		}
 	}
