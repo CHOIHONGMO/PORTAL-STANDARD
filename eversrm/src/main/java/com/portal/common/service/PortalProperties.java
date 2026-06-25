@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
  *	 2011.07.20    서준식 	      Globals파일의 상대경로를 읽은 메서드 추가
  *   2011.08.31  JJY            경량환경 템플릿 커스터마이징버전 생성
  *
- *  @author 공통 서비스 개발팀 박지욱
+ *  @author ST-Ones Corp.
  *  @since 2009. 01. 19
  *  @version 1.0
  *  @see
@@ -44,12 +44,26 @@ public class PortalProperties {
 	//파일구분자
 	static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
-	//프로퍼티 파일의 물리적 위치
-	public static final String RELATIVE_PATH_PREFIX = PortalProperties.class.getResource("").getPath()
-			+ FILE_SEPARATOR + ".." + FILE_SEPARATOR + ".." + FILE_SEPARATOR + ".." + FILE_SEPARATOR;
+	public static final String GLOBALS_PROPERTIES_FILE = "classpath:/application.properties";
 
-	public static final String GLOBALS_PROPERTIES_FILE
-	= RELATIVE_PATH_PREFIX + "egovProps" + System.getProperty("file.separator") + "globals.properties";
+	private static Properties props = new Properties();
+	private static boolean isLoaded = false;
+
+	private static synchronized void loadProperties() {
+		if (isLoaded) {
+			return;
+		}
+		try (java.io.InputStream is = PortalProperties.class.getClassLoader().getResourceAsStream("application.properties")) {
+			if (is != null) {
+				props.load(new java.io.BufferedInputStream(is));
+				isLoaded = true;
+			} else {
+				LOGGER.error("application.properties file not found on classpath.");
+			}
+		} catch (IOException e) {
+			LOGGER.error("Error loading application.properties: {}", e.getMessage());
+		}
+	}
 
 	/**
 	 * 인자로 주어진 문자열을 Key값으로 하는 프로퍼티 값을 반환한다(Globals.java 전용)
@@ -57,30 +71,18 @@ public class PortalProperties {
 	 * @return String
 	*/
 	public static String getProperty(String keyName) {
-		String value = ERR_CODE;
-		value = "99";
-		debug(GLOBALS_PROPERTIES_FILE + " : " + keyName);
-		FileInputStream fis = null;
-		try {
-			Properties props = new Properties();
-			fis = new FileInputStream(GLOBALS_PROPERTIES_FILE);
-			props.load(new java.io.BufferedInputStream(fis));
-			value = props.getProperty(keyName).trim();
-		} catch (FileNotFoundException fne) {
-			debug(fne);
-		} catch (IOException ioe) {
-			debug(ioe);
-		} finally {
-			try {
-				if (fis != null) {
-					fis.close();
-				}
-			} catch (IOException ioe) {
-				debug(ioe);
-			}
-
+		loadProperties();
+		String value = props.getProperty(keyName);
+		if (value == null) {
+			value = System.getProperty(keyName);
 		}
-		return value;
+		if (value == null) {
+			value = System.getenv(keyName);
+		}
+		if (value != null) {
+			return value.trim();
+		}
+		return ERR_CODE;
 	}
 
 	/**

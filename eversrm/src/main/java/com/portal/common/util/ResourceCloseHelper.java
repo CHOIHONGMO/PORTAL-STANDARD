@@ -12,7 +12,7 @@ import java.sql.Wrapper;
 
 /**
  * Utility class  to support to close resources
- * @author Vincent Han
+ * @author ST-Ones Corp.
  * @since 2014.09.18
  * @version 1.0
  * @see
@@ -22,7 +22,6 @@ import java.sql.Wrapper;
  *   
  *   수정일        수정자       수정내용
  *  -------       --------    ---------------------------
- *   2014.09.18	표준프레임워크센터	최초 생성
  *
  * </pre>
  */

@@ -2,10 +2,10 @@ package com.portal.user.policy.ipm.service;
 
 import java.util.List;
 
-import com.portal.common.ComDefaultVO;
+import com.portal.common.model.ComDefaultVO;
 /**
  * 개인정보보호정책를 처리하는 Service Class 구현
- * @author 공통서비스 장동한
+ * @author ST-Ones Corp.
  * @since 2009.07.03
  * @version 1.0
  * @see
@@ -15,8 +15,6 @@ import com.portal.common.ComDefaultVO;
  *
  *   수정일      수정자           수정내용
  *  -------    --------    ---------------------------
- *   2009.07.03  장동한          최초 생성
- *   2011.08.31  JJY            경량환경 템플릿 커스터마이징버전 생성
  *
  * </pre>
  */

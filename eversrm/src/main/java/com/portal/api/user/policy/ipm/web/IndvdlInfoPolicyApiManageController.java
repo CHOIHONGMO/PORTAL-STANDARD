@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.portal.common.ComDefaultVO;
+import com.portal.common.model.ComDefaultVO;
 import com.portal.user.policy.ipm.service.IndvdlInfoPolicyService;
 import com.portal.user.policy.ipm.service.IndvdlInfoPolicy;
 

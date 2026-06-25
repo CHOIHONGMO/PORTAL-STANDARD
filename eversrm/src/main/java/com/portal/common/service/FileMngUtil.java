@@ -14,12 +14,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.portal.common.WebUtil;
-import com.portal.util.common.service.StringUtil;
+import com.portal.common.util.WebUtil;
+import com.portal.util.common.StringUtil;
 import jakarta.annotation.Resource;
 
 /**
- * @author 공통 서비스 개발팀 이삼섭
+ * @author ST-Ones Corp.
  * @version 1.0
  * @Class Name  : FileMngUtil.java
  * @Description : 메시지 처리 관련 유틸리티
@@ -27,8 +27,6 @@ import jakarta.annotation.Resource;
  *
  *     수정일         수정자                   수정내용
  *     -------          --------        ---------------------------
- *   2009.02.13       이삼섭                  최초 생성
- *   2011.08.31  JJY            경량환경 템플릿 커스터마이징버전 생성
  *
  * @see
  * @since 2009. 02. 13
@@ -53,7 +51,7 @@ public class FileMngUtil {
      * @return
      * @throws Exception
      */
-    public List<FileVO> parseFileInf(Map<String, MultipartFile> files, String KeyStr, int fileKeyParam, String atchFileId, String storePath) throws Exception {
+    public List<Map<String, Object>> parseFileInf(Map<String, MultipartFile> files, String KeyStr, int fileKeyParam, String atchFileId, String storePath) throws Exception {
     	int fileKey = fileKeyParam;
 
     	String storePathString = "";
@@ -80,8 +78,8 @@ public class FileMngUtil {
 		Iterator<Entry<String, MultipartFile>> itr = files.entrySet().iterator();
 		MultipartFile file;
 		String filePath = "";
-		List<FileVO> result  = new ArrayList<FileVO>();
-		FileVO fvo;
+		List<Map<String, Object>> result  = new ArrayList<>();
+		Map<String, Object> fvo;
 
 		while (itr.hasNext()) {
 			Entry<String, MultipartFile> entry = itr.next();
@@ -109,14 +107,14 @@ public class FileMngUtil {
 				file.transferTo(new File(WebUtil.filePathBlackList(filePath)));
 		    }
 
-		    fvo = new FileVO();
-		    fvo.setFileExtsn(fileExt);
-		    fvo.setFileStreCours(storePathString);
-		    fvo.setFileMg(Long.toString(_size));
-		    fvo.setOrignlFileNm(orginFileName);
-		    fvo.setStreFileNm(newName);
-		    fvo.setAtchFileId(atchFileIdString);
-		    fvo.setFileSn(String.valueOf(fileKey));
+		    fvo = new java.util.HashMap<>();
+		    fvo.put("fileExtsn", fileExt);
+		    fvo.put("fileStreCours", storePathString);
+		    fvo.put("fileMg", Long.toString(_size));
+		    fvo.put("orignlFileNm", orginFileName);
+		    fvo.put("streFileNm", newName);
+		    fvo.put("atchFileId", atchFileIdString);
+		    fvo.put("fileSn", String.valueOf(fileKey));
 
 		    result.add(fvo);
 

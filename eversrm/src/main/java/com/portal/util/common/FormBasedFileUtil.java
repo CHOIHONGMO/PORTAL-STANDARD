@@ -1,4 +1,4 @@
-package com.portal.util.common.service;
+package com.portal.util.common;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -16,7 +16,7 @@ import java.util.Locale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.portal.common.WebUtil;
+import com.portal.common.util.WebUtil;
 import com.portal.common.util.ResourceCloseHelper;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -27,11 +27,8 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  *   수정일                수정자              수정내용
  *   ----------   --------     ---------------------------
- *   2009.08.26   한성곤               최초 생성
- *   2017.03.03     조성원 	            시큐어코딩(ES)-부적절한 예외 처리[CWE-253, CWE-440, CWE-754]
- *   2019.12.09   신용호               KISA 보안약점 조치 (위험한 형식 파일 업로드) : uploadFiles 삭제  => FileUploadUtil.uploadFilesExt(확장자 기록) 대체
  *
- * @author 공통컴포넌트 개발팀 한성곤
+ * @author ST-Ones Corp.
  * @since 2009.08.26
  * @version 1.0
  * @see

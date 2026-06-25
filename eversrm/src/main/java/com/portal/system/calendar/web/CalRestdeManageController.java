@@ -4,92 +4,64 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.egovframe.rte.fdl.property.EgovPropertyService;
 import org.egovframe.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 import org.springframework.web.bind.annotation.RestController;
-import java.util.HashMap;
-import java.util.Map;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
 
-import com.portal.common.ComDefaultCodeVO;
-import com.portal.common.LoginVO;
+import com.portal.common.model.LoginVO;
 import com.portal.common.service.CmmUseService;
 import com.portal.system.calendar.service.CalRestdeManageService;
-import com.portal.system.calendar.service.Restde;
-import com.portal.system.calendar.service.RestdeVO;
 import jakarta.annotation.Resource;
 
 /**
- * 
- * 공휴?�에 관???�청??받아 ?�비???�래?�로 ?�청???�달?�고 ?�비?�클?�스?�서 처리??결과�????�면?�로 ?�달???�한 Controller�??�의?�다
- * @author 공통?�비??개발?� ?�중??
+ * 공통달력 관련 컨트롤러 클래스
+ * @author ST-Ones Corp.
  * @since 2009.04.01
  * @version 1.0
- * @see
- *
- * <pre>
- * << 개정?�력(Modification Information) >>
- *   
- *   ?�정??     ?�정??          ?�정?�용
- *  -------    --------    ---------------------------
- *   2009.04.01  ?�중??         최초 ?�성
- *   2011.08.31  JJY            경량?�경 ?�플�?커스?�마?�징버전 ?�성 
- *
- * </pre>
  */
 @RestController
 public class CalRestdeManageController {
 
-	/** RestdeManageService */
 	@Resource(name = "RestdeManageService")
     private CalRestdeManageService restdeManageService;
 
-    /** EgovPropertyService */
     @Resource(name = "propertiesService")
     protected EgovPropertyService propertiesService;
 
-    /** CmmUseService */
 	@Resource(name="CmmUseService")
 	private CmmUseService cmmUseService;
 
-	/**
-	 * ?�력 메인창을 ?�출?�다.
-	 * @param model
-	 * @return "/cmm/sym/cal/EgovNormalCalPopup"
-	 * @throws Exception
-	 */
 	@RequestMapping(value = "/sym/cmm/callCalPopup.do")
 	public Map<String, Object> callCalendar() throws Exception {
 		Map<String, Object> resultMap = new HashMap<>();
 		return resultMap;
 	}    
 	
-	/**
-	 * ?�력???�출?�다.
-	 * @param model
-	 * @return "/cmm/sym/cal/EgovNormalCalPopup"
-	 * @throws Exception
-	 */
 	@RequestMapping(value = "/sym/cmm/callCal.do")
-	public Map<String, Object> callCal(Restde restde) throws Exception {
+	public Map<String, Object> callCal(@RequestParam Map<String, Object> commandMap) throws Exception {
 		Map<String, Object> resultMap = new HashMap<>();
-
 		Calendar cal = Calendar.getInstance();
 
-		if(restde.getYear()==null || restde.getYear().equals("")){
-			restde.setYear(Integer.toString(cal.get(Calendar.YEAR)));
+		String yearVal = commandMap.get("year") == null ? "" : String.valueOf(commandMap.get("year"));
+		String monthVal = commandMap.get("month") == null ? "" : String.valueOf(commandMap.get("month"));
+
+		if(yearVal.equals("")){
+			yearVal = Integer.toString(cal.get(Calendar.YEAR));
+			commandMap.put("year", yearVal);
 		}
-		if(restde.getMonth()==null || restde.getMonth().equals("")){
-			restde.setMonth(Integer.toString(cal.get(Calendar.MONTH)+1));
+		if(monthVal.equals("")){
+			monthVal = Integer.toString(cal.get(Calendar.MONTH)+1);
+			commandMap.put("month", monthVal);
 		}
-		int iYear  = Integer.parseInt(restde.getYear());
-		int iMonth = Integer.parseInt(restde.getMonth());
+		int iYear  = Integer.parseInt(yearVal);
+		int iMonth = Integer.parseInt(monthVal);
 
 		if (iMonth<1){
 			iYear--;
@@ -116,19 +88,15 @@ public class CalRestdeManageController {
 		
 		String year   = Integer.toString(iYear);
 		String month  = Integer.toString(iMonth);
-		//String day    = Integer.toString(cal.get(Calendar.DAY_OF_MONTH));
 		
-		restde.setStartWeekMonth(firstWeek);
-		restde.setLastDayMonth(lastDay);
-		restde.setYear(year);
-		restde.setMonth(month);
+		commandMap.put("startWeekMonth", firstWeek);
+		commandMap.put("lastDayMonth", lastDay);
+		commandMap.put("year", year);
+		commandMap.put("month", month);
 		
 		List<ListOrderedMap> CalInfoList = new ArrayList<ListOrderedMap>();
 		String tmpDay = "";
 		
-		/**
-		 * 계산... START
-		 */
 		for(int i=0; i<42;i++) {
 			ListOrderedMap  map   = new ListOrderedMap();
 			int cc = i + 1;
@@ -152,50 +120,35 @@ public class CalRestdeManageController {
 				week ++;
 			}    	
 	    	CalInfoList.add(map);
-
 		}
-		/**
-		 * 계산... END		
-		 */
-		
         resultMap.put("resultList", CalInfoList);
-		
 		return resultMap;
 	}    
 	
-	/**
-	 * ?�반?�력 ?�업 메인창을 ?�출?�다.
-	 * @param model
-	 * @return "/cmm/sym/cal/EgovNormalCalPopup"
-	 * @throws Exception
-	 */
 	@RequestMapping(value = "/sym/cmm/EgovNormalCalPopup.do")
 	public Map<String, Object> callNormalCalPopup() throws Exception {
 		Map<String, Object> resultMap = new HashMap<>();
 		return resultMap;
 	}    
 
-	/**
-	 * ?�반?�력 ?�업 ?�보�?조회?�다.
-	 * @param restde
-	 * @param model
-	 * @return "/cmm/sym/cal/EgovNormalCalendar"
-	 * @throws Exception
-	 */
 	@RequestMapping(value = "/sym/cmm/EgovselectNormalCalendar.do")
-	public Map<String, Object> selectNormalRestdePopup(Restde restde) throws Exception {
+	public Map<String, Object> selectNormalRestdePopup(@RequestParam Map<String, Object> commandMap) throws Exception {
 		Map<String, Object> resultMap = new HashMap<>();
-
 		Calendar cal = Calendar.getInstance();
 
-		if(restde.getYear()==null || restde.getYear().equals("")){
-			restde.setYear(Integer.toString(cal.get(Calendar.YEAR)));
+		String yearVal = commandMap.get("year") == null ? "" : String.valueOf(commandMap.get("year"));
+		String monthVal = commandMap.get("month") == null ? "" : String.valueOf(commandMap.get("month"));
+
+		if(yearVal.equals("")){
+			yearVal = Integer.toString(cal.get(Calendar.YEAR));
+			commandMap.put("year", yearVal);
 		}
-		if(restde.getMonth()==null || restde.getMonth().equals("")){
-			restde.setMonth(Integer.toString(cal.get(Calendar.MONTH)+1));
+		if(monthVal.equals("")){
+			monthVal = Integer.toString(cal.get(Calendar.MONTH)+1);
+			commandMap.put("month", monthVal);
 		}
-		int iYear  = Integer.parseInt(restde.getYear());
-		int iMonth = Integer.parseInt(restde.getMonth());
+		int iYear  = Integer.parseInt(yearVal);
+		int iMonth = Integer.parseInt(monthVal);
 
 		if (iMonth<1){
 			iYear--;
@@ -214,18 +167,6 @@ public class CalRestdeManageController {
 			iMonth = 12;
 		}
 		
-		/* DB�??�용??경우 처리
-		restde.setYear(Integer.toString(iYear));
-		restde.setMonth(Integer.toString(iMonth));
-		
-		cal.set(iYear,iMonth-1,1);
-		
-		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
-		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-
-        List CalInfoList = restdeManageService.selectNormalRestdePopup(restde);
-        */
-		
 		cal.set(iYear,iMonth-1,1);
 		 
         int firstWeek = cal.get(Calendar.DAY_OF_WEEK);
@@ -234,19 +175,15 @@ public class CalRestdeManageController {
  
         String year   = Integer.toString(iYear);
         String month  = Integer.toString(iMonth);
-        //String day    = Integer.toString(cal.get(Calendar.DAY_OF_MONTH));
  
-        restde.setStartWeekMonth(firstWeek);
-        restde.setLastDayMonth(lastDay);
-        restde.setYear(year);
-        restde.setMonth(month);
+        commandMap.put("startWeekMonth", firstWeek);
+        commandMap.put("lastDayMonth", lastDay);
+        commandMap.put("year", year);
+        commandMap.put("month", month);
  
         List<ListOrderedMap> CalInfoList = new ArrayList<ListOrderedMap>();
         String tmpDay = "";
  
-        /**
-         * 계산... START
-         */
         for(int i=0; i<42;i++) {
             ListOrderedMap  map   = new ListOrderedMap();
             int cc = i + 1;
@@ -270,51 +207,35 @@ public class CalRestdeManageController {
                 week ++;
             }
             CalInfoList.add(map);
- 
         }
-        /**
-         * 계산... END
-         */
-		
-		
         resultMap.put("resultList", CalInfoList);
 		return resultMap;
 	}
 	
-	
-	/**
-	 * ?�정?�력 ?�업 메인창을 ?�출?�다.
-	 * @param model
-	 * @return "/cmm/sym/cal/EgovAdministCalPopup"
-	 * @throws Exception
-	 */
 	@RequestMapping(value = "/sym/cmm/EgovAdministCalPopup.do")
 	public Map<String, Object> callAdministCalPopup() throws Exception {
 		Map<String, Object> resultMap = new HashMap<>();
 		return resultMap;
 	}    
 	
-	/**
-	 * ?�정?�력 ?�업 ?�보�?조회?�다.
-	 * @param restde
-	 * @param model
-	 * @return "/cmm/sym/cal/EgovAdministCalendar"
-	 * @throws Exception
-	 */
 	@RequestMapping(value = "/sym/cmm/EgovselectAdministCalendar.do")
-	public Map<String, Object> selectAdministRestdePopup(Restde restde) throws Exception {
+	public Map<String, Object> selectAdministRestdePopup(@RequestParam Map<String, Object> commandMap) throws Exception {
 		Map<String, Object> resultMap = new HashMap<>();
-
 		Calendar cal = Calendar.getInstance();
 
-		if(restde.getYear()==null || restde.getYear().equals("")){
-			restde.setYear(Integer.toString(cal.get(Calendar.YEAR)));
+		String yearVal = commandMap.get("year") == null ? "" : String.valueOf(commandMap.get("year"));
+		String monthVal = commandMap.get("month") == null ? "" : String.valueOf(commandMap.get("month"));
+
+		if(yearVal.equals("")){
+			yearVal = Integer.toString(cal.get(Calendar.YEAR));
+			commandMap.put("year", yearVal);
 		}
-		if(restde.getMonth()==null || restde.getMonth().equals("")){
-			restde.setMonth(Integer.toString(cal.get(Calendar.MONTH)+1));
+		if(monthVal.equals("")){
+			monthVal = Integer.toString(cal.get(Calendar.MONTH)+1);
+			commandMap.put("month", monthVal);
 		}
-		int iYear  = Integer.parseInt(restde.getYear());
-		int iMonth = Integer.parseInt(restde.getMonth());
+		int iYear  = Integer.parseInt(yearVal);
+		int iMonth = Integer.parseInt(monthVal);
 
 		if (iMonth<1){
 			iYear--;
@@ -332,46 +253,43 @@ public class CalRestdeManageController {
 			iYear = 9999;
 			iMonth = 12;
 		}
-		restde.setYear(Integer.toString(iYear));
-		restde.setMonth(Integer.toString(iMonth));
+		commandMap.put("year", Integer.toString(iYear));
+		commandMap.put("month", Integer.toString(iMonth));
 		
 		cal.set(iYear,iMonth-1,1);
 		
-		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
-		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
+		commandMap.put("startWeekMonth", cal.get(Calendar.DAY_OF_WEEK));
+		commandMap.put("lastDayMonth", cal.getActualMaximum(Calendar.DATE));
 
-        resultMap.put("resultList", restdeManageService.selectAdministRestdePopup(restde));
-		
+        resultMap.put("resultList", restdeManageService.selectAdministRestdePopup(commandMap));
 		return resultMap;
 	}
 
-	/**
-	 * ?�반?�력 ?�간
-	 * @param restde
-	 * @param model
-	 * @return "/cmm/sym/cal/EgovNormalDayCalendar"
-	 * @throws Exception
-	 */
 	@RequestMapping(value = "/sym/cal/EgovNormalDayCalendar.do")
-	public Map<String, Object> selectNormalDayCalendar(Restde restde) throws Exception {
+	public Map<String, Object> selectNormalDayCalendar(@RequestParam Map<String, Object> commandMap) throws Exception {
 		Map<String, Object> resultMap = new HashMap<>();
-
 		Calendar cal = Calendar.getInstance();
 
+		String yearVal = commandMap.get("year") == null ? "" : String.valueOf(commandMap.get("year"));
+		String monthVal = commandMap.get("month") == null ? "" : String.valueOf(commandMap.get("month"));
+		String dayVal = commandMap.get("day") == null ? "" : String.valueOf(commandMap.get("day"));
 
-		if(restde.getYear()==null || restde.getYear().equals("")){
-			restde.setYear(Integer.toString(cal.get(Calendar.YEAR)));
+		if(yearVal.equals("")){
+			yearVal = Integer.toString(cal.get(Calendar.YEAR));
+			commandMap.put("year", yearVal);
 		}
-		if(restde.getMonth()==null || restde.getMonth().equals("")){
-			restde.setMonth(Integer.toString(cal.get(Calendar.MONTH)+1));
+		if(monthVal.equals("")){
+			monthVal = Integer.toString(cal.get(Calendar.MONTH)+1);
+			commandMap.put("month", monthVal);
 		}
-		if(restde.getDay()==null || restde.getDay().equals("")){
-			restde.setDay(Integer.toString(cal.get(Calendar.DATE)));
+		if(dayVal.equals("")){
+			dayVal = Integer.toString(cal.get(Calendar.DATE));
+			commandMap.put("day", dayVal);
 		}
 
-		int iYear  = Integer.parseInt(restde.getYear());
-		int iMonth = Integer.parseInt(restde.getMonth());
-		int iDay   = Integer.parseInt(restde.getDay());
+		int iYear  = Integer.parseInt(yearVal);
+		int iMonth = Integer.parseInt(monthVal);
+		int iDay   = Integer.parseInt(dayVal);
 		
 		if (iMonth<1){
 			iYear--;
@@ -389,55 +307,51 @@ public class CalRestdeManageController {
 			iYear = 9999;
 			iMonth = 12;
 		}
-		restde.setYear(Integer.toString(iYear));
-		restde.setMonth(Integer.toString(iMonth));
+		commandMap.put("year", Integer.toString(iYear));
+		commandMap.put("month", Integer.toString(iMonth));
 		
 		cal.set(iYear,iMonth-1,iDay);
-		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
+		commandMap.put("startWeekMonth", cal.get(Calendar.DAY_OF_WEEK));
 
-		cal.set(iYear,iMonth-1,Integer.parseInt(restde.getDay()));
-		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+		cal.set(iYear,iMonth-1,Integer.parseInt(String.valueOf(commandMap.get("day"))));
+		commandMap.put("lastDayMonth", cal.getActualMaximum(Calendar.DAY_OF_MONTH));
 
-		restde.setYear(Integer.toString(cal.get(Calendar.YEAR)));
-		restde.setMonth(Integer.toString(cal.get(Calendar.MONTH)+1));
-		restde.setDay(Integer.toString(cal.get(Calendar.DAY_OF_MONTH)));
-		restde.setWeek(cal.get(Calendar.DAY_OF_WEEK));
-		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
+		commandMap.put("year", Integer.toString(cal.get(Calendar.YEAR)));
+		commandMap.put("month", Integer.toString(cal.get(Calendar.MONTH)+1));
+		commandMap.put("day", Integer.toString(cal.get(Calendar.DAY_OF_MONTH)));
+		commandMap.put("week", cal.get(Calendar.DAY_OF_WEEK));
+		commandMap.put("lastDayMonth", cal.getActualMaximum(Calendar.DATE));
 		
-		//List CalInfoList          = restdeManageService.selectNormalDayCal(restde);
-        //List NormalWeekRestdeList = restdeManageService.selectNormalDayRestde(restde);
-
-        resultMap.put("resultList", restdeManageService.selectNormalDayCal(restde));
-        resultMap.put("RestdeList", restdeManageService.selectNormalDayRestde(restde));
+        resultMap.put("resultList", restdeManageService.selectNormalDayCal(commandMap));
+        resultMap.put("RestdeList", restdeManageService.selectNormalDayRestde(commandMap));
         
 		return resultMap;
 	}
 	
-	/**
-	 * ?�반?�력 주간
-	 * @param restde
-	 * @param model
-	 * @return "/cmm/sym/cal/EgovNormalWeekCalendar"
-	 * @throws Exception
-	 */
 	@RequestMapping(value = "/sym/cal/EgovNormalWeekCalendar.do")
-	public Map<String, Object> selectNormalWeekCalendar(Restde restde) throws Exception {
+	public Map<String, Object> selectNormalWeekCalendar(@RequestParam Map<String, Object> commandMap) throws Exception {
 		Map<String, Object> resultMap = new HashMap<>();
-
 		Calendar cal = Calendar.getInstance();
 
-		if(restde.getYear()==null || restde.getYear().equals("")){
-			restde.setYear(Integer.toString(cal.get(Calendar.YEAR)));
+		String yearVal = commandMap.get("year") == null ? "" : String.valueOf(commandMap.get("year"));
+		String monthVal = commandMap.get("month") == null ? "" : String.valueOf(commandMap.get("month"));
+		String dayVal = commandMap.get("day") == null ? "" : String.valueOf(commandMap.get("day"));
+
+		if(yearVal.equals("")){
+			yearVal = Integer.toString(cal.get(Calendar.YEAR));
+			commandMap.put("year", yearVal);
 		}
-		if(restde.getMonth()==null || restde.getMonth().equals("")){
-			restde.setMonth(Integer.toString(cal.get(Calendar.MONTH)+1));
+		if(monthVal.equals("")){
+			monthVal = Integer.toString(cal.get(Calendar.MONTH)+1);
+			commandMap.put("month", monthVal);
 		}
-		if(restde.getDay()==null || restde.getDay().equals("")){
-			restde.setDay(Integer.toString(cal.get(Calendar.DATE)));
+		if(dayVal.equals("")){
+			dayVal = Integer.toString(cal.get(Calendar.DATE));
+			commandMap.put("day", dayVal);
 		}
 
-		int iYear  = Integer.parseInt(restde.getYear());
-		int iMonth = Integer.parseInt(restde.getMonth());
+		int iYear  = Integer.parseInt(yearVal);
+		int iMonth = Integer.parseInt(monthVal);
 		
 		if (iMonth<1){
 			iYear--;
@@ -455,133 +369,129 @@ public class CalRestdeManageController {
 			iYear = 9999;
 			iMonth = 12;
 		}
-		restde.setYear(Integer.toString(iYear));
-		restde.setMonth(Integer.toString(iMonth));
+		commandMap.put("year", Integer.toString(iYear));
+		commandMap.put("month", Integer.toString(iMonth));
 		
 		cal.set(iYear,iMonth-1,1);
-		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
+		commandMap.put("startWeekMonth", cal.get(Calendar.DAY_OF_WEEK));
 
-		cal.set(iYear,iMonth-1,Integer.parseInt(restde.getDay()));
-		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+		cal.set(iYear,iMonth-1,Integer.parseInt(String.valueOf(commandMap.get("day"))));
+		commandMap.put("lastDayMonth", cal.getActualMaximum(Calendar.DAY_OF_MONTH));
 
-		int iStartWeek = restde.getStartWeekMonth(); 
-		int iLastDate  = restde.getLastDayMonth();
+		int iStartWeek = (int) commandMap.get("startWeekMonth"); 
+		int iLastDate  = (int) commandMap.get("lastDayMonth");
 		int iDayWeek  = cal.get(Calendar.DAY_OF_WEEK);
 		
 		int iMaxWeeks = (int)Math.floor(iLastDate/7);
 		iMaxWeeks = iMaxWeeks + (int)Math.ceil(((iLastDate - iMaxWeeks * 7) + iStartWeek - 1) / 7.0);
-		restde.setMaxWeeks(iMaxWeeks);
+		commandMap.put("maxWeeks", iMaxWeeks);
 		
-		if (iMaxWeeks < restde.getWeeks()) {
-			restde.setWeeks(iMaxWeeks);
+		int weeksVal = commandMap.get("weeks") == null ? 0 : Integer.parseInt(String.valueOf(commandMap.get("weeks")));
+		if (iMaxWeeks < weeksVal) {
+			weeksVal = iMaxWeeks;
+			commandMap.put("weeks", weeksVal);
 		}
 		
-		Restde vo = new Restde();
+		Map<String, Object> vo = new HashMap<>();
 		Calendar weekCal = Calendar.getInstance();
 		weekCal.setTime(cal.getTime());
 		
-		if(restde.getWeeks()!=0){
-			weekCal.set(Calendar.DATE, (restde.getWeeks() - 1) * 7 + 1);
-			if(restde.getWeeks()>1){
+		if(weeksVal != 0){
+			weekCal.set(Calendar.DATE, (weeksVal - 1) * 7 + 1);
+			if(weeksVal > 1){
 				iDayWeek  = weekCal.get(Calendar.DAY_OF_WEEK);
 				weekCal.add(Calendar.DATE, (-1)*(iDayWeek-1));
 			}
-			restde.setDay(Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)+1));
+			commandMap.put("day", Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)+1));
 		}
 
 		iDayWeek  = weekCal.get(Calendar.DAY_OF_WEEK);
 
-		// ?�요??
+		// 일요일
 		weekCal.add(Calendar.DATE, (-1)*(iDayWeek-1));
-		vo.setYear(Integer.toString(weekCal.get(Calendar.YEAR)));
-		vo.setMonth(Integer.toString(weekCal.get(Calendar.MONTH)+1));
-		vo.setDay(Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
-		vo.setWeek(weekCal.get(Calendar.DAY_OF_WEEK));
+		vo.put("year", Integer.toString(weekCal.get(Calendar.YEAR)));
+		vo.put("month", Integer.toString(weekCal.get(Calendar.MONTH)+1));
+		vo.put("day", Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
+		vo.put("week", weekCal.get(Calendar.DAY_OF_WEEK));
 		resultMap.put("resultList_1", restdeManageService.selectNormalDayCal(vo));
         resultMap.put("RestdeList_1", restdeManageService.selectNormalDayRestde(vo));
         
-		// ?�요??
+		// 월요일
 		weekCal.add(Calendar.DATE, 1);
-		vo.setYear(Integer.toString(weekCal.get(Calendar.YEAR)));
-		vo.setMonth(Integer.toString(weekCal.get(Calendar.MONTH)+1));
-		vo.setDay(Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
-		vo.setWeek(weekCal.get(Calendar.DAY_OF_WEEK));
+		vo.put("year", Integer.toString(weekCal.get(Calendar.YEAR)));
+		vo.put("month", Integer.toString(weekCal.get(Calendar.MONTH)+1));
+		vo.put("day", Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
+		vo.put("week", weekCal.get(Calendar.DAY_OF_WEEK));
         resultMap.put("resultList_2", restdeManageService.selectNormalDayCal(vo));
         resultMap.put("RestdeList_2", restdeManageService.selectNormalDayRestde(vo));
 
-        // ?�요??
+        // 화요일
 		weekCal.add(Calendar.DATE, 1);
-		vo.setYear(Integer.toString(weekCal.get(Calendar.YEAR)));
-		vo.setMonth(Integer.toString(weekCal.get(Calendar.MONTH)+1));
-		vo.setDay(Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
-		vo.setWeek(weekCal.get(Calendar.DAY_OF_WEEK));
+		vo.put("year", Integer.toString(weekCal.get(Calendar.YEAR)));
+		vo.put("month", Integer.toString(weekCal.get(Calendar.MONTH)+1));
+		vo.put("day", Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
+		vo.put("week", weekCal.get(Calendar.DAY_OF_WEEK));
         resultMap.put("resultList_3", restdeManageService.selectNormalDayCal(vo));
         resultMap.put("RestdeList_3", restdeManageService.selectNormalDayRestde(vo));
 
-        // ?�요??
+        // 수요일
 		weekCal.add(Calendar.DATE, 1);
-		vo.setYear(Integer.toString(weekCal.get(Calendar.YEAR)));
-		vo.setMonth(Integer.toString(weekCal.get(Calendar.MONTH)+1));
-		vo.setDay(Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
-		vo.setWeek(weekCal.get(Calendar.DAY_OF_WEEK));
-		//List CalInfoList_4          = restdeManageService.selectNormalDayCal(vo);
-        //List NormalWeekRestdeList_4 = restdeManageService.selectNormalDayRestde(vo);
+		vo.put("year", Integer.toString(weekCal.get(Calendar.YEAR)));
+		vo.put("month", Integer.toString(weekCal.get(Calendar.MONTH)+1));
+		vo.put("day", Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
+		vo.put("week", weekCal.get(Calendar.DAY_OF_WEEK));
         resultMap.put("resultList_4", restdeManageService.selectNormalDayCal(vo));
         resultMap.put("RestdeList_4", restdeManageService.selectNormalDayRestde(vo));
 
-        // 목요??
+        // 목요일
 		weekCal.add(Calendar.DATE, 1);
-		vo.setYear(Integer.toString(weekCal.get(Calendar.YEAR)));
-		vo.setMonth(Integer.toString(weekCal.get(Calendar.MONTH)+1));
-		vo.setDay(Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
-		vo.setWeek(weekCal.get(Calendar.DAY_OF_WEEK));
+		vo.put("year", Integer.toString(weekCal.get(Calendar.YEAR)));
+		vo.put("month", Integer.toString(weekCal.get(Calendar.MONTH)+1));
+		vo.put("day", Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
+		vo.put("week", weekCal.get(Calendar.DAY_OF_WEEK));
         resultMap.put("resultList_5", restdeManageService.selectNormalDayCal(vo));
         resultMap.put("RestdeList_5", restdeManageService.selectNormalDayRestde(vo));
 
-        // 금요??
+        // 금요일
 		weekCal.add(Calendar.DATE, 1);
-		vo.setYear(Integer.toString(weekCal.get(Calendar.YEAR)));
-		vo.setMonth(Integer.toString(weekCal.get(Calendar.MONTH)+1));
-		vo.setDay(Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
-		vo.setWeek(weekCal.get(Calendar.DAY_OF_WEEK));
+		vo.put("year", Integer.toString(weekCal.get(Calendar.YEAR)));
+		vo.put("month", Integer.toString(weekCal.get(Calendar.MONTH)+1));
+		vo.put("day", Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
+		vo.put("week", weekCal.get(Calendar.DAY_OF_WEEK));
         resultMap.put("resultList_6", restdeManageService.selectNormalDayCal(vo));
         resultMap.put("RestdeList_6", restdeManageService.selectNormalDayRestde(vo));
 		
-        // ?�요??
+        // 토요일
 		weekCal.add(Calendar.DATE, 1);
-		vo.setYear(Integer.toString(weekCal.get(Calendar.YEAR)));
-		vo.setMonth(Integer.toString(weekCal.get(Calendar.MONTH)+1));
-		vo.setDay(Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
-		vo.setWeek(weekCal.get(Calendar.DAY_OF_WEEK));
+		vo.put("year", Integer.toString(weekCal.get(Calendar.YEAR)));
+		vo.put("month", Integer.toString(weekCal.get(Calendar.MONTH)+1));
+		vo.put("day", Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
+		vo.put("week", weekCal.get(Calendar.DAY_OF_WEEK));
         resultMap.put("resultList_7", restdeManageService.selectNormalDayCal(vo));
         resultMap.put("RestdeList_7", restdeManageService.selectNormalDayRestde(vo));
 
-        resultMap.put("resultList", restdeManageService.selectNormalDayCal(restde));
-        
+        resultMap.put("resultList", restdeManageService.selectNormalDayCal(commandMap));
         return resultMap;
 	}	
 
-	/**
-	 * ?�반?�력 ?�간
-	 * @param restde
-	 * @param model
-	 * @return "/cmm/sym/cal/EgovNormalMonthCalendar"
-	 * @throws Exception
-	 */
 	@RequestMapping(value = "/sym/cal/EgovNormalMonthCalendar.do")
-	public Map<String, Object> selectNormalMonthCalendar(Restde restde) throws Exception {
+	public Map<String, Object> selectNormalMonthCalendar(@RequestParam Map<String, Object> commandMap) throws Exception {
 		Map<String, Object> resultMap = new HashMap<>();
-
 		Calendar cal = Calendar.getInstance();
 
-		if(restde.getYear()==null || restde.getYear().equals("")){
-			restde.setYear(Integer.toString(cal.get(Calendar.YEAR)));
+		String yearVal = commandMap.get("year") == null ? "" : String.valueOf(commandMap.get("year"));
+		String monthVal = commandMap.get("month") == null ? "" : String.valueOf(commandMap.get("month"));
+
+		if(yearVal.equals("")){
+			yearVal = Integer.toString(cal.get(Calendar.YEAR));
+			commandMap.put("year", yearVal);
 		}
-		if(restde.getMonth()==null || restde.getMonth().equals("")){
-			restde.setMonth(Integer.toString(cal.get(Calendar.MONTH)+1));
+		if(monthVal.equals("")){
+			monthVal = Integer.toString(cal.get(Calendar.MONTH)+1);
+			commandMap.put("month", monthVal);
 		}
-		int iYear  = Integer.parseInt(restde.getYear());
-		int iMonth = Integer.parseInt(restde.getMonth());
+		int iYear  = Integer.parseInt(yearVal);
+		int iMonth = Integer.parseInt(monthVal);
 
 		if (iMonth<1){
 			iYear--;
@@ -599,201 +509,177 @@ public class CalRestdeManageController {
 			iYear = 9999;
 			iMonth = 12;
 		}
-		restde.setYear(Integer.toString(iYear));
-		restde.setMonth(Integer.toString(iMonth));
+		commandMap.put("year", Integer.toString(iYear));
+		commandMap.put("month", Integer.toString(iMonth));
 		
 		cal.set(iYear,iMonth-1,1);
 		
-		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
-		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
+		commandMap.put("startWeekMonth", cal.get(Calendar.DAY_OF_WEEK));
+		commandMap.put("lastDayMonth", cal.getActualMaximum(Calendar.DATE));
 
-        resultMap.put("resultList", restdeManageService.selectNormalRestdePopup(restde));
-        resultMap.put("RestdeList", restdeManageService.selectNormalMonthRestde(restde));
+        resultMap.put("resultList", restdeManageService.selectNormalRestdePopup(commandMap));
+        resultMap.put("RestdeList", restdeManageService.selectNormalMonthRestde(commandMap));
 
         return resultMap;
 	}	
 	
-	/**
-	 * ?�반?�력 ?�간
-	 * @param restde
-	 * @param model
-	 * @return "/cmm/sym/cal/EgovNormalYearCalendar"
-	 * @throws Exception
-	 */
 	@RequestMapping(value = "/sym/cal/EgovNormalYearCalendar.do")
-	public Map<String, Object> selectNormalYearCalendar(Restde restde) throws Exception {
+	public Map<String, Object> selectNormalYearCalendar(@RequestParam Map<String, Object> commandMap) throws Exception {
 		Map<String, Object> resultMap = new HashMap<>();
-
 		Calendar cal = Calendar.getInstance();
 
-		if(restde.getYear()==null || restde.getYear().equals("")){
-			restde.setYear(Integer.toString(cal.get(Calendar.YEAR)));
-		}
-		if(restde.getMonth()==null || restde.getMonth().equals("")){
-			restde.setMonth(Integer.toString(cal.get(Calendar.MONTH)+1));
-		}
-		int iYear  = Integer.parseInt(restde.getYear());
-		int iMonth = Integer.parseInt(restde.getMonth());
+		String yearVal = commandMap.get("year") == null ? "" : String.valueOf(commandMap.get("year"));
 
-		if (iMonth<1){
-			iYear--;
-			iMonth = 12;
+		if(yearVal.equals("")){
+			yearVal = Integer.toString(cal.get(Calendar.YEAR));
+			commandMap.put("year", yearVal);
 		}
-		if (iMonth>12){
-			iYear++;
-			iMonth = 1;
-		}
+		int iYear  = Integer.parseInt(yearVal);
+
 		if (iYear<1){
 			iYear = 1;
-			iMonth = 1;
 		}
 		if (iYear>9999){
 			iYear = 9999;
-			iMonth = 12;
 		}
-		restde.setYear(Integer.toString(iYear));
+		commandMap.put("year", Integer.toString(iYear));
 		
-		/* ?�별?�인 */
-
-		/* 1??*/
-		iMonth = 1;
-		restde.setMonth(Integer.toString(iMonth));
+		/* 1월 */
+		int iMonth = 1;
+		commandMap.put("month", Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
-		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
-		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        resultMap.put("resultList_1" , restdeManageService.selectNormalRestdePopup(restde) );
-        resultMap.put("RestdeList_1" , restdeManageService.selectNormalMonthRestde(restde) );
+		commandMap.put("startWeekMonth", cal.get(Calendar.DAY_OF_WEEK));
+		commandMap.put("lastDayMonth", cal.getActualMaximum(Calendar.DATE));
+        resultMap.put("resultList_1" , restdeManageService.selectNormalRestdePopup(commandMap) );
+        resultMap.put("RestdeList_1" , restdeManageService.selectNormalMonthRestde(commandMap) );
 
-		/* 2??*/
+		/* 2월 */
 		iMonth = 2;
-		restde.setMonth(Integer.toString(iMonth));
+		commandMap.put("month", Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
-		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
-		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        resultMap.put("resultList_2" , restdeManageService.selectNormalRestdePopup(restde) );
-        resultMap.put("RestdeList_2" , restdeManageService.selectNormalMonthRestde(restde) );
+		commandMap.put("startWeekMonth", cal.get(Calendar.DAY_OF_WEEK));
+		commandMap.put("lastDayMonth", cal.getActualMaximum(Calendar.DATE));
+        resultMap.put("resultList_2" , restdeManageService.selectNormalRestdePopup(commandMap) );
+        resultMap.put("RestdeList_2" , restdeManageService.selectNormalMonthRestde(commandMap) );
 
-		/* 3??*/
+		/* 3월 */
 		iMonth = 3;
-		restde.setMonth(Integer.toString(iMonth));
+		commandMap.put("month", Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
-		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
-		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        resultMap.put("resultList_3" , restdeManageService.selectNormalRestdePopup(restde) );
-        resultMap.put("RestdeList_3" , restdeManageService.selectNormalMonthRestde(restde) );
+		commandMap.put("startWeekMonth", cal.get(Calendar.DAY_OF_WEEK));
+		commandMap.put("lastDayMonth", cal.getActualMaximum(Calendar.DATE));
+        resultMap.put("resultList_3" , restdeManageService.selectNormalRestdePopup(commandMap) );
+        resultMap.put("RestdeList_3" , restdeManageService.selectNormalMonthRestde(commandMap) );
 
-		/* 4??*/
+		/* 4월 */
 		iMonth = 4;
-		restde.setMonth(Integer.toString(iMonth));
+		commandMap.put("month", Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
-		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
-		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        resultMap.put("resultList_4" , restdeManageService.selectNormalRestdePopup(restde) );
-        resultMap.put("RestdeList_4" , restdeManageService.selectNormalMonthRestde(restde) );
+		commandMap.put("startWeekMonth", cal.get(Calendar.DAY_OF_WEEK));
+		commandMap.put("lastDayMonth", cal.getActualMaximum(Calendar.DATE));
+        resultMap.put("resultList_4" , restdeManageService.selectNormalRestdePopup(commandMap) );
+        resultMap.put("RestdeList_4" , restdeManageService.selectNormalMonthRestde(commandMap) );
 
-		/* 5??*/
+		/* 5월 */
 		iMonth = 5;
-		restde.setMonth(Integer.toString(iMonth));
+		commandMap.put("month", Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
-		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
-		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        resultMap.put("resultList_5" , restdeManageService.selectNormalRestdePopup(restde) );
-        resultMap.put("RestdeList_5" , restdeManageService.selectNormalMonthRestde(restde) );
+		commandMap.put("startWeekMonth", cal.get(Calendar.DAY_OF_WEEK));
+		commandMap.put("lastDayMonth", cal.getActualMaximum(Calendar.DATE));
+        resultMap.put("resultList_5" , restdeManageService.selectNormalRestdePopup(commandMap) );
+        resultMap.put("RestdeList_5" , restdeManageService.selectNormalMonthRestde(commandMap) );
 
-		/* 6??*/
+		/* 6월 */
 		iMonth = 6;
-		restde.setMonth(Integer.toString(iMonth));
+		commandMap.put("month", Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
-		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
-		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        resultMap.put("resultList_6" , restdeManageService.selectNormalRestdePopup(restde) );
-        resultMap.put("RestdeList_6" , restdeManageService.selectNormalMonthRestde(restde) );
+		commandMap.put("startWeekMonth", cal.get(Calendar.DAY_OF_WEEK));
+		commandMap.put("lastDayMonth", cal.getActualMaximum(Calendar.DATE));
+        resultMap.put("resultList_6" , restdeManageService.selectNormalRestdePopup(commandMap) );
+        resultMap.put("RestdeList_6" , restdeManageService.selectNormalMonthRestde(commandMap) );
 
-		/* 7??*/
+		/* 7월 */
 		iMonth = 7;
-		restde.setMonth(Integer.toString(iMonth));
+		commandMap.put("month", Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
-		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
-		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        resultMap.put("resultList_7" , restdeManageService.selectNormalRestdePopup(restde) );
-        resultMap.put("RestdeList_7" , restdeManageService.selectNormalMonthRestde(restde) );
+		commandMap.put("startWeekMonth", cal.get(Calendar.DAY_OF_WEEK));
+		commandMap.put("lastDayMonth", cal.getActualMaximum(Calendar.DATE));
+        resultMap.put("resultList_7" , restdeManageService.selectNormalRestdePopup(commandMap) );
+        resultMap.put("RestdeList_7" , restdeManageService.selectNormalMonthRestde(commandMap) );
 
-		/* 8??*/
+		/* 8월 */
 		iMonth = 8;
-		restde.setMonth(Integer.toString(iMonth));
+		commandMap.put("month", Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
-		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
-		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        resultMap.put("resultList_8" , restdeManageService.selectNormalRestdePopup(restde) );
-        resultMap.put("RestdeList_8" , restdeManageService.selectNormalMonthRestde(restde) );
+		commandMap.put("startWeekMonth", cal.get(Calendar.DAY_OF_WEEK));
+		commandMap.put("lastDayMonth", cal.getActualMaximum(Calendar.DATE));
+        resultMap.put("resultList_8" , restdeManageService.selectNormalRestdePopup(commandMap) );
+        resultMap.put("RestdeList_8" , restdeManageService.selectNormalMonthRestde(commandMap) );
 
-		/* 9??*/
+		/* 9월 */
 		iMonth = 9;
-		restde.setMonth(Integer.toString(iMonth));
+		commandMap.put("month", Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
-		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
-		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        resultMap.put("resultList_9" , restdeManageService.selectNormalRestdePopup(restde) );
-        resultMap.put("RestdeList_9" , restdeManageService.selectNormalMonthRestde(restde) );
+		commandMap.put("startWeekMonth", cal.get(Calendar.DAY_OF_WEEK));
+		commandMap.put("lastDayMonth", cal.getActualMaximum(Calendar.DATE));
+        resultMap.put("resultList_9" , restdeManageService.selectNormalRestdePopup(commandMap) );
+        resultMap.put("RestdeList_9" , restdeManageService.selectNormalMonthRestde(commandMap) );
 
-		/* 10??*/
+		/* 10월 */
 		iMonth = 10;
-		restde.setMonth(Integer.toString(iMonth));
+		commandMap.put("month", Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
-		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
-		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        resultMap.put("resultList_10", restdeManageService.selectNormalRestdePopup(restde));
-        resultMap.put("RestdeList_10", restdeManageService.selectNormalMonthRestde(restde));
+		commandMap.put("startWeekMonth", cal.get(Calendar.DAY_OF_WEEK));
+		commandMap.put("lastDayMonth", cal.getActualMaximum(Calendar.DATE));
+        resultMap.put("resultList_10", restdeManageService.selectNormalRestdePopup(commandMap));
+        resultMap.put("RestdeList_10", restdeManageService.selectNormalMonthRestde(commandMap));
 
-		/* 11??*/
+		/* 11월 */
 		iMonth = 11;
-		restde.setMonth(Integer.toString(iMonth));
+		commandMap.put("month", Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
-		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
-		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        resultMap.put("resultList_11", restdeManageService.selectNormalRestdePopup(restde));
-        resultMap.put("RestdeList_11", restdeManageService.selectNormalMonthRestde(restde));
+		commandMap.put("startWeekMonth", cal.get(Calendar.DAY_OF_WEEK));
+		commandMap.put("lastDayMonth", cal.getActualMaximum(Calendar.DATE));
+        resultMap.put("resultList_11", restdeManageService.selectNormalRestdePopup(commandMap));
+        resultMap.put("RestdeList_11", restdeManageService.selectNormalMonthRestde(commandMap));
 
-		/* 12??*/
+		/* 12월 */
 		iMonth = 12;
-		restde.setMonth(Integer.toString(iMonth));
+		commandMap.put("month", Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
-		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
-		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        resultMap.put("resultList_12", restdeManageService.selectNormalRestdePopup(restde));
-        resultMap.put("RestdeList_12", restdeManageService.selectNormalMonthRestde(restde));
+		commandMap.put("startWeekMonth", cal.get(Calendar.DAY_OF_WEEK));
+		commandMap.put("lastDayMonth", cal.getActualMaximum(Calendar.DATE));
+        resultMap.put("resultList_12", restdeManageService.selectNormalRestdePopup(commandMap));
+        resultMap.put("RestdeList_12", restdeManageService.selectNormalMonthRestde(commandMap));
 
         return resultMap;
 	}	
 	
-
-	/**
-	 * ?�정?�력 ?�간
-	 * @param restde
-	 * @param model
-	 * @return "/cmm/sym/cal/EgovAdministDayCalendar"
-	 * @throws Exception
-	 */
 	@RequestMapping(value = "/sym/cal/EgovAdministDayCalendar.do")
-	public Map<String, Object> selectAdministDayCalendar(Restde restde) throws Exception {
+	public Map<String, Object> selectAdministDayCalendar(@RequestParam Map<String, Object> commandMap) throws Exception {
 		Map<String, Object> resultMap = new HashMap<>();
-
 		Calendar cal = Calendar.getInstance();
 
+		String yearVal = commandMap.get("year") == null ? "" : String.valueOf(commandMap.get("year"));
+		String monthVal = commandMap.get("month") == null ? "" : String.valueOf(commandMap.get("month"));
+		String dayVal = commandMap.get("day") == null ? "" : String.valueOf(commandMap.get("day"));
 
-		if(restde.getYear()==null || restde.getYear().equals("")){
-			restde.setYear(Integer.toString(cal.get(Calendar.YEAR)));
+		if(yearVal.equals("")){
+			yearVal = Integer.toString(cal.get(Calendar.YEAR));
+			commandMap.put("year", yearVal);
 		}
-		if(restde.getMonth()==null || restde.getMonth().equals("")){
-			restde.setMonth(Integer.toString(cal.get(Calendar.MONTH)+1));
+		if(monthVal.equals("")){
+			monthVal = Integer.toString(cal.get(Calendar.MONTH)+1);
+			commandMap.put("month", monthVal);
 		}
-		if(restde.getDay()==null || restde.getDay().equals("")){
-			restde.setDay(Integer.toString(cal.get(Calendar.DATE)));
+		if(dayVal.equals("")){
+			dayVal = Integer.toString(cal.get(Calendar.DATE));
+			commandMap.put("day", dayVal);
 		}
 
-		int iYear  = Integer.parseInt(restde.getYear());
-		int iMonth = Integer.parseInt(restde.getMonth());
-		int iDay   = Integer.parseInt(restde.getDay());
+		int iYear  = Integer.parseInt(yearVal);
+		int iMonth = Integer.parseInt(monthVal);
+		int iDay   = Integer.parseInt(dayVal);
 		
 		if (iMonth<1){
 			iYear--;
@@ -811,53 +697,51 @@ public class CalRestdeManageController {
 			iYear = 9999;
 			iMonth = 12;
 		}
-		restde.setYear(Integer.toString(iYear));
-		restde.setMonth(Integer.toString(iMonth));
+		commandMap.put("year", Integer.toString(iYear));
+		commandMap.put("month", Integer.toString(iMonth));
 		
 		cal.set(iYear,iMonth-1,iDay);
-		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
+		commandMap.put("startWeekMonth", cal.get(Calendar.DAY_OF_WEEK));
 
-		cal.set(iYear,iMonth-1,Integer.parseInt(restde.getDay()));
-		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+		cal.set(iYear,iMonth-1,Integer.parseInt(String.valueOf(commandMap.get("day"))));
+		commandMap.put("lastDayMonth", cal.getActualMaximum(Calendar.DAY_OF_MONTH));
 
-		restde.setYear(Integer.toString(cal.get(Calendar.YEAR)));
-		restde.setMonth(Integer.toString(cal.get(Calendar.MONTH)+1));
-		restde.setDay(Integer.toString(cal.get(Calendar.DAY_OF_MONTH)));
-		restde.setWeek(cal.get(Calendar.DAY_OF_WEEK));
-		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
+		commandMap.put("year", Integer.toString(cal.get(Calendar.YEAR)));
+		commandMap.put("month", Integer.toString(cal.get(Calendar.MONTH)+1));
+		commandMap.put("day", Integer.toString(cal.get(Calendar.DAY_OF_MONTH)));
+		commandMap.put("week", cal.get(Calendar.DAY_OF_WEEK));
+		commandMap.put("lastDayMonth", cal.getActualMaximum(Calendar.DATE));
 		
-        resultMap.put("resultList", restdeManageService.selectAdministDayCal(restde));
-        resultMap.put("RestdeList", restdeManageService.selectAdministDayRestde(restde));
+        resultMap.put("resultList", restdeManageService.selectAdministDayCal(commandMap));
+        resultMap.put("RestdeList", restdeManageService.selectAdministDayRestde(commandMap));
         
 		return resultMap;
 	}
 	
-
-	/**
-	 * ?�정?�력 주간
-	 * @param restde
-	 * @param model
-	 * @return "/cmm/sym/cal/EgovAdministWeekCalendar"
-	 * @throws Exception
-	 */
 	@RequestMapping(value = "/sym/cal/EgovAdministWeekCalendar.do")
-	public Map<String, Object> selectAdministWeekCalendar(Restde restde) throws Exception {
+	public Map<String, Object> selectAdministWeekCalendar(@RequestParam Map<String, Object> commandMap) throws Exception {
 		Map<String, Object> resultMap = new HashMap<>();
-
 		Calendar cal = Calendar.getInstance();
 
-		if(restde.getYear()==null || restde.getYear().equals("")){
-			restde.setYear(Integer.toString(cal.get(Calendar.YEAR)));
+		String yearVal = commandMap.get("year") == null ? "" : String.valueOf(commandMap.get("year"));
+		String monthVal = commandMap.get("month") == null ? "" : String.valueOf(commandMap.get("month"));
+		String dayVal = commandMap.get("day") == null ? "" : String.valueOf(commandMap.get("day"));
+
+		if(yearVal.equals("")){
+			yearVal = Integer.toString(cal.get(Calendar.YEAR));
+			commandMap.put("year", yearVal);
 		}
-		if(restde.getMonth()==null || restde.getMonth().equals("")){
-			restde.setMonth(Integer.toString(cal.get(Calendar.MONTH)+1));
+		if(monthVal.equals("")){
+			monthVal = Integer.toString(cal.get(Calendar.MONTH)+1);
+			commandMap.put("month", monthVal);
 		}
-		if(restde.getDay()==null || restde.getDay().equals("")){
-			restde.setDay(Integer.toString(cal.get(Calendar.DATE)));
+		if(dayVal.equals("")){
+			dayVal = Integer.toString(cal.get(Calendar.DATE));
+			commandMap.put("day", dayVal);
 		}
 
-		int iYear  = Integer.parseInt(restde.getYear());
-		int iMonth = Integer.parseInt(restde.getMonth());
+		int iYear  = Integer.parseInt(yearVal);
+		int iMonth = Integer.parseInt(monthVal);
 		
 		if (iMonth<1){
 			iYear--;
@@ -875,134 +759,129 @@ public class CalRestdeManageController {
 			iYear = 9999;
 			iMonth = 12;
 		}
-		restde.setYear(Integer.toString(iYear));
-		restde.setMonth(Integer.toString(iMonth));
+		commandMap.put("year", Integer.toString(iYear));
+		commandMap.put("month", Integer.toString(iMonth));
 		
 		cal.set(iYear,iMonth-1,1);
-		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
+		commandMap.put("startWeekMonth", cal.get(Calendar.DAY_OF_WEEK));
 
-		cal.set(iYear,iMonth-1,Integer.parseInt(restde.getDay()));
-		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+		cal.set(iYear,iMonth-1,Integer.parseInt(String.valueOf(commandMap.get("day"))));
+		commandMap.put("lastDayMonth", cal.getActualMaximum(Calendar.DAY_OF_MONTH));
 
-		int iStartWeek = restde.getStartWeekMonth(); 
-		int iLastDate  = restde.getLastDayMonth();
+		int iStartWeek = (int) commandMap.get("startWeekMonth"); 
+		int iLastDate  = (int) commandMap.get("lastDayMonth");
 		int iDayWeek  = cal.get(Calendar.DAY_OF_WEEK);
 		
 		int iMaxWeeks = (int)Math.floor(iLastDate/7);
 		iMaxWeeks = iMaxWeeks + (int)Math.ceil(((iLastDate - iMaxWeeks * 7) + iStartWeek - 1) / 7.0);
-		restde.setMaxWeeks(iMaxWeeks);
+		commandMap.put("maxWeeks", iMaxWeeks);
 		
-		if (iMaxWeeks < restde.getWeeks()) {
-			restde.setWeeks(iMaxWeeks);
+		int weeksVal = commandMap.get("weeks") == null ? 0 : Integer.parseInt(String.valueOf(commandMap.get("weeks")));
+		if (iMaxWeeks < weeksVal) {
+			weeksVal = iMaxWeeks;
+			commandMap.put("weeks", weeksVal);
 		}
 
-		Restde vo = new Restde();
+		Map<String, Object> vo = new HashMap<>();
 		Calendar weekCal = Calendar.getInstance();
 		weekCal.setTime(cal.getTime());
 		
-		if(restde.getWeeks()!=0){
-			weekCal.set(Calendar.DATE, (restde.getWeeks() - 1) * 7 + 1);
-			if(restde.getWeeks()>1){
+		if(weeksVal != 0){
+			weekCal.set(Calendar.DATE, (weeksVal - 1) * 7 + 1);
+			if(weeksVal > 1){
 				iDayWeek  = weekCal.get(Calendar.DAY_OF_WEEK);
 				weekCal.add(Calendar.DATE, (-1)*(iDayWeek-1));
 			}
-			restde.setDay(Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)+1));
+			commandMap.put("day", Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)+1));
 		}
-		//List CalInfoList = restdeManageService.selectAdministDayCal(restde);
-		resultMap.put("resultList", restdeManageService.selectAdministDayCal(restde));
+		resultMap.put("resultList", restdeManageService.selectAdministDayCal(commandMap));
 		
 		iDayWeek  = weekCal.get(Calendar.DAY_OF_WEEK);
 
-		// ?�요??
+		// 일요일
 		weekCal.add(Calendar.DATE, (-1)*(iDayWeek-1));
-		vo.setYear(Integer.toString(weekCal.get(Calendar.YEAR)));
-		vo.setMonth(Integer.toString(weekCal.get(Calendar.MONTH)+1));
-		vo.setDay(Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
-		vo.setWeek(weekCal.get(Calendar.DAY_OF_WEEK));
-		//List CalInfoList_1          = restdeManageService.selectAdministDayCal(vo);
-        //List AdministWeekRestdeList_1 = restdeManageService.selectAdministDayRestde(vo);
+		vo.put("year", Integer.toString(weekCal.get(Calendar.YEAR)));
+		vo.put("month", Integer.toString(weekCal.get(Calendar.MONTH)+1));
+		vo.put("day", Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
+		vo.put("week", weekCal.get(Calendar.DAY_OF_WEEK));
         resultMap.put("resultList_1", restdeManageService.selectAdministDayCal(vo));
         resultMap.put("RestdeList_1", restdeManageService.selectAdministDayRestde(vo));
         
-		// ?�요??
+		// 월요일
 		weekCal.add(Calendar.DATE, 1);
-		vo.setYear(Integer.toString(weekCal.get(Calendar.YEAR)));
-		vo.setMonth(Integer.toString(weekCal.get(Calendar.MONTH)+1));
-		vo.setDay(Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
-		vo.setWeek(weekCal.get(Calendar.DAY_OF_WEEK));
+		vo.put("year", Integer.toString(weekCal.get(Calendar.YEAR)));
+		vo.put("month", Integer.toString(weekCal.get(Calendar.MONTH)+1));
+		vo.put("day", Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
+		vo.put("week", weekCal.get(Calendar.DAY_OF_WEEK));
         resultMap.put("resultList_2", restdeManageService.selectAdministDayCal(vo));
         resultMap.put("RestdeList_2", restdeManageService.selectAdministDayRestde(vo));
 
-		// ?�요??
+        // 화요일
 		weekCal.add(Calendar.DATE, 1);
-		vo.setYear(Integer.toString(weekCal.get(Calendar.YEAR)));
-		vo.setMonth(Integer.toString(weekCal.get(Calendar.MONTH)+1));
-		vo.setDay(Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
-		vo.setWeek(weekCal.get(Calendar.DAY_OF_WEEK));
+		vo.put("year", Integer.toString(weekCal.get(Calendar.YEAR)));
+		vo.put("month", Integer.toString(weekCal.get(Calendar.MONTH)+1));
+		vo.put("day", Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
+		vo.put("week", weekCal.get(Calendar.DAY_OF_WEEK));
         resultMap.put("resultList_3", restdeManageService.selectAdministDayCal(vo));
         resultMap.put("RestdeList_3", restdeManageService.selectAdministDayRestde(vo));
 
-		// ?�요??
+        // 수요일
 		weekCal.add(Calendar.DATE, 1);
-		vo.setYear(Integer.toString(weekCal.get(Calendar.YEAR)));
-		vo.setMonth(Integer.toString(weekCal.get(Calendar.MONTH)+1));
-		vo.setDay(Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
-		vo.setWeek(weekCal.get(Calendar.DAY_OF_WEEK));
+		vo.put("year", Integer.toString(weekCal.get(Calendar.YEAR)));
+		vo.put("month", Integer.toString(weekCal.get(Calendar.MONTH)+1));
+		vo.put("day", Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
+		vo.put("week", weekCal.get(Calendar.DAY_OF_WEEK));
         resultMap.put("resultList_4", restdeManageService.selectAdministDayCal(vo));
         resultMap.put("RestdeList_4", restdeManageService.selectAdministDayRestde(vo));
 
-		// 목요??
+        // 목요일
 		weekCal.add(Calendar.DATE, 1);
-		vo.setYear(Integer.toString(weekCal.get(Calendar.YEAR)));
-		vo.setMonth(Integer.toString(weekCal.get(Calendar.MONTH)+1));
-		vo.setDay(Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
-		vo.setWeek(weekCal.get(Calendar.DAY_OF_WEEK));
+		vo.put("year", Integer.toString(weekCal.get(Calendar.YEAR)));
+		vo.put("month", Integer.toString(weekCal.get(Calendar.MONTH)+1));
+		vo.put("day", Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
+		vo.put("week", weekCal.get(Calendar.DAY_OF_WEEK));
         resultMap.put("resultList_5", restdeManageService.selectAdministDayCal(vo));
         resultMap.put("RestdeList_5", restdeManageService.selectAdministDayRestde(vo));
 
-		// 금요??
+        // 금요일
 		weekCal.add(Calendar.DATE, 1);
-		vo.setYear(Integer.toString(weekCal.get(Calendar.YEAR)));
-		vo.setMonth(Integer.toString(weekCal.get(Calendar.MONTH)+1));
-		vo.setDay(Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
-		vo.setWeek(weekCal.get(Calendar.DAY_OF_WEEK));
+		vo.put("year", Integer.toString(weekCal.get(Calendar.YEAR)));
+		vo.put("month", Integer.toString(weekCal.get(Calendar.MONTH)+1));
+		vo.put("day", Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
+		vo.put("week", weekCal.get(Calendar.DAY_OF_WEEK));
         resultMap.put("resultList_6", restdeManageService.selectAdministDayCal(vo));
         resultMap.put("RestdeList_6", restdeManageService.selectAdministDayRestde(vo));
 
-		// ?�요??
+        // 토요일
 		weekCal.add(Calendar.DATE, 1);
-		vo.setYear(Integer.toString(weekCal.get(Calendar.YEAR)));
-		vo.setMonth(Integer.toString(weekCal.get(Calendar.MONTH)+1));
-		vo.setDay(Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
-		vo.setWeek(weekCal.get(Calendar.DAY_OF_WEEK));
-
+		vo.put("year", Integer.toString(weekCal.get(Calendar.YEAR)));
+		vo.put("month", Integer.toString(weekCal.get(Calendar.MONTH)+1));
+		vo.put("day", Integer.toString(weekCal.get(Calendar.DAY_OF_MONTH)));
+		vo.put("week", weekCal.get(Calendar.DAY_OF_WEEK));
         resultMap.put("resultList_7", restdeManageService.selectAdministDayCal(vo));
         resultMap.put("RestdeList_7", restdeManageService.selectAdministDayRestde(vo));
 
 		return resultMap;
 	}
 	
-	/**
-	 * ?�정?�력 ?�간
-	 * @param restde
-	 * @param model
-	 * @return "/cmm/sym/cal/EgovAdministMonthCalendar"
-	 * @throws Exception
-	 */
 	@RequestMapping(value = "/sym/cal/EgovAdministMonthCalendar.do")
-	public Map<String, Object> selectAdministMonthCalendar(Restde restde) throws Exception {
+	public Map<String, Object> selectAdministMonthCalendar(@RequestParam Map<String, Object> commandMap) throws Exception {
 		Map<String, Object> resultMap = new HashMap<>();
-
 		Calendar cal = Calendar.getInstance();
 
-		if(restde.getYear()==null || restde.getYear().equals("")){
-			restde.setYear(Integer.toString(cal.get(Calendar.YEAR)));
+		String yearVal = commandMap.get("year") == null ? "" : String.valueOf(commandMap.get("year"));
+		String monthVal = commandMap.get("month") == null ? "" : String.valueOf(commandMap.get("month"));
+
+		if(yearVal.equals("")){
+			yearVal = Integer.toString(cal.get(Calendar.YEAR));
+			commandMap.put("year", yearVal);
 		}
-		if(restde.getMonth()==null || restde.getMonth().equals("")){
-			restde.setMonth(Integer.toString(cal.get(Calendar.MONTH)+1));
+		if(monthVal.equals("")){
+			monthVal = Integer.toString(cal.get(Calendar.MONTH)+1);
+			commandMap.put("month", monthVal);
 		}
-		int iYear  = Integer.parseInt(restde.getYear());
-		int iMonth = Integer.parseInt(restde.getMonth());
+		int iYear  = Integer.parseInt(yearVal);
+		int iMonth = Integer.parseInt(monthVal);
 
 		if (iMonth<1){
 			iYear--;
@@ -1020,285 +899,224 @@ public class CalRestdeManageController {
 			iYear = 9999;
 			iMonth = 12;
 		}
-		restde.setYear(Integer.toString(iYear));
-		restde.setMonth(Integer.toString(iMonth));
+		commandMap.put("year", Integer.toString(iYear));
+		commandMap.put("month", Integer.toString(iMonth));
 		
 		cal.set(iYear,iMonth-1,1);
 		
-		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
-		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
+		commandMap.put("startWeekMonth", cal.get(Calendar.DAY_OF_WEEK));
+		commandMap.put("lastDayMonth", cal.getActualMaximum(Calendar.DATE));
 
-        resultMap.put("resultList", restdeManageService.selectAdministRestdePopup(restde));
-        resultMap.put("RestdeList", restdeManageService.selectAdministMonthRestde(restde));
+        resultMap.put("resultList", restdeManageService.selectAdministRestdePopup(commandMap));
+        resultMap.put("RestdeList", restdeManageService.selectAdministMonthRestde(commandMap));
 
         return resultMap;
 	}	
 
-
-	/**
-	 * ?�정?�력 ?�간
-	 * @param restde
-	 * @param model
-	 * @return "/cmm/sym/cal/EgovAdministYearCalendar"
-	 * @throws Exception
-	 */
 	@RequestMapping(value = "/sym/cal/EgovAdministYearCalendar.do")
-	public Map<String, Object> selectAdministYearCalendar(Restde restde) throws Exception {
+	public Map<String, Object> selectAdministYearCalendar(@RequestParam Map<String, Object> commandMap) throws Exception {
 		Map<String, Object> resultMap = new HashMap<>();
-
 		Calendar cal = Calendar.getInstance();
 
-		if(restde.getYear()==null || restde.getYear().equals("")){
-			restde.setYear(Integer.toString(cal.get(Calendar.YEAR)));
-		}
-		if(restde.getMonth()==null || restde.getMonth().equals("")){
-			restde.setMonth(Integer.toString(cal.get(Calendar.MONTH)+1));
-		}
-		int iYear  = Integer.parseInt(restde.getYear());
-		int iMonth = Integer.parseInt(restde.getMonth());
+		String yearVal = commandMap.get("year") == null ? "" : String.valueOf(commandMap.get("year"));
 
-		if (iMonth<1){
-			iYear--;
-			iMonth = 12;
+		if(yearVal.equals("")){
+			yearVal = Integer.toString(cal.get(Calendar.YEAR));
+			commandMap.put("year", yearVal);
 		}
-		if (iMonth>12){
-			iYear++;
-			iMonth = 1;
-		}
+		int iYear  = Integer.parseInt(yearVal);
+
 		if (iYear<1){
 			iYear = 1;
-			iMonth = 1;
 		}
 		if (iYear>9999){
 			iYear = 9999;
-			iMonth = 12;
 		}
-		restde.setYear(Integer.toString(iYear));
+		commandMap.put("year", Integer.toString(iYear));
 		
-		/* ?�별?�인 */
-
-		/* 1??*/
-		iMonth = 1;
-		restde.setMonth(Integer.toString(iMonth));
+		/* 1월 */
+		int iMonth = 1;
+		commandMap.put("month", Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
-		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
-		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        resultMap.put("resultList_1" , restdeManageService.selectAdministRestdePopup(restde) );
-        resultMap.put("RestdeList_1" , restdeManageService.selectAdministMonthRestde(restde) );
+		commandMap.put("startWeekMonth", cal.get(Calendar.DAY_OF_WEEK));
+		commandMap.put("lastDayMonth", cal.getActualMaximum(Calendar.DATE));
+        resultMap.put("resultList_1" , restdeManageService.selectAdministRestdePopup(commandMap) );
+        resultMap.put("RestdeList_1" , restdeManageService.selectAdministMonthRestde(commandMap) );
         
-		/* 2??*/
+		/* 2월 */
 		iMonth = 2;
-		restde.setMonth(Integer.toString(iMonth));
+		commandMap.put("month", Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
-		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
-		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        resultMap.put("resultList_2" , restdeManageService.selectAdministRestdePopup(restde) );
-        resultMap.put("RestdeList_2" , restdeManageService.selectAdministMonthRestde(restde) );
+		commandMap.put("startWeekMonth", cal.get(Calendar.DAY_OF_WEEK));
+		commandMap.put("lastDayMonth", cal.getActualMaximum(Calendar.DATE));
+        resultMap.put("resultList_2" , restdeManageService.selectAdministRestdePopup(commandMap) );
+        resultMap.put("RestdeList_2" , restdeManageService.selectAdministMonthRestde(commandMap) );
         
-		/* 3??*/
+		/* 3월 */
 		iMonth = 3;
-		restde.setMonth(Integer.toString(iMonth));
+		commandMap.put("month", Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
-		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
-		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        resultMap.put("resultList_3" , restdeManageService.selectAdministRestdePopup(restde) );
-        resultMap.put("RestdeList_3" , restdeManageService.selectAdministMonthRestde(restde) );
+		commandMap.put("startWeekMonth", cal.get(Calendar.DAY_OF_WEEK));
+		commandMap.put("lastDayMonth", cal.getActualMaximum(Calendar.DATE));
+        resultMap.put("resultList_3" , restdeManageService.selectAdministRestdePopup(commandMap) );
+        resultMap.put("RestdeList_3" , restdeManageService.selectAdministMonthRestde(commandMap) );
         
-		/* 4??*/
+		/* 4월 */
 		iMonth = 4;
-		restde.setMonth(Integer.toString(iMonth));
+		commandMap.put("month", Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
-		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
-		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        resultMap.put("resultList_4" , restdeManageService.selectAdministRestdePopup(restde) );
-        resultMap.put("RestdeList_4" , restdeManageService.selectAdministMonthRestde(restde) );
+		commandMap.put("startWeekMonth", cal.get(Calendar.DAY_OF_WEEK));
+		commandMap.put("lastDayMonth", cal.getActualMaximum(Calendar.DATE));
+        resultMap.put("resultList_4" , restdeManageService.selectAdministRestdePopup(commandMap) );
+        resultMap.put("RestdeList_4" , restdeManageService.selectAdministMonthRestde(commandMap) );
         
-		/* 5??*/
+		/* 5월 */
 		iMonth = 5;
-		restde.setMonth(Integer.toString(iMonth));
+		commandMap.put("month", Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
-		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
-		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        resultMap.put("resultList_5" , restdeManageService.selectAdministRestdePopup(restde) );
-        resultMap.put("RestdeList_5" , restdeManageService.selectAdministMonthRestde(restde) );
+		commandMap.put("startWeekMonth", cal.get(Calendar.DAY_OF_WEEK));
+		commandMap.put("lastDayMonth", cal.getActualMaximum(Calendar.DATE));
+        resultMap.put("resultList_5" , restdeManageService.selectAdministRestdePopup(commandMap) );
+        resultMap.put("RestdeList_5" , restdeManageService.selectAdministMonthRestde(commandMap) );
         
-		/* 6??*/
+		/* 6월 */
 		iMonth = 6;
-		restde.setMonth(Integer.toString(iMonth));
+		commandMap.put("month", Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
-		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
-		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        resultMap.put("resultList_6" , restdeManageService.selectAdministRestdePopup(restde) );
-        resultMap.put("RestdeList_6" , restdeManageService.selectAdministMonthRestde(restde) );
+		commandMap.put("startWeekMonth", cal.get(Calendar.DAY_OF_WEEK));
+		commandMap.put("lastDayMonth", cal.getActualMaximum(Calendar.DATE));
+        resultMap.put("resultList_6" , restdeManageService.selectAdministRestdePopup(commandMap) );
+        resultMap.put("RestdeList_6" , restdeManageService.selectAdministMonthRestde(commandMap) );
         
-		/* 7??*/
+		/* 7월 */
 		iMonth = 7;
-		restde.setMonth(Integer.toString(iMonth));
+		commandMap.put("month", Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
-		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
-		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        resultMap.put("resultList_7" , restdeManageService.selectAdministRestdePopup(restde) );
-        resultMap.put("RestdeList_7" , restdeManageService.selectAdministMonthRestde(restde) );
+		commandMap.put("startWeekMonth", cal.get(Calendar.DAY_OF_WEEK));
+		commandMap.put("lastDayMonth", cal.getActualMaximum(Calendar.DATE));
+        resultMap.put("resultList_7" , restdeManageService.selectAdministRestdePopup(commandMap) );
+        resultMap.put("RestdeList_7" , restdeManageService.selectAdministMonthRestde(commandMap) );
         
-		/* 8??*/
+		/* 8월 */
 		iMonth = 8;
-		restde.setMonth(Integer.toString(iMonth));
+		commandMap.put("month", Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
-		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
-		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        resultMap.put("resultList_8" , restdeManageService.selectAdministRestdePopup(restde) );
-        resultMap.put("RestdeList_8" , restdeManageService.selectAdministMonthRestde(restde) );
+		commandMap.put("startWeekMonth", cal.get(Calendar.DAY_OF_WEEK));
+		commandMap.put("lastDayMonth", cal.getActualMaximum(Calendar.DATE));
+        resultMap.put("resultList_8" , restdeManageService.selectAdministRestdePopup(commandMap) );
+        resultMap.put("RestdeList_8" , restdeManageService.selectAdministMonthRestde(commandMap) );
         
-		/* 9??*/
+		/* 9월 */
 		iMonth = 9;
-		restde.setMonth(Integer.toString(iMonth));
+		commandMap.put("month", Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
-		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
-		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        resultMap.put("resultList_9" , restdeManageService.selectAdministRestdePopup(restde) );
-        resultMap.put("RestdeList_9" , restdeManageService.selectAdministMonthRestde(restde) );
+		commandMap.put("startWeekMonth", cal.get(Calendar.DAY_OF_WEEK));
+		commandMap.put("lastDayMonth", cal.getActualMaximum(Calendar.DATE));
+        resultMap.put("resultList_9" , restdeManageService.selectAdministRestdePopup(commandMap) );
+        resultMap.put("RestdeList_9" , restdeManageService.selectAdministMonthRestde(commandMap) );
         
-		/* 10??*/
+		/* 10월 */
 		iMonth = 10;
-		restde.setMonth(Integer.toString(iMonth));
+		commandMap.put("month", Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
-		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
-		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        resultMap.put("resultList_10", restdeManageService.selectAdministRestdePopup(restde));
-        resultMap.put("RestdeList_10", restdeManageService.selectAdministMonthRestde(restde));
+		commandMap.put("startWeekMonth", cal.get(Calendar.DAY_OF_WEEK));
+		commandMap.put("lastDayMonth", cal.getActualMaximum(Calendar.DATE));
+        resultMap.put("resultList_10", restdeManageService.selectAdministRestdePopup(commandMap));
+        resultMap.put("RestdeList_10", restdeManageService.selectAdministMonthRestde(commandMap));
         
-		/* 11??*/
+		/* 11월 */
 		iMonth = 11;
-		restde.setMonth(Integer.toString(iMonth));
+		commandMap.put("month", Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
-		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
-		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        resultMap.put("resultList_11", restdeManageService.selectAdministRestdePopup(restde));
-        resultMap.put("RestdeList_11", restdeManageService.selectAdministMonthRestde(restde));
+		commandMap.put("startWeekMonth", cal.get(Calendar.DAY_OF_WEEK));
+		commandMap.put("lastDayMonth", cal.getActualMaximum(Calendar.DATE));
+        resultMap.put("resultList_11", restdeManageService.selectAdministRestdePopup(commandMap));
+        resultMap.put("RestdeList_11", restdeManageService.selectAdministMonthRestde(commandMap));
         
-		/* 12??*/
+		/* 12월 */
 		iMonth = 12;
-		restde.setMonth(Integer.toString(iMonth));
+		commandMap.put("month", Integer.toString(iMonth));
 		cal.set(iYear,iMonth-1,1);
-		restde.setStartWeekMonth(cal.get(Calendar.DAY_OF_WEEK));
-		restde.setLastDayMonth(cal.getActualMaximum(Calendar.DATE));
-        
-        resultMap.put("resultList_12", restdeManageService.selectAdministRestdePopup(restde));
-        resultMap.put("RestdeList_12", restdeManageService.selectAdministMonthRestde(restde));
+		commandMap.put("startWeekMonth", cal.get(Calendar.DAY_OF_WEEK));
+		commandMap.put("lastDayMonth", cal.getActualMaximum(Calendar.DATE));
+        resultMap.put("resultList_12", restdeManageService.selectAdministRestdePopup(commandMap));
+        resultMap.put("RestdeList_12", restdeManageService.selectAdministMonthRestde(commandMap));
 
         return resultMap;
 	}	
 	
-
-	/**
-	 * ?�일????��?�다.
-	 * @param loginVO
-	 * @param restde
-	 * @param model
-	 * @return "forward:/sym/cal/EgovRestdeList.do"
-	 * @throws Exception
-	 */
     @RequestMapping(value="/sym/cal/EgovRestdeRemove.do")
-	public String deleteRestde(@ModelAttribute("loginVO") LoginVO loginVO, Restde restde) throws Exception {
-    	restdeManageService.deleteRestde(restde);
+	public Map<String, Object> deleteRestde(@ModelAttribute("loginVO") LoginVO loginVO, @RequestParam Map<String, Object> commandMap) throws Exception {
+		Map<String, Object> resultMap = new HashMap<>();
+    	restdeManageService.deleteRestde(commandMap);
         return resultMap;
 	}
 
-
-
-    /**
-     * ?�일 ?��??�역??조회?�다.
-     * @param loginVO
-     * @param restde
-     * @param model
-     * @return "/cmm/sym/cal/EgovRestdeDetail"
-     * @throws Exception
-     */
 	@RequestMapping(value="/sym/cal/EgovRestdeDetail.do")
-	public String selectRestdeDetail(@ModelAttribute("loginVO") LoginVO loginVO, Restde restde) throws Exception {
-		Restde vo = restdeManageService.selectRestdeDetail(restde);
+	public Map<String, Object> selectRestdeDetail(@ModelAttribute("loginVO") LoginVO loginVO, @RequestParam Map<String, Object> commandMap) throws Exception {
+		Map<String, Object> resultMap = new HashMap<>();
+		Map<String, Object> vo = restdeManageService.selectRestdeDetail(commandMap);
 		resultMap.put("result", vo);
-		
 		return resultMap;
 	}
 
-    /**
-	 * ?�일 리스?��? 조회?�다.
-     * @param loginVO
-     * @param searchVO
-     * @param model
-     * @return "/cmm/sym/cal/EgovRestdeList"
-     * @throws Exception
-     */
     @RequestMapping(value="/sym/cal/EgovRestdeList.do")
-	public String selectRestdeList(@ModelAttribute("loginVO") LoginVO loginVO, @ModelAttribute("searchVO") RestdeVO searchVO) throws Exception {
-    	/** EgovPropertyService.sample */
-    	searchVO.setPageUnit(propertiesService.getInt("pageUnit"));
-    	searchVO.setPageSize(propertiesService.getInt("pageSize"));
+	public Map<String, Object> selectRestdeList(@ModelAttribute("loginVO") LoginVO loginVO, @RequestParam Map<String, Object> commandMap) throws Exception {
+		Map<String, Object> resultMap = new HashMap<>();
+		
+		int pageIndex = commandMap.get("pageIndex") != null ? Integer.parseInt(String.valueOf(commandMap.get("pageIndex"))) : 1;
+		int pageUnit = propertiesService.getInt("pageUnit");
+		int pageSize = propertiesService.getInt("pageSize");
 
-    	/** pageing */
     	PaginationInfo paginationInfo = new PaginationInfo();
-		paginationInfo.setCurrentPageNo(searchVO.getPageIndex());
-		paginationInfo.setRecordCountPerPage(searchVO.getPageUnit());
-		paginationInfo.setPageSize(searchVO.getPageSize());
+		paginationInfo.setCurrentPageNo(pageIndex);
+		paginationInfo.setRecordCountPerPage(pageUnit);
+		paginationInfo.setPageSize(pageSize);
 		
-		searchVO.setFirstIndex(paginationInfo.getFirstRecordIndex());
-		searchVO.setLastIndex(paginationInfo.getLastRecordIndex());
-		searchVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
+		commandMap.put("firstIndex", paginationInfo.getFirstRecordIndex());
+		commandMap.put("lastIndex", paginationInfo.getLastRecordIndex());
+		commandMap.put("recordCountPerPage", paginationInfo.getRecordCountPerPage());
 		
-        resultMap.put("resultList", restdeManageService.selectRestdeList(searchVO));
+        resultMap.put("resultList", restdeManageService.selectRestdeList(commandMap));
         
-        int totCnt = restdeManageService.selectRestdeListTotCnt(searchVO);
+        int totCnt = restdeManageService.selectRestdeListTotCnt(commandMap);
 		paginationInfo.setTotalRecordCount(totCnt);
         resultMap.put("paginationInfo", paginationInfo);
         
         return resultMap;
 	}
 
-    /**
-	 * ?�일???�정?�다.
-     * @param loginVO
-     * @param restde
-     * @param bindingResult
-     * @param commandMap
-     * @param model
-     * @return "/cmm/sym/cal/EgovRestdeModify"
-     * @throws Exception
-     */
     @RequestMapping(value="/sym/cal/EgovRestdeModify.do")
-	public String updateRestde (@ModelAttribute("loginVO") LoginVO loginVO
-			, @ModelAttribute("restde") Restde restde
+	public Map<String, Object> updateRestde (@ModelAttribute("loginVO") LoginVO loginVO
+			, @RequestParam Map<String, Object> commandMap
 			, BindingResult bindingResult
-	, @RequestParam Map<String, Object> commandMap
 	) throws Exception {
+		Map<String, Object> resultMap = new HashMap<>();
 		String sCmd = commandMap.get("cmd") == null ? "" : (String) commandMap.get("cmd");
 		if (sCmd.equals("")) {
-			Restde vo = restdeManageService.selectRestdeDetail(restde);
+			Map<String, Object> vo = restdeManageService.selectRestdeDetail(commandMap);
 			resultMap.put("restde", vo);
 
-    		ComDefaultCodeVO CodeVO = new ComDefaultCodeVO();
-    		CodeVO.setCodeId("COM017");
+    		Map<String, Object> CodeVO = new HashMap<>();
+    		CodeVO.put("codeId", "COM017");
             resultMap.put("restdeCode", cmmUseService.selectCmmCodeDetail(CodeVO));
 
             return resultMap;
     	} else if (sCmd.equals("Modify")) {
 
     		if (bindingResult.hasErrors()){
-        		ComDefaultCodeVO CodeVO = new ComDefaultCodeVO();
-        		CodeVO.setCodeId("COM017");
+        		Map<String, Object> CodeVO = new HashMap<>();
+        		CodeVO.put("codeId", "COM017");
                 resultMap.put("restdeCode", cmmUseService.selectCmmCodeDetail(CodeVO));
 
                 return resultMap;
     		}
 
-    		restde.setLastUpdusrId(loginVO.getUniqId());
-    		restdeManageService.updateRestde(restde);
+    		commandMap.put("lastUpdusrId", loginVO.getUniqId());
+    		restdeManageService.updateRestde(commandMap);
 	        return resultMap;
     	} else {
     		return resultMap;
     	}
     }
-
-	
 }
-

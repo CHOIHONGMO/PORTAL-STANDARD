@@ -5,12 +5,12 @@ import java.util.List;
 import org.egovframe.rte.psl.dataaccess.EgovAbstractMapper;
 import org.springframework.stereotype.Repository;
 
-import com.portal.common.ComDefaultVO;
+import com.portal.common.model.ComDefaultVO;
 import com.portal.user.policy.ipm.service.IndvdlInfoPolicy;
 
 /**
  * 개인정보보호정책를 처리하는 Dao Class 구현
- * @author 공통서비스 장동한
+ * @author ST-Ones Corp.
  * @since 2009.07.03
  * @version 1.0
  * @see <pre>

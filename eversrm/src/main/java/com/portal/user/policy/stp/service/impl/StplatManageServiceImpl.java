@@ -16,7 +16,7 @@ import jakarta.annotation.Resource;
 /**
  *
  * 약관내용을 처리하는 서비스 구현 클래스
- * @author 공통서비스 개발팀 박정규
+ * @author ST-Ones Corp.
  * @since 2009.04.01
  * @version 1.0
  * @see
@@ -26,8 +26,6 @@ import jakarta.annotation.Resource;
  *
  *   수정일      수정자           수정내용
  *  -------    --------    ---------------------------
- *   2009.04.01  박정규          최초 생성
- *   2011.08.31  JJY            경량환경 템플릿 커스터마이징버전 생성
  *
  * </pre>
  */

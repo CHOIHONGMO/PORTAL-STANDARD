@@ -5,17 +5,15 @@
  *
  *     수정일         수정자                   수정내용
  *     -------          --------        ---------------------------
- *   2009.01.13     박정규          최초 생성
- *   2009.02.13     이삼섭          내용 추가
  *
- * @author 공통 서비스 개발팀 박정규
+ * @author ST-Ones Corp.
  * @since 2009. 01. 13
  * @version 1.0
  * @see
  *
  */
 
-package com.portal.util.common.service;
+package com.portal.util.common;
 
 /*
  * Copyright 2001-2006 The Apache Software Foundation.

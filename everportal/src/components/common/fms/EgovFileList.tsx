@@ -1,4 +1,5 @@
 import React from 'react';
+import { BASE_URL } from '@/api/apiClient';
 
 interface FileVO {
   atchFileId: string;
@@ -19,7 +20,7 @@ const EgovFileList: React.FC<EgovFileListProps> = ({
   onDeleteFile,
 }) => {
   const handleDownload = (atchFileId: string, fileSn: string) => {
-    const downloadUrl = `http://localhost:8080/api/cmm/fms/FileDown.do?atchFileId=${encodeURIComponent(
+    const downloadUrl = `${BASE_URL}/cmm/fms/FileDown.do?atchFileId=${encodeURIComponent(
       atchFileId
     )}&fileSn=${encodeURIComponent(fileSn)}`;
     window.open(downloadUrl);

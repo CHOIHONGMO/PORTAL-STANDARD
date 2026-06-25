@@ -13,8 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.portal.common.ComDefaultCodeVO;
-import com.portal.common.ComDefaultVO;
+import com.portal.common.model.ComDefaultVO;
 import com.portal.common.service.CmmUseService;
 import com.portal.user.poll.qmc.service.QustnrManageService;
 import com.portal.user.poll.qmc.service.QustnrManageVO;
@@ -68,8 +67,8 @@ public class QustnrApiManageController {
     public Map<String, Object> selectCmmCode(@RequestParam("codeId") String codeId) throws Exception {
         Map<String, Object> response = new HashMap<>();
         try {
-            ComDefaultCodeVO voComCode = new ComDefaultCodeVO();
-            voComCode.setCodeId(codeId);
+            Map<String, Object> voComCode = new HashMap<>();
+            voComCode.put("codeId", codeId);
             List<?> codeList = cmmUseService.selectCmmCodeDetail(voComCode);
             response.put("resultCode", "SUCCESS");
             response.put("resultList", codeList);

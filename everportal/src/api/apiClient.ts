@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-// 기존 JSP 포털이 8080 포트를 사용한다고 가정합니다.
-const BASE_URL = 'http://localhost:8080/api';
+export const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
 
 const apiClient = axios.create({
   baseURL: BASE_URL,

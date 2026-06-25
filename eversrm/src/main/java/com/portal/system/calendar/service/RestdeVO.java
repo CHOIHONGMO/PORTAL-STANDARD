@@ -7,7 +7,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 /**
  * 
  * 휴일 VO 클래스
- * @author 공통서비스 개발팀 이중호
+ * @author ST-Ones Corp.
  * @since 2009.04.01
  * @version 1.0
  * @see
@@ -17,7 +17,6 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  *   
  *   수정일      수정자           수정내용
  *  -------    --------    ---------------------------
- *   2009.04.01  이중호          최초 생성
  *
  * </pre>
  */

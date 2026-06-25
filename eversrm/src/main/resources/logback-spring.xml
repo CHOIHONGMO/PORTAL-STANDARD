@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Logback 설정 파일 (logback-spring.xml)
+    - log4j2.xml 의 로거 설정을 그대로 Logback 형식으로 변환
+    - Spring Boot 가 자동으로 이 파일을 탐색합니다 (logging.config 설정 불필요)
+-->
+<configuration scan="true" scanPeriod="30 seconds">
+
+    <!-- ======================================================= -->
+    <!--  Appenders                                               -->
+    <!-- ======================================================= -->
+
+    <!-- 콘솔 Appender -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %5p [%c] %m%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 롤링 파일 Appender (일별 로테이션, 30일 보관) -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/portal-app.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/portal-app.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %5p [%c] %m%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- ======================================================= -->
+    <!--  Loggers  (log4j2.xml 설정과 동일한 레벨 유지)           -->
+    <!-- ======================================================= -->
+
+    <!-- JDBC / SQL 로그 -->
+    <logger name="java.sql"         level="INFO"  additivity="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <!-- log4jdbc SQL 타이밍 로그 -->
+    <logger name="jdbc.sqltiming"   level="INFO"  additivity="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <!-- eGovFramework 로그 -->
+    <logger name="egovframework"    level="DEBUG" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+    <logger name="org.egovframe"    level="DEBUG" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <!-- Spring Framework 로그 -->
+    <logger name="org.springframework" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <!-- 애플리케이션 로그 (필요 시 DEBUG 로 변경) -->
+    <logger name="com.portal"       level="DEBUG" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </logger>
+
+    <!-- ======================================================= -->
+    <!--  Root Logger                                             -->
+    <!-- ======================================================= -->
+    <root level="ERROR">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+
+</configuration>

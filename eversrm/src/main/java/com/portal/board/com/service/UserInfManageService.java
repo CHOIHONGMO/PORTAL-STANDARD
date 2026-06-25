@@ -1,87 +1,137 @@
 package com.portal.board.com.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.egovframe.rte.fdl.cmmn.EgovAbstractServiceImpl;
+import org.springframework.stereotype.Service;
+
+import com.portal.board.com.UserInfManageMapper;
+import jakarta.annotation.Resource;
+
 /**
- * 협업 기능에서 사용자 정보를 관리하기 위한 서비스 인터페이스 클래스
- * @author 공통서비스개발팀 이삼섭
- * @since 2009.04.06
+ * 협업에서 사용할 사용자 조회 서비스 기능 구현 클래스
+ * 
+ * @author ST-Ones Corp.
+ * @since 2026.06.24
  * @version 1.0
- * @see
- *
- * <pre>
- * << 개정이력(Modification Information) >>
- *   
- *   수정일      수정자           수정내용
- *  -------    --------    ---------------------------
- *   2009.04.06  이삼섭          최초 생성
- *   2011.08.31  JJY            경량환경 템플릿 커스터마이징버전 생성 
- *
- * </pre>
  */
-public interface UserInfManageService {
+@Service("UserInfManageService")
+public class UserInfManageService extends EgovAbstractServiceImpl {
+
+	@Resource(name = "UserInfManageMapper")
+	private UserInfManageMapper userInfMapper;
 
 	/**
-     * 사용자 정보에 대한 목록을 조회한다.
-     * 
-     * @param userVO
-     * @return
-     * @throws Exception
-     */
-    public Map<String, Object> selectUserList(UserInfVO userVO) throws Exception;
+	 * 동호회 운영자 목록을 조회한다.
+	 * 
+	 * @param userVO
+	 * @return Map<String, Object>
+	 * @throws Exception
+	 */
+	public Map<String, Object> selectClubOprtrList(UserInfVO userVO) throws Exception {
+		List<UserInfVO> result = userInfMapper.selectClubOprtrList(userVO);
+		int cnt = userInfMapper.selectClubOprtrListCnt(userVO);
 
-    /**
-     * 커뮤니티 사용자 목록을 조회한다.
-     * 
-     * @param userVO
-     * @return
-     * @throws Exception
-     */
-    public Map<String, Object> selectCmmntyUserList(UserInfVO userVO) throws Exception;
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("resultList", result);
+		map.put("resultCnt", Integer.toString(cnt));
 
-    /**
-     * 커뮤니티 관리자 목록을 조회한다.
-     * 
-     * @param userVO
-     * @return
-     * @throws Exception
-     */
-    public Map<String, Object> selectCmmntyMngrList(UserInfVO userVO) throws Exception;
+		return map;
+	}
 
-    /**
-     * 동호회 사용자 목록을 조회한다.
-     * 
-     * @param userVO
-     * @return
-     * @throws Exception
-     */
-    public Map<String, Object> selectClubUserList(UserInfVO userVO) throws Exception;
+	/**
+	 * 동호회 사용자 목록을 조회한다.
+	 * 
+	 * @param userVO
+	 * @return Map<String, Object>
+	 * @throws Exception
+	 */
+	public Map<String, Object> selectClubUserList(UserInfVO userVO) throws Exception {
+		List<UserInfVO> result = userInfMapper.selectClubUserList(userVO);
+		int cnt = userInfMapper.selectClubUserListCnt(userVO);
 
-    /**
-     * 동호회 운영자 목록을 조회한다.
-     * 
-     * @param userVO
-     * @return
-     * @throws Exception
-     */
-    public Map<String, Object> selectClubOprtrList(UserInfVO userVO) throws Exception;
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("resultList", result);
+		map.put("resultCnt", Integer.toString(cnt));
 
-    /**
-     * 동호회에 대한 모든 사용자 목록을 조회한다.
-     * 
-     * @param userVO
-     * @return
-     * @throws Exception
-     */
-    public List<UserInfVO> selectAllClubUser(UserInfVO userVO) throws Exception;
+		return map;
+	}
 
-    /**
-     * 커뮤니티에 대한 모든 사용자 목록을 조회한다.
-     * 
-     * @param userVO
-     * @return
-     * @throws Exception
-     */
-    public List<UserInfVO> selectAllCmmntyUser(UserInfVO userVO) throws Exception;
+	/**
+	 * 커뮤니티 관리자 목록을 조회한다.
+	 * 
+	 * @param userVO
+	 * @return Map<String, Object>
+	 * @throws Exception
+	 */
+	public Map<String, Object> selectCmmntyMngrList(UserInfVO userVO) throws Exception {
+		List<UserInfVO> result = userInfMapper.selectCmmntyMngrList(userVO);
+		int cnt = userInfMapper.selectCmmntyMngrListCnt(userVO);
+
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("resultList", result);
+		map.put("resultCnt", Integer.toString(cnt));
+
+		return map;
+	}
+
+	/**
+	 * 커뮤니티 사용자 목록을 조회한다.
+	 * 
+	 * @param userVO
+	 * @return Map<String, Object>
+	 * @throws Exception
+	 */
+	public Map<String, Object> selectCmmntyUserList(UserInfVO userVO) throws Exception {
+		List<UserInfVO> result = userInfMapper.selectCmmntyUserList(userVO);
+		int cnt = userInfMapper.selectCmmntyUserListCnt(userVO);
+
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("resultList", result);
+		map.put("resultCnt", Integer.toString(cnt));
+
+		return map;
+	}
+
+	/**
+	 * 사용자 정보에 대한 목록을 조회한다.
+	 * 
+	 * @param userVO
+	 * @return Map<String, Object>
+	 * @throws Exception
+	 */
+	public Map<String, Object> selectUserList(UserInfVO userVO) throws Exception {
+		List<UserInfVO> result = userInfMapper.selectUserList(userVO);
+		int cnt = userInfMapper.selectUserListCnt(userVO);
+
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("resultList", result);
+		map.put("resultCnt", Integer.toString(cnt));
+
+		return map;
+	}
+
+	/**
+	 * 동호회에 대한 모든 사용자 목록을 조회한다.
+	 * 
+	 * @param userVO
+	 * @return List<UserInfVO>
+	 * @throws Exception
+	 */
+	public List<UserInfVO> selectAllClubUser(UserInfVO userVO) throws Exception {
+		return userInfMapper.selectAllClubUser(userVO);
+	}
+
+	/**
+	 * 커뮤니티에 대한 모든 사용자 목록을 조회한다.
+	 * 
+	 * @param userVO
+	 * @return List<UserInfVO>
+	 * @throws Exception
+	 */
+	public List<UserInfVO> selectAllCmmntyUser(UserInfVO userVO) throws Exception {
+		return userInfMapper.selectAllCmmntyUser(userVO);
+	}
 }

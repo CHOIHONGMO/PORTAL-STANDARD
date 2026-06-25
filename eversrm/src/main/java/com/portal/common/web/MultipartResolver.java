@@ -27,13 +27,13 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 
 import com.portal.common.service.PortalProperties;
-import com.portal.util.common.service.FileUploadUtil;
+import com.portal.util.common.FileUploadUtil;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * 실행환경의 파일업로드 처리를 위한 기능 클래스
  *
- * @author 공통서비스개발팀 이삼섭
+ * @author ST-Ones Corp.
  * @since 2009.06.01
  * @version 1.0
  * @see
@@ -43,11 +43,6 @@ import jakarta.servlet.http.HttpServletRequest;
  *
  *  수정일                수정자             수정내용
  *  ----------   --------    ---------------------------
- *  2009.03.25   이삼섭              최초 생성
- *  2011.06.11   서준식              스프링 3.0 업그레이드 API변경으로인한 수정
- *  2020.10.27   신용호              예외처리 수정
- *  2020.10.29   신용호              허용되지 않는 확장자 업로드 제한 (globals.properties > Globals.fileUpload.Extensions)
- *  2025.07.01   유지보수            Spring Framework 6.2.8, JDK 17 기반으로 업데이트
  *
  *      </pre>
  */

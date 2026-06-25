@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.Pattern;
 /**
  * 설문문항 VO Class 구현 
- * @author 공통서비스 장동한
+ * @author ST-Ones Corp.
  * @since 2009.03.20
  * @version 1.0
  * @see
@@ -18,7 +18,6 @@ import jakarta.validation.constraints.Pattern;
  *   
  *   수정일      수정자           수정내용
  *  -------    --------    ---------------------------
- *   2009.03.20  장동한          최초 생성
  *
  * </pre>
  */

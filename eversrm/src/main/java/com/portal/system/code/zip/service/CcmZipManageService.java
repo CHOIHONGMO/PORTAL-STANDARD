@@ -2,82 +2,99 @@ package com.portal.system.code.zip.service;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
+
+import org.egovframe.rte.fdl.cmmn.EgovAbstractServiceImpl;
+import org.springframework.stereotype.Service;
+
+import com.portal.system.code.zip.ZipManageMapper;
+import jakarta.annotation.Resource;
 
 /**
- *
- * 우편번호에 관한 서비스 인터페이스 클래스를 정의한다
- * @author 공통서비스 개발팀 이중호
+ * 우편번호에 관한 서비스 구현 클래스를 정의한다.
+ * 
+ * @author ST-Ones Corp.
  * @since 2009.04.01
  * @version 1.0
- * @see
- *
- * <pre>
- * << 개정이력(Modification Information) >>
- *
- *   수정일      수정자           수정내용
- *  -------    --------    ---------------------------
- *   2009.04.01  이중호          최초 생성
- *   2011.08.31  JJY            경량환경 템플릿 커스터마이징버전 생성
- *
- * </pre>
  */
-public interface CcmZipManageService {
+@Service("ZipManageService")
+public class CcmZipManageService extends EgovAbstractServiceImpl {
+
+	@Resource(name="ZipManageMapper")
+	private ZipManageMapper zipManageMapper;
 
 	/**
 	 * 우편번호를 삭제한다.
-	 * @param zip
+	 * @param zip 우편번호 정보 Map
 	 * @throws Exception
 	 */
-	void deleteZip(Zip zip) throws Exception;
+	public void deleteZip(Map<String, Object> zip) throws Exception {
+		zipManageMapper.deleteZip(zip);
+	}
 
 	/**
 	 * 우편번호 전체를 삭제한다.
 	 * @throws Exception
 	 */
-	void deleteAllZip() throws Exception;
+	public void deleteAllZip() throws Exception {
+		zipManageMapper.deleteAllZip();
+	}
 
 	/**
 	 * 우편번호를 등록한다.
-	 * @param zip
+	 * @param zip 우편번호 정보 Map
 	 * @throws Exception
 	 */
-	void insertZip(Zip zip) throws Exception;
+	public void insertZip(Map<String, Object> zip) throws Exception {
+		zipManageMapper.insertZip(zip);
+	}
 
 	/**
 	 * 우편번호 엑셀파일을 등록한다.
-	 * @param zip
+	 * @param file 입력 스트림
 	 * @throws Exception
 	 */
-	void insertExcelZip(InputStream file) throws Exception;
+	public void insertExcelZip(InputStream file) throws Exception {
+		// 레거시에서도 비어 있던 비즈니스 로직
+	}
 
 	/**
 	 * 우편번호 상세항목을 조회한다.
-	 * @param zip
-	 * @return Zip(우편번호)
+	 * @param zip 조회 조건 Map
+	 * @return Map<String, Object> 우편번호 상세정보
 	 * @throws Exception
 	 */
-	Zip selectZipDetail(Zip zip) throws Exception;
+	public Map<String, Object> selectZipDetail(Map<String, Object> zip) throws Exception {
+		return zipManageMapper.selectZipDetail(zip);
+	}
 
 	/**
 	 * 우편번호 목록을 조회한다.
-	 * @param searchVO
-	 * @return List(우편번호 목록)
+	 * @param searchMap 검색 조건 Map
+	 * @return List<Map<String, Object>> 우편번호 목록
 	 * @throws Exception
 	 */
-	List<?> selectZipList(ZipVO searchVO) throws Exception;
+	public List<Map<String, Object>> selectZipList(Map<String, Object> searchMap) throws Exception {
+		return zipManageMapper.selectZipList(searchMap);
+	}
 
-    /**
+	/**
 	 * 우편번호 총 갯수를 조회한다.
-     * @param searchVO
-     * @return int(우편번호 총 갯수)
-     */
-    int selectZipListTotCnt(ZipVO searchVO) throws Exception;
+	 * @param searchMap 검색 조건 Map
+	 * @return int 우편번호 총 갯수
+	 * @throws Exception
+	 */
+	public int selectZipListTotCnt(Map<String, Object> searchMap) throws Exception {
+		return zipManageMapper.selectZipListTotCnt(searchMap);
+	}
 
 	/**
 	 * 우편번호를 수정한다.
-	 * @param zip
+	 * @param zip 우편번호 수정정보 Map
 	 * @throws Exception
 	 */
-	void updateZip(Zip zip) throws Exception;
+	public void updateZip(Map<String, Object> zip) throws Exception {
+		zipManageMapper.updateZip(zip);
+	}
 
 }

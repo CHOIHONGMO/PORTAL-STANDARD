@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>sample.com</groupId>
 	<artifactId>Portal-Standard</artifactId>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<version>1.0.0</version>
 	<name>eversrm</name>
 	<url>https://www.egovframe.go.kr</url>
@@ -17,10 +17,10 @@
 		</license>
 	</licenses>
 
-	<!-- eGovFramework Web Parent 설정 -->
+	<!-- eGovFramework Boot Parent 설정 -->
 	<parent>
-		<groupId>org.egovframe.web</groupId>
-		<artifactId>egovframe-web-config-parent</artifactId>
+		<groupId>org.egovframe.boot</groupId>
+		<artifactId>egovframe-boot-starter-parent</artifactId>
 		<version>5.0.0</version>
 	</parent>
 
@@ -51,8 +51,6 @@
 		<java.version>17</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<log4j2.version>2.25.3</log4j2.version>
-		<slf4j.version>2.0.17</slf4j.version>
 		<commons-beanutils.version>1.11.0</commons-beanutils.version>
 		<protobuf.java.version>3.25.5</protobuf.java.version>
 		<parsson.version>1.1.7</parsson.version>
@@ -63,6 +61,14 @@
 		<dependency>
 			<groupId>org.egovframe.rte</groupId>
 			<artifactId>egovframe-rte-ptl-mvc</artifactId>
+			<exclusions>
+				<!-- log4j-slf4j2-impl 과 spring-boot-starter-logging(Logback) 충돌 방지 -->
+				<!-- Logback이 SLF4J 구현체를 담당하므로 log4j-slf4j2-impl 제거 -->
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-slf4j2-impl</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.egovframe.rte</groupId>
@@ -75,18 +81,34 @@
 		<dependency>
 			<groupId>org.egovframe.rte</groupId>
 			<artifactId>egovframe-rte-psl-dataaccess</artifactId>
+			<exclusions>
+				<!-- egovframe-rte-fdl-logging 이 가져오는 log4j-slf4j2-impl 충돌 방지 -->
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-slf4j2-impl</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.egovframe.rte</groupId>
 			<artifactId>egovframe-rte-fdl-security</artifactId>
+			<version>5.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.egovframe.rte</groupId>
 			<artifactId>egovframe-rte-fdl-crypto</artifactId>
+			<version>5.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.egovframe.rte</groupId>
 			<artifactId>egovframe-rte-ptl-reactive</artifactId>
+			<exclusions>
+				<!-- log4j-slf4j2-impl 과 spring-boot-starter-logging(Logback) 충돌 방지 -->
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-slf4j2-impl</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<!-- Jakarta Bean Validation -->
@@ -99,55 +121,10 @@
 			<artifactId>hibernate-validator</artifactId>
 		</dependency>
 
-		<!-- Jakarta -->
+		<!-- Spring Boot Starter Web -->
 		<dependency>
-			<groupId>jakarta.servlet</groupId>
-			<artifactId>jakarta.servlet-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<!-- JSP 구문을 지원하기 위한 표준 사양 -->
-		<dependency>
-			<groupId>jakarta.servlet.jsp</groupId>
-			<artifactId>jakarta.servlet.jsp-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<!-- JSTL 태그의 표준 사양 -->
-		<dependency>
-			<groupId>jakarta.servlet.jsp.jstl</groupId>
-			<artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
-		</dependency>
-		<!-- JSTL 구현체 -->
-		<dependency>
-			<groupId>org.glassfish.web</groupId>
-			<artifactId>jakarta.servlet.jsp.jstl</artifactId>
-		</dependency>
-
-		<!-- SLF4J API 및 Log4j2 바인딩 -->
-		<!-- CVE-2025-68161: 취약점 보완용 업데이트 -->
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<version>${log4j2.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-slf4j2-impl</artifactId>
-			<version>${log4j2.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>log4j-over-slf4j</artifactId>
-			<version>${slf4j.version}</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
 		<dependency>
@@ -189,16 +166,19 @@
 		<dependency>
 			<groupId>org.antlr</groupId>
 			<artifactId>antlr4</artifactId>
+			<version>4.13.2</version>
 		</dependency>
 
 		<dependency>
 			<groupId>cglib</groupId>
 			<artifactId>cglib</artifactId>
+			<version>3.3.0</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-compress</artifactId>
+			<version>1.28.0</version>
 		</dependency>
 
 		<dependency>
@@ -209,6 +189,7 @@
 		<dependency>
 			<groupId>com.ibm.icu</groupId>
 			<artifactId>icu4j</artifactId>
+			<version>77.1</version>
 		</dependency>
 
 		<dependency>
@@ -219,6 +200,7 @@
 		<dependency>
 			<groupId>org.glassfish</groupId>
 			<artifactId>jakarta.json</artifactId>
+			<version>2.0.1</version>
 		</dependency>
 
 		<dependency>
@@ -266,11 +248,8 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<configuration>
-					<failOnMissingWebXml>false</failOnMissingWebXml>
-				</configuration>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 			<!-- PMD manven plugin -->
 			<plugin>

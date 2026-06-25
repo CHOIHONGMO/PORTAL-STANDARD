@@ -1,4 +1,4 @@
-package com.portal.util.common.service;
+package com.portal.util.common;
 
 import java.io.File;
 import java.io.InputStream;
@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.util.WebUtils;
 
-import com.portal.common.WebUtil;
+import com.portal.common.util.WebUtil;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
@@ -20,13 +20,8 @@ import jakarta.servlet.http.HttpServletRequest;
  *
  *  수정일               수정자            수정내용
  *  ----------   --------   ---------------------------
- *  2009.08.26   한성곤            최초 생성
- *  2018.08.17   신용호            uploadFilesExt(확장자 기록) 추가
- *  2019.12.06   신용호            checkFileExtension(), checkFileMaxSize() 추가
- *  2020.08.05   신용호            uploadFilesExt Parameter 수정
- *  2021.02.16   신용호            WebUtils.getNativeRequest(request,MultipartHttpServletRequest.class);
  *
- * @author 공통컴포넌트 개발팀 한성곤
+ * @author ST-Ones Corp.
  * @since 2009.08.26
  * @version 1.0
  * @see

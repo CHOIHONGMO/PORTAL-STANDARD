@@ -9,7 +9,7 @@ package com.portal.common.service;
  *   -------    --------    ---------------------------
  *   2009.01.19    박지욱          최초 생성
  *
- *  @author 공통 서비스 개발팀 박지욱
+ *  @author ST-Ones Corp.
  *  @since 2009. 01. 19
  *  @version 1.0
  *  @see 

@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 /**
  * atchFileId 파라미터 복호화 클래스
  * 
- * @author 표준프레임워크팀 신용호
+ * @author ST-Ones Corp.
  * @since 2022.12.22
  * @version 1.0
  * @see
@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
  *
  *     수정일      	수정자           수정내용
  *  ------------   --------    ---------------------------
- *   2022.12.22  	신용호          최초 생성
  *
  * Copyright (C) 2009 by MOPAS  All right reserved.
  *      </pre>

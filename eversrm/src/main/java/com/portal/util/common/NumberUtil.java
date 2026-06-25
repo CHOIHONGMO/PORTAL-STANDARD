@@ -5,16 +5,15 @@
  * 
  *     수정일         수정자                   수정내용
  *     -------          --------        ---------------------------
- *   2009.02.13       이삼섭                  최초 생성
  *
- * @author 공통 서비스 개발팀 이삼섭
+ * @author ST-Ones Corp.
  * @since 2009. 02. 13
  * @version 1.0
  * @see 
  * 
  */
 
-package com.portal.util.common.service;
+package com.portal.util.common;
 
 import java.security.SecureRandom;
 import java.text.ParseException;
@@ -26,7 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
  * 숫자 데이터 처리 관련 유틸리티
- * @author 공통서비스개발팀 이삼섭
+ * @author ST-Ones Corp.
  * @since 2009.02.13
  * @version 1.0
  * @see
@@ -36,8 +35,6 @@ import org.slf4j.LoggerFactory;
  *   
  *   수정일      수정자           수정내용
  *  -------    --------    ---------------------------
- *   2009.02.13  이삼섭          최초 생성
- *   2011.08.31  JJY            경량환경 템플릿 커스터마이징버전 생성 
  *
  * </pre>
  */

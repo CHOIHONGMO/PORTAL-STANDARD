@@ -13,21 +13,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import java.util.HashMap;
 
-import com.portal.common.ComDefaultVO;
-import com.portal.common.LoginVO;
+import com.portal.common.model.ComDefaultVO;
+import com.portal.common.model.LoginVO;
 import com.portal.board.bbs.service.BoardVO;
 import com.portal.board.bbs.service.BBSManageService;
-import com.portal.system.menu.mpm.service.MenuManageService;
-import com.portal.system.menu.mpm.service.MenuManageVO;
 import com.portal.user.help.faq.service.FaqManageService;
-import com.portal.user.help.faq.service.FaqManageDefaultVO;
 import com.portal.user.poll.qri.service.QustnrRespondInfoService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * 템플릿 메인 페이지 컨트롤러 클래스(Sample 소스)
- * @author 실행환경 개발팀 JJY
+ * @author ST-Ones Corp.
  * @since 2011.08.31
  * @version 1.0
  * @see
@@ -37,8 +34,6 @@ import jakarta.servlet.http.HttpServletRequest;
  *
  *  수정일              수정자           수정내용
  *  ----------  --------   ---------------------------
- *  2011.08.31  JJY        최초 생성
- *  2021.08.12  신용호            추가 URL 생성 
  *
  * </pre>
  */
@@ -52,15 +47,11 @@ public class MainController {
 	 * BBSManageService
 	 */
 	@Resource(name = "BBSManageService")
-    private BBSManageService bbsMngService;
-
-	/** MenuManageService */
-	@Resource(name = "meunManageService")
-    private MenuManageService menuManageService;
+	private BBSManageService bbsMngService;
 
 	/** FaqManageService */
 	@Resource(name = "FaqManageService")
-    private FaqManageService faqManageService;
+	private FaqManageService faqManageService;
 
 	/** egovQustnrRespondInfoService */
 	@Resource(name = "egovQustnrRespondInfoService")
@@ -113,29 +104,30 @@ public class MainController {
 
 		// FAQ 메인 컨텐츠 조회 시작 ---------------------------------
 		/** EgovPropertyService.SiteList */
-		FaqManageDefaultVO searchVO = new FaqManageDefaultVO();
-		searchVO.setPageUnit(3);
-    	searchVO.setPageSize(10);
+		Map<String, Object> faqSearchVO = new HashMap<>();
+		faqSearchVO.put("pageIndex", 1);
+		faqSearchVO.put("pageUnit", 3);
+		faqSearchVO.put("pageSize", 10);
 
-    	/** pageing */
-    	paginationInfo.setCurrentPageNo(searchVO.getPageIndex());
-		paginationInfo.setRecordCountPerPage(searchVO.getPageUnit());
-		paginationInfo.setPageSize(searchVO.getPageSize());
+		/** pageing */
+		paginationInfo.setCurrentPageNo(1);
+		paginationInfo.setRecordCountPerPage(3);
+		paginationInfo.setPageSize(10);
 
-		searchVO.setFirstIndex(paginationInfo.getFirstRecordIndex());
-		searchVO.setLastIndex(paginationInfo.getLastRecordIndex());
-		searchVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
+		faqSearchVO.put("firstIndex", paginationInfo.getFirstRecordIndex());
+		faqSearchVO.put("lastIndex", paginationInfo.getLastRecordIndex());
+		faqSearchVO.put("recordCountPerPage", paginationInfo.getRecordCountPerPage());
 
-        resultMap.put("faqList", faqManageService.selectFaqList(searchVO));
+		resultMap.put("faqList", faqManageService.selectFaqList(faqSearchVO));
 
 		// FAQ 메인 컨텐츠 조회 끝 -----------------------------------
 
-        // 설문참여 메인 컨텐츠 조회 시작 -----------------------------------
-        ComDefaultVO qVO = new ComDefaultVO();
-    	qVO.setPageUnit(1);
-    	qVO.setPageSize(10);
+		// 설문참여 메인 컨텐츠 조회 시작 -----------------------------------
+		ComDefaultVO qVO = new ComDefaultVO();
+		qVO.setPageUnit(1);
+		qVO.setPageSize(10);
 
-    	/** pageing */
+		/** pageing */
 		paginationInfo.setCurrentPageNo(qVO.getPageIndex());
 		paginationInfo.setRecordCountPerPage(qVO.getPageUnit());
 		paginationInfo.setPageSize(qVO.getPageSize());
@@ -144,76 +136,10 @@ public class MainController {
 		qVO.setLastIndex(paginationInfo.getLastRecordIndex());
 		qVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
 
-        resultMap.put("qriList", egovQustnrRespondInfoService.selectQustnrRespondInfoManageList(qVO));
+		resultMap.put("qriList", egovQustnrRespondInfoService.selectQustnrRespondInfoManageList(qVO));
 
-     // 설문참여 메인 컨텐츠 조회 끝 -----------------------------------
+		// 설문참여 메인 컨텐츠 조회 끝 -----------------------------------
 
 		return resultMap;
 	}
-
-	/**
-     * Header Page를 조회한다.
-     * @param menuManageVO MenuManageVO
-     * @return Header data
-     * @exception Exception
-     */
-	@RequestMapping(value="/sym/mms/EgovHeader.do")
-    public Map<String, Object> selectHeader(
-    		@ModelAttribute("menuManageVO") MenuManageVO menuManageVO,
-    		@RequestParam(value="flag", required=false) String flag)
-            throws Exception {
-            
-        Map<String, Object> resultMap = new HashMap<>();
-
-		LoginVO user =  EgovUserDetailsHelper.isAuthenticated()? (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser():null;
-
-		if(EgovUserDetailsHelper.isAuthenticated() && user!=null){
-    		menuManageVO.setTmp_Id(user.getId());
-        	menuManageVO.setTmp_Password(user.getPassword());
-        	menuManageVO.setTmp_UserSe(user.getUserSe());
-        	menuManageVO.setTmp_Name(user.getName());
-        	menuManageVO.setTmp_Email(user.getEmail());
-        	menuManageVO.setTmp_OrgnztId(user.getOrgnztId());
-        	menuManageVO.setTmp_UniqId(user.getUniqId());
-    		resultMap.put("list_headmenu", menuManageService.selectMainMenuHead(menuManageVO));
-    		resultMap.put("list_menulist", menuManageService.selectMainMenuLeft(menuManageVO));
-    	}else{
-    		menuManageVO.setAuthorCode("ROLE_ANONYMOUS");
-    		resultMap.put("list_headmenu", menuManageService.selectMainMenuHeadByAuthor(menuManageVO));
-    		resultMap.put("list_menulist", menuManageService.selectMainMenuLeftByAuthor(menuManageVO));
-    	}
-
-    	return resultMap;
-
-    }
-
-	@RequestMapping(value="/sym/mms/EgovMainMenuHead.do")
-    public Map<String, Object> selectMainMenuHead(
-    		@ModelAttribute("menuManageVO") MenuManageVO menuManageVO,
-    		@RequestParam(value="flag", required=false) String flag)
-            throws Exception {
-            
-        Map<String, Object> resultMap = new HashMap<>();
-
-    	LoginVO user =
-    		EgovUserDetailsHelper.isAuthenticated()? (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser():null;
-    	if(EgovUserDetailsHelper.isAuthenticated() && user!=null){
-    		menuManageVO.setTmp_Id(user.getId());
-        	menuManageVO.setTmp_Password(user.getPassword());
-        	menuManageVO.setTmp_UserSe(user.getUserSe());
-        	menuManageVO.setTmp_Name(user.getName());
-        	menuManageVO.setTmp_Email(user.getEmail());
-        	menuManageVO.setTmp_OrgnztId(user.getOrgnztId());
-        	menuManageVO.setTmp_UniqId(user.getUniqId());
-    		resultMap.put("list_headmenu", menuManageService.selectMainMenuHead(menuManageVO));
-    		resultMap.put("list_menulist", menuManageService.selectMainMenuLeft(menuManageVO));
-    	}else{
-    		menuManageVO.setAuthorCode("ROLE_ANONYMOUS");
-    		resultMap.put("list_headmenu", menuManageService.selectMainMenuHeadByAuthor(menuManageVO));
-    		resultMap.put("list_menulist", menuManageService.selectMainMenuLeftByAuthor(menuManageVO));
-    	}
-
-    	return resultMap;
-    }
-
 }

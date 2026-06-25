@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 
 /**
  * Utility class  to support to logging information
- * @author Vincent Han
+ * @author ST-Ones Corp.
  * @since 2014.09.18
  * @version 1.0
  * @see
@@ -15,7 +15,6 @@ import java.util.logging.Logger;
  *   
  *   수정일        수정자       수정내용
  *  -------       --------    ---------------------------
- *   2014.09.18	표준프레임워크센터	최초 생성
  *
  * </pre>
  */

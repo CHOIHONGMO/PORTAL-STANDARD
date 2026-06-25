@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -16,11 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.portal.common.WebUtil;
-import com.portal.common.SessionVO;
+import com.portal.common.util.WebUtil;
 import com.portal.common.service.FileMngService;
 import com.portal.common.service.PortalProperties;
-import com.portal.common.service.FileVO;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,25 +27,11 @@ import jakarta.servlet.http.HttpServletResponse;
 /**
  * @Class Name : ImageProcessController.java
  * @Description :
- * @Modification Information
- *
- *    수정일       수정자         수정내용
- *    -------        -------     -------------------
- *    2009. 4. 2.     이삼섭
- *    2011.08.31.     JJY        경량환경 템플릿 커스터마이징버전 생성
- *
- * @author 공통 서비스 개발팀 이삼섭
- * @since 2009. 4. 2.
- * @version
- * @see
- *
+ * @author ST-Ones Corp.
  */
 @RestController
 public class ImageProcessController extends HttpServlet {
 
-	/**
-	 *  serialVersion UID
-	 */
 	private static final long serialVersionUID = -6339945210971171173L;
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ImageProcessController.class);
@@ -58,21 +43,13 @@ public class ImageProcessController extends HttpServlet {
 	@Resource(name = "egovARIACryptoService")
 	EgovCryptoService cryptoService;
 	
-	// 주의 : 반드시 기본값 "egovframe"을 다른것으로 변경하여 사용하시기 바랍니다.
 	public static final String ALGORITHM_KEY = PortalProperties.getProperty("Globals.File.algorithmKey");
 
 	/**
 	 * 첨부된 이미지에 대한 미리보기 기능을 제공한다.
-	 *
-	 * @param atchFileId
-	 * @param fileSn
-	 * @param sessionVO
-	 * @param model
-	 * @param response
-	 * @throws Exception
 	 */
 	@RequestMapping("/cmm/fms/getImage.do")
-	public void getImageInf(SessionVO sessionVO, @RequestParam Map<String, Object> commandMap, HttpServletResponse response) throws Exception {
+	public void getImageInf(@RequestParam Map<String, Object> commandMap, HttpServletResponse response) throws Exception {
 
 		String param_atchFileId = (String) commandMap.get("atchFileId");
 		param_atchFileId = param_atchFileId.replaceAll(" ", "+");
@@ -82,15 +59,15 @@ public class ImageProcessController extends HttpServlet {
 
 		String fileSn = (String) commandMap.get("fileSn");
 
-		FileVO vo = new FileVO();
+		Map<String, Object> vo = new HashMap<>();
 
-		vo.setAtchFileId(decodedFileId);
-		vo.setFileSn(fileSn);
+		vo.put("atchFileId", decodedFileId);
+		vo.put("fileSn", fileSn);
 
-		FileVO fvo = fileService.selectFileInf(vo);
+		Map<String, Object> fvo = fileService.selectFileInf(vo);
 		
-		String fileStreCours = WebUtil.filePathBlackList(fvo.getFileStreCours());
-		String streFileNm = WebUtil.filePathBlackList(fvo.getStreFileNm());
+		String fileStreCours = WebUtil.filePathBlackList((String) fvo.get("fileStreCours"));
+		String streFileNm = WebUtil.filePathBlackList((String) fvo.get("streFileNm"));
 		
 		File file = new File(fileStreCours, streFileNm);
 		FileInputStream fis = null;
@@ -107,14 +84,15 @@ public class ImageProcessController extends HttpServlet {
 			}
 
 			String type = "";
+			String fileExtsn = (String) fvo.get("fileExtsn");
 
-			if (fvo.getFileExtsn() != null && !"".equals(fvo.getFileExtsn())) {
-				if ("jpg".equals(fvo.getFileExtsn().toLowerCase())) {
+			if (fileExtsn != null && !"".equals(fileExtsn)) {
+				if ("jpg".equals(fileExtsn.toLowerCase())) {
 					type = "image/jpeg";
 				} else {
-					type = "image/" + fvo.getFileExtsn().toLowerCase();
+					type = "image/" + fileExtsn.toLowerCase();
 				}
-				type = "image/" + fvo.getFileExtsn().toLowerCase();
+				type = "image/" + fileExtsn.toLowerCase();
 
 			} else {
 				LOGGER.debug("Image fileType is null.");

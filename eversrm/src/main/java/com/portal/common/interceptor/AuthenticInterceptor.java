@@ -4,7 +4,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.ModelAndViewDefiningException;
 import org.springframework.web.servlet.mvc.WebContentInterceptor;
 
-import com.portal.common.LoginVO;
+import com.portal.common.model.LoginVO;
 import org.egovframe.rte.fdl.security.userdetails.util.EgovUserDetailsHelper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * 인증여부 체크 인터셉터
- * @author 공통서비스 개발팀 서준식
+ * @author ST-Ones Corp.
  * @since 2011.07.01
  * @version 1.0
  * @see
@@ -22,9 +22,6 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  *   수정일      수정자          수정내용
  *  -------    --------    ---------------------------
- *  2011.07.01  서준식          최초 생성
- *  2011.09.07  서준식          인증이 필요없는 URL을 패스하는 로직 추가
- *  2014.06.11  이기하          인증이 필요없는 URL을 패스하는 로직 삭제(xml로 대체)
  *  </pre>
  */
 

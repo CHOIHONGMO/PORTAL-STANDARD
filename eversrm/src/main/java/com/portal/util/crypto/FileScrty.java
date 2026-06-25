@@ -1,4 +1,4 @@
-package com.portal.util.crypto.service;
+package com.portal.util.crypto;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Base64인코딩/디코딩 방식을 이용한 데이터를 암호화/복호화하는 Business Interface class
- * @author 공통서비스개발팀 박지욱
+ * @author ST-Ones Corp.
  * @since 2009.01.19
  * @version 1.0
  * @see
@@ -26,8 +26,6 @@ import org.slf4j.LoggerFactory;
  *
  *   수정일      수정자           수정내용
  *  -------    --------    ---------------------------
- *   2009.01.19  박지욱          최초 생성
- *   2011.08.31  JJY            경량환경 템플릿 커스터마이징버전 생성
  *
  * </pre>
  */

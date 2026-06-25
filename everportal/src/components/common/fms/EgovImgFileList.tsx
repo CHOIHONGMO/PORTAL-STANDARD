@@ -1,4 +1,5 @@
 import React from 'react';
+import { BASE_URL } from '@/api/apiClient';
 
 interface FileVO {
   atchFileId: string;
@@ -17,7 +18,7 @@ const EgovImgFileList: React.FC<EgovImgFileListProps> = ({ fileList = [] }) => {
       {fileList.map((file) => (
         <div key={`${file.atchFileId}-${file.fileSn}`} className="img-item" style={{ maxWidth: '100%' }}>
           <img
-            src={`http://localhost:8080/api/cmm/fms/getImage.do?atchFileId=${encodeURIComponent(
+            src={`${BASE_URL}/cmm/fms/getImage.do?atchFileId=${encodeURIComponent(
               file.atchFileId
             )}&fileSn=${encodeURIComponent(file.fileSn)}`}
             alt="첨부 이미지"

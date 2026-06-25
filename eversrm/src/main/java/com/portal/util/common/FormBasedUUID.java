@@ -1,4 +1,4 @@
-package com.portal.util.common.service;
+package com.portal.util.common;
 
 import java.io.Serializable;
 import java.security.MessageDigest;

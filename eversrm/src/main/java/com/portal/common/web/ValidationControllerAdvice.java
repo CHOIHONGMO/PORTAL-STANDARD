@@ -22,7 +22,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.annotation.InitBinder;
 
-import com.portal.common.PortalMessageSource;
+import com.portal.common.message.PortalMessageSource;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.ValidatorFactory;
@@ -30,7 +30,7 @@ import jakarta.validation.ValidatorFactory;
 /**
  * Validation 오류 메시지를 공통으로 처리하는 ControllerAdvice
  * 
- * @author 공통서비스 개발팀
+ * @author ST-Ones Corp.
  * @since 2024
  */
 @RestControllerAdvice

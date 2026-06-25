@@ -3,10 +3,19 @@
     "configurations": [
         {
             "type": "java",
+            "name": "PortalApplication",
+            "request": "launch",
+            "mainClass": "com.portal.PortalApplication",
+            "projectName": ""
+        },
+        {
+            "type": "java",
             "name": "Debug eversrm (Tomcat)",
             "request": "launch",
             "mainClass": "org.apache.catalina.startup.Bootstrap",
-            "args": ["start"],
+            "args": [
+                "start"
+            ],
             "vmArgs": [
                 "-Dcatalina.base=${workspaceFolder}\\.tomcat\\eversrm",
                 "-Dcatalina.home=C:\\ST-onesIDE\\server\\apache-tomcat-10.1.55",

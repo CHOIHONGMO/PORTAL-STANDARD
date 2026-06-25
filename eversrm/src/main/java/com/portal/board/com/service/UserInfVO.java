@@ -6,7 +6,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * 사용자 정보 조회를 위한 VO  클래스
- * @author 공통서비스개발팀 이삼섭
+ * @author ST-Ones Corp.
  * @since 2009.04.06
  * @version 1.0
  * @see
@@ -16,8 +16,6 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  *
  *   수정일      수정자           수정내용
  *  -------    --------    ---------------------------
- *   2009.04.06  이삼섭          최초 생성
- *   2011.08.31  JJY            경량환경 템플릿 커스터마이징버전 생성
  *
  * </pre>
  */

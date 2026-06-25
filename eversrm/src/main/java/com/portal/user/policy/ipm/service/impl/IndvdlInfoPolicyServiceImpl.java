@@ -6,14 +6,14 @@ import org.egovframe.rte.fdl.cmmn.EgovAbstractServiceImpl;
 import org.egovframe.rte.fdl.idgnr.EgovIdGnrService;
 import org.springframework.stereotype.Service;
 
-import com.portal.common.ComDefaultVO;
+import com.portal.common.model.ComDefaultVO;
 import com.portal.user.policy.ipm.service.IndvdlInfoPolicyService;
 import com.portal.user.policy.ipm.service.IndvdlInfoPolicy;
 import jakarta.annotation.Resource;
 
 /**
  * 개인정보보호정책를 처리하는 ServiceImpl Class 구현
- * @author 공통서비스 장동한
+ * @author ST-Ones Corp.
  * @since 2009.07.03
  * @version 1.0
  * @see <pre>

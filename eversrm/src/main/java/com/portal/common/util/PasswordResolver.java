@@ -16,7 +16,7 @@ import jakarta.annotation.Resource;
  * 데이터베이스 패스워드 해결을 위한 유틸리티 클래스
  * 암호화된 패스워드를 복호화하거나 평문 패스워드를 반환
  * 
- * @author 유지보수
+ * @author ST-Ones Corp.
  * @since 2025.06.01
  */
 @Component

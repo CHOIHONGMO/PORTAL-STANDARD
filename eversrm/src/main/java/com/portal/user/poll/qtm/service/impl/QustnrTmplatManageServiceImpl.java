@@ -7,13 +7,13 @@ import org.egovframe.rte.fdl.cmmn.EgovAbstractServiceImpl;
 import org.egovframe.rte.fdl.idgnr.EgovIdGnrService;
 import org.springframework.stereotype.Service;
 
-import com.portal.common.ComDefaultVO;
+import com.portal.common.model.ComDefaultVO;
 import com.portal.user.poll.qtm.service.QustnrTmplatManageService;
 import com.portal.user.poll.qtm.service.QustnrTmplatManageVO;
 import jakarta.annotation.Resource;
 /**
  * 설문템플릿 ServiceImpl Class 구현
- * @author 공통서비스 장동한
+ * @author ST-Ones Corp.
  * @since 2009.03.20
  * @version 1.0
  * @see
@@ -23,8 +23,6 @@ import jakarta.annotation.Resource;
  *
  *   수정일      수정자           수정내용
  *  -------    --------    ---------------------------
- *   2009.03.20  장동한          최초 생성
- *   2011.08.31  JJY            경량환경 템플릿 커스터마이징버전 생성
  *
  * </pre>
  */
