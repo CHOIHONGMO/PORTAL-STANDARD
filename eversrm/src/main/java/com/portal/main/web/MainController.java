@@ -123,18 +123,19 @@ public class MainController {
 		// FAQ 메인 컨텐츠 조회 끝 -----------------------------------
 
 		// 설문참여 메인 컨텐츠 조회 시작 -----------------------------------
-		ComDefaultVO qVO = new ComDefaultVO();
-		qVO.setPageUnit(1);
-		qVO.setPageSize(10);
+		Map<String, Object> qVO = new HashMap<>();
+		qVO.put("pageIndex", 1);
+		qVO.put("pageUnit", 1);
+		qVO.put("pageSize", 10);
 
 		/** pageing */
-		paginationInfo.setCurrentPageNo(qVO.getPageIndex());
-		paginationInfo.setRecordCountPerPage(qVO.getPageUnit());
-		paginationInfo.setPageSize(qVO.getPageSize());
+		paginationInfo.setCurrentPageNo(1);
+		paginationInfo.setRecordCountPerPage(1);
+		paginationInfo.setPageSize(10);
 
-		qVO.setFirstIndex(paginationInfo.getFirstRecordIndex());
-		qVO.setLastIndex(paginationInfo.getLastRecordIndex());
-		qVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
+		qVO.put("firstIndex", paginationInfo.getFirstRecordIndex());
+		qVO.put("lastIndex", paginationInfo.getLastRecordIndex());
+		qVO.put("recordCountPerPage", paginationInfo.getRecordCountPerPage());
 
 		resultMap.put("qriList", egovQustnrRespondInfoService.selectQustnrRespondInfoManageList(qVO));
 

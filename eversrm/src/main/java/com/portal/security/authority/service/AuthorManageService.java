@@ -1,74 +1,96 @@
 package com.portal.security.authority.service;
 
 import java.util.List;
+import java.util.Map;
+
+import org.egovframe.rte.fdl.cmmn.EgovAbstractServiceImpl;
+import org.springframework.stereotype.Service;
+
+import com.portal.security.authority.AuthorManageMapper;
+import jakarta.annotation.Resource;
 
 /**
- * 권한관리에 관한 서비스 인터페이스 클래스를 정의한다.
+ * 권한관리에 관한 비즈니스 클래스를 정의한다.
+ * 
  * @author ST-Ones Corp.
- * @since 2009.06.01
+ * @since 2026.06.26
  * @version 1.0
- * @see
- *
- * <pre>
- * << 개정이력(Modification Information) >>
- *   
- *   수정일      수정자           수정내용
- *  -------    --------    ---------------------------
- *
- * </pre>
  */
+@Service("authorManageService")
+public class AuthorManageService extends EgovAbstractServiceImpl {
 
-public interface AuthorManageService {
+    @Resource(name = "authorManageMapper")
+    private AuthorManageMapper authorManageMapper;
+
     /**
-	 * 모든 권한목록을 조회한다.
-	 * @param authorManageVO AuthorManageVO
-	 * @return List<AuthorManageVO>
-	 * @exception Exception
-	 */
-	public List<AuthorManageVO> selectAuthorAllList(AuthorManageVO authorManageVO) throws Exception;
-	
-	/**
-	 * 시스템 사용자중 불필요한 시스템권한정보를 화면에 조회하여 데이터베이스에서 삭제
-	 * @param authorManage AuthorManage
-	 * @exception Exception
-	 */
-	public void deleteAuthor(AuthorManage authorManage) throws Exception;
+     * 모든 권한목록을 조회한다.
+     * @param authorManageVO 조회조건 Map
+     * @return List<Map<String, Object>> 권한목록
+     * @throws Exception
+     */
+    public List<Map<String, Object>> selectAuthorAllList(Map<String, Object> authorManageVO) throws Exception {
+        return authorManageMapper.selectAuthorAllList(authorManageVO);
+    }
 
-	/**
-	 * 사용자의 시스테접근권한를 화면에서 입력하여 입력항목의 정합성을 체크하고 데이터베이스에 저장
-	 * @param authorManage AuthorManage
-	 * @exception Exception
-	 */
-	public void insertAuthor(AuthorManage authorManage) throws Exception;
-
-	/**
-	 * 개별사용자에게 할당된 권한 조회
-	 * @param authorManageVO AuthorManageVO
-	 * @exception Exception
-	 */
-	public AuthorManageVO selectAuthor(AuthorManageVO authorManageVO) throws Exception;
-
-	/**
-	 * 개별사용자에게 할당된 권한리스트 조회
-	 * @param authorManageVO AuthorManageVO
-	 * @return List<AuthorManageVO>
-	 * @exception Exception
-	 */
-	public List<AuthorManageVO> selectAuthorList(AuthorManageVO authorManageVO) throws Exception;
-
-	/**
-	 * 화면에 조회된 사용자권한정보를 수정하여 항목의 정합성을 체크하고 수정된 데이터를 데이터베이스에 반영
- 	 * @param authorManage AuthorManage
-	 * @exception Exception
-	 */
-	public void updateAuthor(AuthorManage authorManage) throws Exception;
-	
     /**
-	 * 목록조회 카운트를 반환한다
-	 * @param authorManageVO AuthorManageVO
-	 * @return int
-	 * @exception Exception
-	 */
-	public int selectAuthorListTotCnt(AuthorManageVO authorManageVO) throws Exception;	
-	
+     * 권한 목록을 조회한다.
+     * @param authorManageVO 조회조건 Map
+     * @return List<Map<String, Object>> 권한목록
+     * @throws Exception
+     */
+    public List<Map<String, Object>> selectAuthorList(Map<String, Object> authorManageVO) throws Exception {
+        return authorManageMapper.selectAuthorList(authorManageVO);
+    }
+
+    /**
+     * 권한 목록 총 갯수를 조회한다.
+     * @param authorManageVO 조회조건 Map
+     * @return int 총 갯수
+     * @throws Exception
+     */
+    public int selectAuthorListTotCnt(Map<String, Object> authorManageVO) throws Exception {
+        return authorManageMapper.selectAuthorListTotCnt(authorManageVO);
+    }
+
+    /**
+     * 개별 권한을 조회한다.
+     * @param authorManageVO 조회조건 Map
+     * @return Map<String, Object> 권한정보
+     * @throws Exception
+     */
+    public Map<String, Object> selectAuthor(Map<String, Object> authorManageVO) throws Exception {
+        Map<String, Object> result = authorManageMapper.selectAuthor(authorManageVO);
+        if (result == null) {
+            throw processException("info.nodata.msg");
+        }
+        return result;
+    }
+
+    /**
+     * 권한을 등록한다.
+     * @param authorManage 등록정보 Map
+     * @throws Exception
+     */
+    public void insertAuthor(Map<String, Object> authorManage) throws Exception {
+        authorManageMapper.insertAuthor(authorManage);
+    }
+
+    /**
+     * 권한정보를 수정한다.
+     * @param authorManage 수정정보 Map
+     * @throws Exception
+     */
+    public void updateAuthor(Map<String, Object> authorManage) throws Exception {
+        authorManageMapper.updateAuthor(authorManage);
+    }
+
+    /**
+     * 권한정보를 삭제한다.
+     * @param authorManage 삭제조건 Map
+     * @throws Exception
+     */
+    public void deleteAuthor(Map<String, Object> authorManage) throws Exception {
+        authorManageMapper.deleteAuthor(authorManage);
+    }
+
 }

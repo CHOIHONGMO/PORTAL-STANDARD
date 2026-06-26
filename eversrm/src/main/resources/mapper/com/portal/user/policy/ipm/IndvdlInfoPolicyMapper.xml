@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.portal.user.policy.ipm.IndvdlInfoPolicyMapper">
+
+	<!-- 개인정보보호정책확인::목록조회 게시물정보 -->
+	<select id="selectIndvdlInfoPolicyList" parameterType="map" resultType="egovMap">
+		SELECT
+		A.INDVDL_INFO_POLICY_ID indvdlInfoId,
+		A.INDVDL_INFO_POLICY_NM indvdlInfoNm,
+		A.INDVDL_INFO_POLICY_CN indvdlInfoDc,
+		A.INDVDL_INFO_POLICY_AGRE_AT indvdlInfoYn,
+		A.FRST_REGISTER_ID frstRegisterId,
+		DATE_FORMAT(A.FRST_REGIST_PNTTM,'%Y-%m-%d') frstRegistPnttm,
+		(SELECT MBER_NM FROM LETTNGNRLMBER WHERE ESNTL_ID = A.FRST_REGISTER_ID) frstRegisterNm 
+		FROM LETTNINDVDLINFOPOLICY A
+		WHERE 1=1
+	 <if test="searchKeyword != null and searchKeyword != ''">
+		    <if test="searchCondition == 'INDVDL_INFO_POLICY_NM'">
+            AND INDVDL_INFO_POLICY_NM LIKE CONCAT('%', #{searchKeyword}, '%')
+            </if>
+            <if test="searchCondition == 'INDVDL_INFO_POLICY_CN'">
+                AND INDVDL_INFO_POLICY_CN LIKE CONCAT('%', #{searchKeyword}, '%')
+            </if>
+	 </if>
+		ORDER BY A.FRST_REGIST_PNTTM DESC
+		LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+	</select>
+
+	<!-- 개인정보보호정책확인::목록조회_게시물 총갯수  -->
+	<select id="selectIndvdlInfoPolicyListCnt" parameterType="map" resultType="int">
+		SELECT 
+		COUNT(*) totcnt
+		FROM LETTNINDVDLINFOPOLICY
+		WHERE 1=1
+	 <if test="searchKeyword != null and searchKeyword != ''">
+		    <if test="searchCondition == 'INDVDL_INFO_POLICY_NM'">
+            AND INDVDL_INFO_POLICY_NM LIKE CONCAT('%', #{searchKeyword}, '%')
+            </if>
+            <if test="searchCondition == 'INDVDL_INFO_POLICY_CN'">
+                AND INDVDL_INFO_POLICY_CN LIKE CONCAT('%', #{searchKeyword}, '%')
+            </if>
+	 </if>
+	</select>
+	
+    <!-- 개인정보보호정책확인::삭제  -->
+	<delete id="deleteIndvdlInfoPolicy" parameterType="map">
+		DELETE FROM LETTNINDVDLINFOPOLICY 
+		WHERE INDVDL_INFO_POLICY_ID=#{indvdlInfoId}
+	</delete>
+
+	<!-- 개인정보보호정책확인::수정  -->
+	<update id="updateIndvdlInfoPolicy" parameterType="map">
+	UPDATE LETTNINDVDLINFOPOLICY 
+	SET
+	INDVDL_INFO_POLICY_NM = #{indvdlInfoNm},
+	INDVDL_INFO_POLICY_CN = #{indvdlInfoDc},
+	INDVDL_INFO_POLICY_AGRE_AT = #{indvdlInfoYn},  
+	LAST_UPDT_PNTTM = sysdate(),
+	LAST_UPDUSR_ID = #{lastUpdusrId}
+	WHERE INDVDL_INFO_POLICY_ID=#{indvdlInfoId}
+	</update>
+	
+	<!-- 개인정보보호정책확인::상세보기 -->
+	<select id="selectIndvdlInfoPolicyDetail" parameterType="map" resultType="egovMap">
+	SELECT 
+		A.INDVDL_INFO_POLICY_ID as indvdlInfoId,
+		A.INDVDL_INFO_POLICY_NM as indvdlInfoNm,
+		A.INDVDL_INFO_POLICY_CN as indvdlInfoDc,
+		A.INDVDL_INFO_POLICY_AGRE_AT as indvdlInfoYn,
+		DATE_FORMAT(A.FRST_REGIST_PNTTM, '%Y-%m-%d') as frstRegisterPnttm,
+		A.FRST_REGISTER_ID as frstRegisterId,
+		DATE_FORMAT(A.LAST_UPDT_PNTTM,'%Y-%m-%d') as lastUpdusrPnttm,
+		A.LAST_UPDUSR_ID as lastUpdusrId  
+		FROM LETTNINDVDLINFOPOLICY A
+		WHERE 1=1
+		AND A.INDVDL_INFO_POLICY_ID=#{indvdlInfoId}
+	</select>
+
+	<!-- 개인정보보호정책확인::입력  -->
+	<insert id="insertIndvdlInfoPolicy" parameterType="map">	     
+	INSERT INTO LETTNINDVDLINFOPOLICY ( 
+	INDVDL_INFO_POLICY_ID,
+	INDVDL_INFO_POLICY_NM,
+	INDVDL_INFO_POLICY_CN,
+	INDVDL_INFO_POLICY_AGRE_AT,
+	FRST_REGIST_PNTTM,
+	FRST_REGISTER_ID,
+	LAST_UPDT_PNTTM,
+	LAST_UPDUSR_ID
+	) VALUES ( 
+	#{indvdlInfoId},
+	#{indvdlInfoNm},
+	#{indvdlInfoDc},
+	#{indvdlInfoYn},
+	sysdate(),
+	#{frstRegisterId},
+	sysdate(),
+	#{lastUpdusrId} 
+	)
+	</insert>
+
+</mapper>

@@ -1,69 +1,88 @@
 package com.portal.user.poll.qrm.service;
 
 import java.util.List;
+import java.util.Map;
 
-import com.portal.common.model.ComDefaultVO;
+import org.egovframe.rte.fdl.cmmn.EgovAbstractServiceImpl;
+import org.egovframe.rte.fdl.idgnr.EgovIdGnrService;
+import org.springframework.stereotype.Service;
+
+import com.portal.user.poll.qrm.QustnrRespondManageMapper;
+import jakarta.annotation.Resource;
+
 /**
- * 설문응답자관리 Service Class 구현
+ * 설문응답자관리를 처리하는 비즈니스 클래스
+ * 
  * @author ST-Ones Corp.
- * @since 2009.03.20
+ * @since 2026.06.26
  * @version 1.0
- * @see
- *
- * <pre>
- * << 개정이력(Modification Information) >>
- *
- *   수정일      수정자           수정내용
- *  -------    --------    ---------------------------
- *
- * </pre>
  */
-public interface QustnrRespondManageService {
+@Service("qustnrRespondManageService")
+public class QustnrRespondManageService extends EgovAbstractServiceImpl {
+
+    @Resource(name = "qustnrRespondManageMapper")
+    private QustnrRespondManageMapper qustnrRespondManageMapper;
+
+    @Resource(name = "qustnrRespondManageIdGnrService")
+    private EgovIdGnrService idgenService;
 
     /**
-	 * 응답자정보 목록을 조회한다.
-	 * @param searchVO - 조회할 정보가 담긴 VO
-	 * @return List
-	 * @throws Exception
-	 */
-	public List<?> selectQustnrRespondManageList(ComDefaultVO searchVO) throws Exception;
+     * 응답자정보 목록을 조회한다.
+     * @param searchVO 조회조건 Map
+     * @return List<Map<String, Object>> 목록
+     * @throws Exception
+     */
+    public List<Map<String, Object>> selectQustnrRespondManageList(Map<String, Object> searchVO) throws Exception {
+        return qustnrRespondManageMapper.selectQustnrRespondManageList(searchVO);
+    }
 
     /**
-	 * 응답자정보를(을) 상세조회 한다.
-	 * @param qustnrRespondManageVO - 응답자정보 정보 담김 VO
-	 * @return List
-	 * @throws Exception
-	 */
-	public List<?> selectQustnrRespondManageDetail(QustnrRespondManageVO qustnrRespondManageVO) throws Exception;
+     * 응답자정보를 상세조회 한다.
+     * @param qustnrRespondManageVO 조회조건 Map
+     * @return List<Map<String, Object>> 상세 정보 리스트
+     * @throws Exception
+     */
+    public List<Map<String, Object>> selectQustnrRespondManageDetail(Map<String, Object> qustnrRespondManageVO) throws Exception {
+        return qustnrRespondManageMapper.selectQustnrRespondManageDetail(qustnrRespondManageVO);
+    }
 
     /**
-	 * 응답자정보를(을) 목록 전체 건수를(을) 조회한다.
-	 * @param searchVO - 조회할 정보가 담긴 VO
-	 * @return int
-	 * @throws Exception
-	 */
-	public int selectQustnrRespondManageListCnt(ComDefaultVO searchVO) throws Exception;
+     * 응답자정보 목록 전체 건수를 조회한다.
+     * @param searchVO 조회조건 Map
+     * @return int 총 건수
+     * @throws Exception
+     */
+    public int selectQustnrRespondManageListCnt(Map<String, Object> searchVO) throws Exception {
+        return qustnrRespondManageMapper.selectQustnrRespondManageListCnt(searchVO);
+    }
 
     /**
-	 * 응답자정보를(을) 등록한다.
-	 * @param qustnrRespondManageVO - 응답자정보 정보 담김 VO
-	 * @throws Exception
-	 */
-	void  insertQustnrRespondManage(QustnrRespondManageVO qustnrRespondManageVO) throws Exception;
+     * 응답자정보를 등록한다.
+     * @param qustnrRespondManageVO 등록정보 Map
+     * @throws Exception
+     */
+    public void insertQustnrRespondManage(Map<String, Object> qustnrRespondManageVO) throws Exception {
+        String sMakeId = idgenService.getNextStringId();
+        qustnrRespondManageVO.put("qestnrRespondId", sMakeId);
+        qustnrRespondManageMapper.insertQustnrRespondManage(qustnrRespondManageVO);
+    }
 
     /**
-	 * 응답자정보를(을) 수정한다.
-	 * @param qustnrRespondManageVO - 응답자정보 정보 담김 VO
-	 * @throws Exception
-	 */
-	void  updateQustnrRespondManage(QustnrRespondManageVO qustnrRespondManageVO) throws Exception;
+     * 응답자정보를 수정한다.
+     * @param qustnrRespondManageVO 수정정보 Map
+     * @throws Exception
+     */
+    public void updateQustnrRespondManage(Map<String, Object> qustnrRespondManageVO) throws Exception {
+        qustnrRespondManageMapper.updateQustnrRespondManage(qustnrRespondManageVO);
+    }
 
     /**
-	 * 응답자정보를(을) 삭제한다.
-	 * @param qustnrRespondManageVO - 응답자정보 정보 담김 VO
-	 * @throws Exception
-	 */
-	void  deleteQustnrRespondManage(QustnrRespondManageVO qustnrRespondManageVO) throws Exception;
-
+     * 응답자정보를 삭제한다.
+     * @param qustnrRespondManageVO 삭제조건 Map
+     * @throws Exception
+     */
+    public void deleteQustnrRespondManage(Map<String, Object> qustnrRespondManageVO) throws Exception {
+        qustnrRespondManageMapper.deleteQustnrRespondManage(qustnrRespondManageVO);
+    }
 
 }

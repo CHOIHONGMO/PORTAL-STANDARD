@@ -7,7 +7,7 @@ import java.util.HashMap;
 import org.egovframe.rte.fdl.cmmn.EgovAbstractServiceImpl;
 import org.springframework.stereotype.Service;
 
-import com.portal.system.calendar.service.impl.RestdeManageDAO;
+import com.portal.system.calendar.service.impl.RestdeManageMapper;
 import jakarta.annotation.Resource;
 
 /**
@@ -19,8 +19,8 @@ import jakarta.annotation.Resource;
 @Service("RestdeManageService")
 public class CalRestdeManageService extends EgovAbstractServiceImpl {
 
-    @Resource(name="RestdeManageDAO")
-    private RestdeManageDAO restdeManageDAO;
+    @Resource(name="RestdeManageMapper")
+    private RestdeManageMapper restdeManageMapper;
 
     private Restde convertToRestde(Map<String, Object> map) {
         Restde restde = new Restde();
@@ -70,77 +70,77 @@ public class CalRestdeManageService extends EgovAbstractServiceImpl {
 	 * 일반달력 팝업 정보를 조회한다.
 	 */
 	public List<?> selectNormalRestdePopup(Map<String, Object> map) throws Exception {
-		return restdeManageDAO.selectNormalRestdePopup(convertToRestde(map));
+		return restdeManageMapper.selectNormalRestdePopup(convertToRestde(map));
 	}
 
 	/**
 	 * 행정달력 팝업 정보를 조회한다.
 	 */
 	public List<?> selectAdministRestdePopup(Map<String, Object> map) throws Exception {
-		return restdeManageDAO.selectAdministRestdePopup(convertToRestde(map));
+		return restdeManageMapper.selectAdministRestdePopup(convertToRestde(map));
 	}
 
 	/**
 	 * 일반달력 일간 정보를 조회한다.
 	 */
 	public List<?> selectNormalDayCal(Map<String, Object> map) throws Exception {
-		return restdeManageDAO.selectNormalDayCal(convertToRestde(map));
+		return restdeManageMapper.selectNormalDayCal(convertToRestde(map));
 	}
 
 	/**
 	 * 일반달력 일간 휴일을 조회한다.
 	 */
 	public List<?> selectNormalDayRestde(Map<String, Object> map) throws Exception {
-		return restdeManageDAO.selectNormalDayRestde(convertToRestde(map));
+		return restdeManageMapper.selectNormalDayRestde(convertToRestde(map));
 	}
 
 	/**
 	 * 일반달력 월간 휴일을 조회한다.
 	 */
 	public List<?> selectNormalMonthRestde(Map<String, Object> map) throws Exception {
-		return restdeManageDAO.selectNormalMonthRestde(convertToRestde(map));
+		return restdeManageMapper.selectNormalMonthRestde(convertToRestde(map));
 	}
 
 	/**
 	 * 행정달력 일간 정보를 조회한다.
 	 */
 	public List<?> selectAdministDayCal(Map<String, Object> map) throws Exception {
-		return restdeManageDAO.selectAdministDayCal(convertToRestde(map));
+		return restdeManageMapper.selectAdministDayCal(convertToRestde(map));
 	}
 
 	/**
 	 * 행정달력 일간 휴일을 조회한다.
 	 */
 	public List<?> selectAdministDayRestde(Map<String, Object> map) throws Exception {
-		return restdeManageDAO.selectAdministDayRestde(convertToRestde(map));
+		return restdeManageMapper.selectAdministDayRestde(convertToRestde(map));
 	}
 
 	/**
 	 * 행정달력 월간 휴일을 조회한다.
 	 */
 	public List<?> selectAdministMonthRestde(Map<String, Object> map) throws Exception {
-		return restdeManageDAO.selectAdministMonthRestde(convertToRestde(map));
+		return restdeManageMapper.selectAdministMonthRestde(convertToRestde(map));
 	}
 
 	/**
 	 * 휴일을 삭제한다.
 	 */
 	public void deleteRestde(Map<String, Object> map) throws Exception {
-		restdeManageDAO.deleteRestde(convertToRestde(map));
+		restdeManageMapper.deleteRestde(convertToRestde(map));
 	}
 
 	/**
 	 * 휴일을 등록한다.
 	 */
 	public void insertRestde(Map<String, Object> map) throws Exception {
-		restdeManageDAO.insertRestde(convertToRestde(map));
+		restdeManageMapper.insertRestde(convertToRestde(map));
 	}
 
 	/**
 	 * 휴일 상세항목을 조회한다.
 	 */
 	public Map<String, Object> selectRestdeDetail(Map<String, Object> map) throws Exception {
-		Restde ret = restdeManageDAO.selectRestdeDetail(convertToRestde(map));
+		Restde ret = restdeManageMapper.selectRestdeDetail(convertToRestde(map));
 		return convertRestdeToMap(ret);
 	}
 
@@ -148,21 +148,21 @@ public class CalRestdeManageService extends EgovAbstractServiceImpl {
 	 * 휴일 목록을 조회한다.
 	 */
 	public List<?> selectRestdeList(Map<String, Object> map) throws Exception {
-		return restdeManageDAO.selectRestdeList(convertToRestdeVO(map));
+		return restdeManageMapper.selectRestdeList(convertToRestdeVO(map));
 	}
 
 	/**
 	 * 휴일 총 갯수를 조회한다.
 	 */
 	public int selectRestdeListTotCnt(Map<String, Object> map) throws Exception {
-		return restdeManageDAO.selectRestdeListTotCnt(convertToRestdeVO(map));
+		return restdeManageMapper.selectRestdeListTotCnt(convertToRestdeVO(map));
 	}
 
 	/**
 	 * 휴일을 수정한다.
 	 */
 	public void updateRestde(Map<String, Object> map) throws Exception {
-		restdeManageDAO.updateRestde(convertToRestde(map));
+		restdeManageMapper.updateRestde(convertToRestde(map));
 	}
 
 }

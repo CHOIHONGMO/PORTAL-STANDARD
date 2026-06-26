@@ -1,78 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="authorManageDAO">
+<mapper namespace="com.portal.security.authority.AuthorManageMapper">
 
-
-    <resultMap id="author" type="com.portal.security.authority.service.AuthorManageVO">
-        <result property="authorCode" column="AUTHOR_CODE"/>
-        <result property="authorNm" column="AUTHOR_NM"/>
-        <result property="authorDc" column="AUTHOR_DC"/>
-        <result property="authorCreatDe" column="AUTHOR_CREAT_DE"/>
-    </resultMap>
-
-    <select id="authorManageDAO.selectAuthorList" parameterType="com.portal.security.authority.service.AuthorManageVO" resultMap="author">
-            SELECT
-                   AUTHOR_CODE, AUTHOR_NM, AUTHOR_DC, AUTHOR_CREAT_DE
-              FROM LETTNAUTHORINFO
-             WHERE 1=1
-            <if test="searchCondition == 1">AND
-                AUTHOR_NM LIKE CONCAT('%' , #{searchKeyword}, '%')
-            </if>
-            ORDER BY AUTHOR_CREAT_DE DESC
-            LIMIT #{recordCountPerPage} OFFSET #{firstIndex}      
+    <select id="selectAuthorList" resultType="egovMap">
+        SELECT
+               AUTHOR_CODE as authorCode, AUTHOR_NM as authorNm, AUTHOR_DC as authorDc, AUTHOR_CREAT_DE as authorCreatDe
+          FROM LETTNAUTHORINFO
+         WHERE 1=1
+        <if test="searchCondition == 1">AND
+            AUTHOR_NM LIKE CONCAT('%' , #{searchKeyword}, '%')
+        </if>
+        ORDER BY AUTHOR_CREAT_DE DESC
+        LIMIT #{recordCountPerPage} OFFSET #{firstIndex}      
     </select>
 
-    <insert id="authorManageDAO.insertAuthor" parameterType="com.portal.security.authority.service.AuthorManage">
-        
-            INSERT INTO LETTNAUTHORINFO 
-                  ( AUTHOR_CODE
-                  , AUTHOR_NM
-                  , AUTHOR_DC
-                  , AUTHOR_CREAT_DE )
-           VALUES ( #{authorCode}
-                  , #{authorNm}
-                  , #{authorDc}
-                  , now())
-         
+    <insert id="insertAuthor">
+        INSERT INTO LETTNAUTHORINFO 
+              ( AUTHOR_CODE
+              , AUTHOR_NM
+              , AUTHOR_DC
+              , AUTHOR_CREAT_DE )
+       VALUES ( #{authorCode}
+              , #{authorNm}
+              , #{authorDc}
+              , now())
     </insert>
 
-    <update id="authorManageDAO.updateAuthor" parameterType="com.portal.security.authority.service.AuthorManage">
-        
-            UPDATE LETTNAUTHORINFO 
-               SET AUTHOR_NM=#{authorNm}
-                 , AUTHOR_DC=#{authorDc}
-             WHERE AUTHOR_CODE=#{authorCode}
-        
+    <update id="updateAuthor">
+        UPDATE LETTNAUTHORINFO 
+           SET AUTHOR_NM=#{authorNm}
+             , AUTHOR_DC=#{authorDc}
+         WHERE AUTHOR_CODE=#{authorCode}
     </update>
     
-    <delete id="authorManageDAO.deleteAuthor">
-        
-            DELETE FROM LETTNAUTHORINFO 
-             WHERE AUTHOR_CODE=#{authorCode}
-        
+    <delete id="deleteAuthor">
+        DELETE FROM LETTNAUTHORINFO 
+         WHERE AUTHOR_CODE=#{authorCode}
     </delete>
     
-    <select id="authorManageDAO.selectAuthor" resultMap="author">
-        
-            SELECT AUTHOR_CODE, AUTHOR_NM, AUTHOR_DC, AUTHOR_CREAT_DE
-              FROM LETTNAUTHORINFO 
-             WHERE AUTHOR_CODE=#{authorCode}
-        
+    <select id="selectAuthor" resultType="egovMap">
+        SELECT AUTHOR_CODE as authorCode, AUTHOR_NM as authorNm, AUTHOR_DC as authorDc, AUTHOR_CREAT_DE as authorCreatDe
+          FROM LETTNAUTHORINFO 
+         WHERE AUTHOR_CODE=#{authorCode}
     </select>
     
-    <select id="authorManageDAO.selectAuthorListTotCnt" parameterType="com.portal.security.authority.service.AuthorManageVO" resultType="int">
-            SELECT COUNT(*) totcnt
-            FROM LETTNAUTHORINFO
-            WHERE 1=1
-            <if test="searchCondition == 1">AND
-                AUTHOR_NM LIKE CONCAT('%' , #{searchKeyword}, '%')
-            </if> 
+    <select id="selectAuthorListTotCnt" resultType="int">
+        SELECT COUNT(*) totcnt
+          FROM LETTNAUTHORINFO
+         WHERE 1=1
+        <if test="searchCondition == 1">AND
+            AUTHOR_NM LIKE CONCAT('%' , #{searchKeyword}, '%')
+        </if> 
     </select>
     
-    <select id="authorManageDAO.selectAuthorAllList" parameterType="com.portal.security.authority.service.AuthorManageVO" resultMap="author">
-            SELECT
-                   AUTHOR_CODE, AUTHOR_NM, AUTHOR_DC, AUTHOR_CREAT_DE
-              FROM LETTNAUTHORINFO
+    <select id="selectAuthorAllList" resultType="egovMap">
+        SELECT
+               AUTHOR_CODE as authorCode, AUTHOR_NM as authorNm, AUTHOR_DC as authorDc, AUTHOR_CREAT_DE as authorCreatDe
+          FROM LETTNAUTHORINFO
     </select>
 </mapper>

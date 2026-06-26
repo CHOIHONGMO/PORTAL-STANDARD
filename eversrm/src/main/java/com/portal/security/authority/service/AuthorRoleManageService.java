@@ -1,67 +1,63 @@
 package com.portal.security.authority.service;
 
 import java.util.List;
+import java.util.Map;
+
+import org.egovframe.rte.fdl.cmmn.EgovAbstractServiceImpl;
+import org.springframework.stereotype.Service;
+
+import com.portal.security.authority.AuthorRoleManageMapper;
+import jakarta.annotation.Resource;
 
 /**
- * 권한별 롤 관리에 관한 서비스 인터페이스 클래스를 정의한다.
+ * 권한별 롤 관리에 관한 비즈니스 클래스를 정의한다.
+ * 
  * @author ST-Ones Corp.
- * @since 2009.06.01
+ * @since 2026.06.26
  * @version 1.0
- * @see
- *
- * <pre>
- * << 개정이력(Modification Information) >>
- *   
- *   수정일      수정자           수정내용
- *  -------    --------    ---------------------------
- *
- * </pre>
  */
+@Service("authorRoleManageService")
+public class AuthorRoleManageService extends EgovAbstractServiceImpl {
 
-public interface AuthorRoleManageService {
-
-	/**
-	 * 권한 롤 관계정보를 조회
-	 * @param authorRoleManageVO AuthorRoleManageVO
-	 * @exception Exception
-	 */
-	public AuthorRoleManageVO selectAuthorRole(AuthorRoleManageVO authorRoleManageVO) throws Exception;
-
-	/**
-	 * 권한 롤 관계정보 목록 조회
-	 * @param authorRoleManageVO AuthorRoleManageVO
-	 * @return List<AuthorRoleManageVO>
-	 * @exception Exception
-	 */
-	public List<AuthorRoleManageVO> selectAuthorRoleList(AuthorRoleManageVO authorRoleManageVO) throws Exception;
-	
-	/**
-	 * 권한 롤 관계정보를 화면에서 입력하여 입력항목의 정합성을 체크하고 데이터베이스에 저장
-	 * @param authorRoleManage AuthorRoleManage
-	 * @exception Exception
-	 */
-	public void insertAuthorRole(AuthorRoleManage authorRoleManage) throws Exception;
-
-	/**
-	 * 수정된 권한 롤 관계정보를 데이터베이스에 반영
-	 * @param authorRoleManage AuthorRoleManage
-	 * @exception Exception
-	 */
-	public void updateAuthorRole(AuthorRoleManage authorRoleManage) throws Exception;
-
-	/**
-	 * 권한 롤 관계정보를 화면에 조회하여 데이터베이스에서 삭제
-	 * @param authorRoleManage AuthorRoleManage
-	 * @exception Exception
-	 */
-	public void deleteAuthorRole(AuthorRoleManage authorRoleManage) throws Exception;
+    @Resource(name = "authorRoleManageMapper")
+    private AuthorRoleManageMapper authorRoleManageMapper;
 
     /**
-	 * 목록조회 카운트를 반환한다
-	 * @param authorRoleManageVO AuthorRoleManageVO
-	 * @return int
-	 * @exception Exception
-	 */
-	public int selectAuthorRoleListTotCnt(AuthorRoleManageVO authorRoleManageVO) throws Exception;	
+     * 권한 롤 관계정보 목록 조회
+     * @param authorRoleManageVO 조회조건 Map
+     * @return List<Map<String, Object>> 권한 롤 관계 목록
+     * @throws Exception
+     */
+    public List<Map<String, Object>> selectAuthorRoleList(Map<String, Object> authorRoleManageVO) throws Exception {
+        return authorRoleManageMapper.selectAuthorRoleList(authorRoleManageVO);
+    }
+
+    /**
+     * 권한 롤 관계정보 목록 총 갯수를 조회한다.
+     * @param authorRoleManageVO 조회조건 Map
+     * @return int 총 갯수
+     * @throws Exception
+     */
+    public int selectAuthorRoleListTotCnt(Map<String, Object> authorRoleManageVO) throws Exception {
+        return authorRoleManageMapper.selectAuthorRoleListTotCnt(authorRoleManageVO);
+    }
+
+    /**
+     * 권한 롤 관계정보를 등록한다.
+     * @param authorRoleManage 등록정보 Map
+     * @throws Exception
+     */
+    public void insertAuthorRole(Map<String, Object> authorRoleManage) throws Exception {
+        authorRoleManageMapper.insertAuthorRole(authorRoleManage);
+    }
+
+    /**
+     * 권한 롤 관계정보를 삭제한다.
+     * @param authorRoleManage 삭제조건 Map
+     * @throws Exception
+     */
+    public void deleteAuthorRole(Map<String, Object> authorRoleManage) throws Exception {
+        authorRoleManageMapper.deleteAuthorRole(authorRoleManage);
+    }
 
 }

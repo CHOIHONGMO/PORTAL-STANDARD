@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.portal.user.poll.qtm.QustnrTmplatManageMapper">
+
+ 	<resultMap id="QustnrTmplatManageTmplatImagepathnm" type="java.util.HashMap">
+        <result property="QUSTNR_TMPLAT_IMAGE_INFOPATHNM" column="QUSTNR_TMPLAT_IMAGE_INFOPATHNM" javaType="_byte[]" jdbcType="BLOB"/>
+    </resultMap>
+
+	<select id="selectQustnrTmplatManageTmplatImagepathnm" parameterType="map" resultMap="QustnrTmplatManageTmplatImagepathnm">
+		SELECT
+			QUSTNR_TMPLAT_IMAGE_INFO 	QUSTNR_TMPLAT_IMAGE_INFOPATHNM
+		FROM LETTNQUSTNRTMPLAT
+		WHERE QUSTNR_TMPLAT_ID = #{qestnrTmplatId}
+	</select>
+	
+	<!-- 설문응답자 삭제 -->
+	<delete id="deleteQustnrRespondManage" parameterType="map">
+		DELETE FROM LETTNQUSTNRRESPONDINFO
+		WHERE QUSTNR_TMPLAT_ID = #{qestnrTmplatId}
+	</delete>
+	
+	<!-- 설문조사(설문결과) 삭제 -->
+	<delete id="deleteQustnrRespondInfo" parameterType="map">
+		DELETE FROM LETTNQUSTNRRSPNSRESULT
+		WHERE QUSTNR_TMPLAT_ID = #{qestnrTmplatId}
+	</delete>
+	
+	<!-- 설문항목 삭제 -->
+	<delete id="deleteQustnrItemManage" parameterType="map">
+		DELETE FROM LETTNQUSTNRIEM
+		WHERE QUSTNR_TMPLAT_ID = #{qestnrTmplatId}
+	</delete>
+	
+	<!-- 설문문항 삭제 -->
+	<delete id="deleteQustnrQestnManage" parameterType="map">
+		DELETE FROM LETTNQUSTNRQESITM
+		WHERE QUSTNR_TMPLAT_ID = #{qestnrTmplatId}
+	</delete>
+	
+	<!-- 설문관리 삭제 -->
+	<delete id="deleteQustnrManage" parameterType="map">
+		DELETE FROM LETTNQESTNRINFO
+		WHERE QUSTNR_TMPLAT_ID = #{qestnrTmplatId}
+	</delete>
+
+	<delete id="deleteQustnrTmplatManage" parameterType="map">
+		DELETE FROM LETTNQUSTNRTMPLAT
+		WHERE QUSTNR_TMPLAT_ID = #{qestnrTmplatId}
+	</delete>
+
+	<update id="updateQustnrTmplatManage" parameterType="map">
+		UPDATE LETTNQUSTNRTMPLAT
+		SET
+		<if test="qestnrTmplatImagepathnm != null">
+			QUSTNR_TMPLAT_IMAGE_INFO = #{qestnrTmplatImagepathnm,jdbcType=BLOB},
+		</if>
+		QUSTNR_TMPLAT_TY = #{qestnrTmplatTy},
+		QUSTNR_TMPLAT_DC = #{qestnrTmplatCn},
+		QUSTNR_TMPLAT_PATH_NM = #{qestnrTmplatCours},
+		LAST_UPDT_PNTTM = sysdate(),
+		LAST_UPDUSR_ID = #{lastUpdusrId}
+		WHERE QUSTNR_TMPLAT_ID = #{qestnrTmplatId}
+	</update>
+
+	<select id="selectQustnrTmplatManageDetail" parameterType="map" resultType="egovMap">
+		SELECT
+			QUSTNR_TMPLAT_ID			qestnrTmplatId,
+			QUSTNR_TMPLAT_TY			qestnrTmplatTy,
+			DATE_FORMAT(FRST_REGIST_PNTTM, '%Y-%m-%d') as FRST_REGIST_PNTTM,
+			FRST_REGISTER_ID,
+			DATE_FORMAT(LAST_UPDT_PNTTM,'%Y-%m-%d') as LAST_UPDT_PNTTM,
+			LAST_UPDUSR_ID,
+			QUSTNR_TMPLAT_IMAGE_INFO  	qestnrTmplatImagepathnm,
+			QUSTNR_TMPLAT_DC			qestnrTmplatCn,
+			QUSTNR_TMPLAT_PATH_NM		qestnrTmplatCours
+		FROM LETTNQUSTNRTMPLAT
+		WHERE QUSTNR_TMPLAT_ID = #{qestnrTmplatId}
+	</select>
+
+	<select id="selectQustnrTmplatManageList" parameterType="map" resultType="egovMap">
+		SELECT
+			A.QUSTNR_TMPLAT_ID			qestnrTmplatId,
+			A.QUSTNR_TMPLAT_TY			qestnrTmplatTy,
+			DATE_FORMAT(A.FRST_REGIST_PNTTM, '%Y-%m-%d') as FRST_REGIST_PNTTM,
+			(SELECT USER_NM FROM COMVNUSERMASTER WHERE ESNTL_ID = A.FRST_REGISTER_ID) FRST_REGISTER_NM,
+			A.FRST_REGISTER_ID,
+			DATE_FORMAT(A.LAST_UPDT_PNTTM,'%Y-%m-%d') as LAST_UPDT_PNTTM,
+			A.LAST_UPDUSR_ID,
+			A.QUSTNR_TMPLAT_IMAGE_INFO	qestnrTmplatImagepathnm,
+			A.QUSTNR_TMPLAT_DC			qestnrTmplatCn,
+			A.QUSTNR_TMPLAT_PATH_NM		qestnrTmplatCours
+			FROM LETTNQUSTNRTMPLAT A
+		WHERE 1=1
+	 <if test="searchKeyword != null and searchKeyword != ''">
+            <if test="searchCondition == 'QUSTNR_TMPLAT_DC'">
+                AND QUSTNR_TMPLAT_DC LIKE CONCAT('%', #{searchKeyword}, '%')
+            </if>
+            <if test="searchCondition == 'QUSTNR_TMPLAT_TY'">
+                AND QUSTNR_TMPLAT_TY LIKE CONCAT('%', #{searchKeyword}, '%')
+            </if>
+	 </if>
+		ORDER BY A.FRST_REGIST_PNTTM DESC
+		LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+	</select>
+
+	<select id="selectQustnrTmplatManageListCnt" parameterType="map" resultType="int">
+		SELECT
+		COUNT(*) totcnt
+		FROM LETTNQUSTNRTMPLAT
+		WHERE 1=1
+	 <if test="searchKeyword != null and searchKeyword != ''">
+            <if test="searchCondition == 'QUSTNR_TMPLAT_DC'">
+                AND QUSTNR_TMPLAT_DC LIKE CONCAT('%', #{searchKeyword}, '%')
+            </if>
+            <if test="searchCondition == 'QUSTNR_TMPLAT_TY'">
+                AND QUSTNR_TMPLAT_TY LIKE CONCAT('%', #{searchKeyword}, '%')
+            </if>
+	 </if>
+	</select>
+
+	<insert id="insertQustnrTmplatManage" parameterType="map">
+		INSERT INTO LETTNQUSTNRTMPLAT (
+			QUSTNR_TMPLAT_ID
+			,QUSTNR_TMPLAT_TY
+			,QUSTNR_TMPLAT_IMAGE_INFO
+			,QUSTNR_TMPLAT_DC
+			,QUSTNR_TMPLAT_PATH_NM
+			,FRST_REGIST_PNTTM
+			,FRST_REGISTER_ID
+			,LAST_UPDT_PNTTM
+			,LAST_UPDUSR_ID
+		)VALUES(
+			#{qestnrTmplatId}
+			,#{qestnrTmplatTy}
+			,#{qestnrTmplatImagepathnm,jdbcType=BLOB}
+			,#{qestnrTmplatCn}
+			,#{qestnrTmplatCours}
+			,sysdate()
+			,#{frstRegisterId}
+			,sysdate()
+			,#{lastUpdusrId}
+		)
+	</insert>
+
+</mapper>
