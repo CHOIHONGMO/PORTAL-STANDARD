@@ -1,9 +1,9 @@
 package com.portal.board.com;
 
 import java.util.List;
+import java.util.Map;
 import org.egovframe.rte.psl.dataaccess.mapper.EgovMapper;
 import com.portal.board.com.service.TemplateInf;
-import com.portal.board.com.service.TemplateInfVO;
 
 /**
  * 템플릿 정보관리를 위한 MyBatis Mapper 인터페이스
@@ -21,13 +21,13 @@ public interface TemplateManageMapper {
 
     void updateTemplateInf(TemplateInf tmplatInf) throws Exception;
 
-    List<TemplateInfVO> selectTemplateInfs(TemplateInfVO tmplatInfVO) throws Exception;
+    List<Map<String, Object>> selectTemplateInfs(Map<String, Object> searchMap) throws Exception;
 
-    int selectTemplateInfsCnt(TemplateInfVO tmplatInfVO) throws Exception;
+    int selectTemplateInfsCnt(Map<String, Object> searchMap) throws Exception;
 
-    TemplateInfVO selectTemplateInf(TemplateInfVO tmplatInfVO) throws Exception;
+    Map<String, Object> selectTemplateInf(Map<String, Object> searchMap) throws Exception;
 
-    TemplateInfVO selectTemplatePreview(TemplateInfVO tmplatInfVO) throws Exception;
+    Map<String, Object> selectTemplatePreview(Map<String, Object> searchMap) throws Exception;
 
-    List<TemplateInfVO> selectTemplateInfsByCode(TemplateInfVO tmplatInfVO) throws Exception;
+    List<Map<String, Object>> selectTemplateInfsByCode(Map<String, Object> searchMap) throws Exception;
 }

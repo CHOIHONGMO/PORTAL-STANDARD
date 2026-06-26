@@ -1,9 +1,9 @@
 package com.portal.board.bbs;
 
 import java.util.List;
+import java.util.Map;
 import org.egovframe.rte.psl.dataaccess.mapper.EgovMapper;
 import com.portal.board.bbs.service.Board;
-import com.portal.board.bbs.service.BoardVO;
 
 /**
  * 게시물 관리를 위한 MyBatis Mapper 인터페이스
@@ -27,31 +27,31 @@ public interface BBSManageMapper {
 
     void updateNttNo(Board board) throws Exception;
 
-    BoardVO selectBoardArticle(BoardVO boardVO) throws Exception;
+    Map<String, Object> selectBoardArticle(Map<String, Object> searchMap) throws Exception;
 
-    List<BoardVO> selectBoardArticleList(BoardVO boardVO) throws Exception;
+    List<Map<String, Object>> selectBoardArticleList(Map<String, Object> searchMap) throws Exception;
 
-    int selectBoardArticleListCnt(BoardVO boardVO) throws Exception;
+    int selectBoardArticleListCnt(Map<String, Object> searchMap) throws Exception;
 
     void updateBoardArticle(Board board) throws Exception;
 
     void deleteBoardArticle(Board board) throws Exception;
 
-    void updateInqireCo(BoardVO boardVO) throws Exception;
+    void updateInqireCo(Map<String, Object> searchMap) throws Exception;
 
-    int selectMaxInqireCo(BoardVO boardVO) throws Exception;
+    int selectMaxInqireCo(Map<String, Object> searchMap) throws Exception;
 
-    List<BoardVO> selectNoticeListForSort(Board board) throws Exception;
+    List<Map<String, Object>> selectNoticeListForSort(Board board) throws Exception;
 
-    void updateSortOrder(BoardVO vo) throws Exception;
+    void updateSortOrder(Map<String, Object> searchMap) throws Exception;
 
     long selectNoticeItemForSort(Board board) throws Exception;
 
-    List<BoardVO> selectGuestList(BoardVO boardVO) throws Exception;
+    List<Map<String, Object>> selectGuestList(Map<String, Object> searchMap) throws Exception;
 
-    int selectGuestListCnt(BoardVO boardVO) throws Exception;
+    int selectGuestListCnt(Map<String, Object> searchMap) throws Exception;
 
-    void deleteGuestList(BoardVO boardVO) throws Exception;
+    void deleteGuestList(Map<String, Object> searchMap) throws Exception;
 
     String getPasswordInf(Board board) throws Exception;
 }

@@ -1,9 +1,9 @@
 package com.portal.board.bbs;
 
 import java.util.List;
+import java.util.Map;
 import org.egovframe.rte.psl.dataaccess.mapper.EgovMapper;
 import com.portal.board.bbs.service.BoardMaster;
-import com.portal.board.bbs.service.BoardMasterVO;
 
 /**
  * 게시판 속성정보 관리를 위한 MyBatis Mapper 인터페이스
@@ -19,11 +19,11 @@ public interface BBSLoneMasterMapper {
 
     int insertMaster(BoardMaster boardMaster) throws Exception;
 
-    BoardMasterVO selectMaster(BoardMaster vo) throws Exception;
+    Map<String, Object> selectMaster(BoardMaster vo) throws Exception;
 
-    List<BoardMasterVO> selectMasterList(BoardMasterVO vo) throws Exception;
+    List<Map<String, Object>> selectMasterList(Map<String, Object> searchMap) throws Exception;
 
-    int selectMasterListCnt(BoardMasterVO vo) throws Exception;
+    int selectMasterListCnt(Map<String, Object> searchMap) throws Exception;
 
     void updateMaster(BoardMaster boardMaster) throws Exception;
 }

@@ -1,7 +1,6 @@
 package com.portal.board.bbs.service;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +16,6 @@ import com.portal.board.bbs.BBSAttributeManageMapper;
 import com.portal.board.com.BBSUseInfoManageMapper;
 import com.portal.board.com.service.BoardUseInf;
 import com.portal.board.com.service.UserInfManageService;
-import com.portal.board.com.service.UserInfVO;
 import jakarta.annotation.Resource;
 
 /**
@@ -93,36 +91,29 @@ public class BBSAttributeManageService extends EgovAbstractServiceImpl {
 
 			bbsUseMapper.insertBBSUseInf(bdUseInf);
 
-			UserInfVO userVO = new UserInfVO();
-			userVO.setTrgetId(boardMaster.getTrgetId());
-
-			List<UserInfVO> tmpList = null;
-			Iterator<UserInfVO> iter = null;
+			Map<String, Object> userSearchMap = new HashMap<>();
+			userSearchMap.put("trgetId", boardMaster.getTrgetId());
 
 			if ("REGC05".equals(boardMaster.getRegistSeCode())) {
-				tmpList = userService.selectAllClubUser(userVO);
-				iter = tmpList.iterator();
-				while (iter.hasNext()) {
+				List<Map<String, Object>> tmpList = userService.selectAllClubUser(userSearchMap);
+				for (Map<String, Object> userMap : tmpList) {
 					bdUseInf = new BoardUseInf();
 					bdUseInf.setBbsId(bbsId);
-					bdUseInf.setTrgetId(((UserInfVO) iter.next()).getUniqId());
+					bdUseInf.setTrgetId((String) userMap.get("uniqId"));
 					bdUseInf.setRegistSeCode("REGC07");
 					bdUseInf.setUseAt("Y");
 					bdUseInf.setFrstRegisterId(boardMaster.getFrstRegisterId());
-
 					bbsUseMapper.insertBBSUseInf(bdUseInf);
 				}
 			} else if ("REGC06".equals(boardMaster.getRegistSeCode())) {
-				tmpList = userService.selectAllCmmntyUser(userVO);
-				iter = tmpList.iterator();
-				while (iter.hasNext()) {
+				List<Map<String, Object>> tmpList = userService.selectAllCmmntyUser(userSearchMap);
+				for (Map<String, Object> userMap : tmpList) {
 					bdUseInf = new BoardUseInf();
 					bdUseInf.setBbsId(bbsId);
-					bdUseInf.setTrgetId(((UserInfVO) iter.next()).getUniqId());
+					bdUseInf.setTrgetId((String) userMap.get("uniqId"));
 					bdUseInf.setRegistSeCode("REGC07");
 					bdUseInf.setUseAt("Y");
 					bdUseInf.setFrstRegisterId(boardMaster.getFrstRegisterId());
-
 					bbsUseMapper.insertBBSUseInf(bdUseInf);
 				}
 			}
@@ -133,37 +124,37 @@ public class BBSAttributeManageService extends EgovAbstractServiceImpl {
 	/**
 	 * 유효한 게시판 마스터 정보를 호출한다.
 	 * 
-	 * @param vo
-	 * @return List<BoardMasterVO>
+	 * @param searchMap
+	 * @return List<Map<String, Object>>
 	 * @throws Exception
 	 */
-	public List<BoardMasterVO> selectAllBBSMasteInf(BoardMasterVO vo) throws Exception {
-		return attrbMngMapper.selectAllBBSMasteInf(vo);
+	public List<Map<String, Object>> selectAllBBSMasteInf(Map<String, Object> searchMap) throws Exception {
+		return attrbMngMapper.selectAllBBSMasteInf(searchMap);
 	}
 
 	/**
 	 * 게시판 속성정보 한 건을 상세조회한다.
 	 * 
-	 * @param searchVO
-	 * @return BoardMasterVO
+	 * @param boardMaster
+	 * @return Map<String, Object>
 	 * @throws Exception
 	 */
-	public BoardMasterVO selectBBSMasterInf(BoardMaster searchVO) throws Exception {
-		BoardMasterVO result = attrbMngMapper.selectBBSMasterInf(searchVO);
+	public Map<String, Object> selectBBSMasterInf(BoardMaster boardMaster) throws Exception {
+		Map<String, Object> result = attrbMngMapper.selectBBSMasterInf(boardMaster);
 
 		String flag = propertyService.getString("Globals.addedOptions");
 		if (flag != null && flag.trim().equalsIgnoreCase("true")) {
-			BoardMasterVO options = addedOptionsMapper.selectAddedOptionsInf(searchVO);
+			Map<String, Object> options = addedOptionsMapper.selectAddedOptionsInf(boardMaster);
 
 			if (options != null) {
-				if (options.getCommentAt().equals("Y")) {
-					result.setOption("comment");
+				if ("Y".equals(options.get("commentAt"))) {
+					result.put("option", "comment");
 				}
-				if (options.getStsfdgAt().equals("Y")) {
-					result.setOption("stsfdg");
+				if ("Y".equals(options.get("stsfdgAt"))) {
+					result.put("option", "stsfdg");
 				}
 			} else {
-				result.setOption("na");
+				result.put("option", "na");
 			}
 		}
 		return result;
@@ -172,15 +163,15 @@ public class BBSAttributeManageService extends EgovAbstractServiceImpl {
 	/**
 	 * 게시판 속성 정보의 목록을 조회 한다.
 	 * 
-	 * @param searchVO
+	 * @param searchMap
 	 * @return Map<String, Object>
 	 * @throws Exception
 	 */
-	public Map<String, Object> selectBBSMasterInfs(BoardMasterVO searchVO) throws Exception {
-		List<BoardMasterVO> result = attrbMngMapper.selectBBSMasterInfs(searchVO);
-		int cnt = attrbMngMapper.selectBBSMasterInfsCnt(searchVO);
+	public Map<String, Object> selectBBSMasterInfs(Map<String, Object> searchMap) throws Exception {
+		List<Map<String, Object>> result = attrbMngMapper.selectBBSMasterInfs(searchMap);
+		int cnt = attrbMngMapper.selectBBSMasterInfsCnt(searchMap);
 
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = new HashMap<>();
 		map.put("resultList", result);
 		map.put("resultCnt", Integer.toString(cnt));
 
@@ -201,7 +192,7 @@ public class BBSAttributeManageService extends EgovAbstractServiceImpl {
 			if (boardMaster.getOption().equals("na")) {
 				return;
 			}
-			BoardMasterVO options = addedOptionsMapper.selectAddedOptionsInf(boardMaster);
+			Map<String, Object> options = addedOptionsMapper.selectAddedOptionsInf(boardMaster);
 
 			if (options == null) {
 				boardMaster.setFrstRegisterId(boardMaster.getLastUpdusrId());
@@ -215,25 +206,25 @@ public class BBSAttributeManageService extends EgovAbstractServiceImpl {
 	/**
 	 * 템플릿의 유효여부를 점검한다.
 	 * 
-	 * @param searchVO
+	 * @param searchMap
 	 * @throws Exception
 	 */
-	public void validateTemplate(BoardMasterVO searchVO) throws Exception {
+	public void validateTemplate(Map<String, Object> searchMap) throws Exception {
 		LOGGER.debug("validateTemplate method ignored...");
 	}
 
 	/**
 	 * 사용중인 게시판 속성 정보의 목록을 조회 한다.
 	 * 
-	 * @param vo
+	 * @param searchMap
 	 * @return Map<String, Object>
 	 * @throws Exception
 	 */
-	public Map<String, Object> selectBdMstrListByTrget(BoardMasterVO vo) throws Exception {
-		List<BoardMasterVO> result = attrbMngMapper.selectBdMstrListByTrget(vo);
-		int cnt = attrbMngMapper.selectBdMstrListCntByTrget(vo);
+	public Map<String, Object> selectBdMstrListByTrget(Map<String, Object> searchMap) throws Exception {
+		List<Map<String, Object>> result = attrbMngMapper.selectBdMstrListByTrget(searchMap);
+		int cnt = attrbMngMapper.selectBdMstrListCntByTrget(searchMap);
 
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = new HashMap<>();
 		map.put("resultList", result);
 		map.put("resultCnt", Integer.toString(cnt));
 
@@ -243,26 +234,26 @@ public class BBSAttributeManageService extends EgovAbstractServiceImpl {
 	/**
 	 * 커뮤니티, 동호회에서 사용중인 게시판 속성 정보의 목록을 전체조회 한다.
 	 * 
-	 * @param vo
-	 * @return List<BoardMasterVO>
+	 * @param searchMap
+	 * @return List<Map<String, Object>>
 	 * @throws Exception
 	 */
-	public List<BoardMasterVO> selectAllBdMstrByTrget(BoardMasterVO vo) throws Exception {
-		return attrbMngMapper.selectAllBdMstrByTrget(vo);
+	public List<Map<String, Object>> selectAllBdMstrByTrget(Map<String, Object> searchMap) throws Exception {
+		return attrbMngMapper.selectAllBdMstrByTrget(searchMap);
 	}
 
 	/**
 	 * 사용중이지 않은 게시판 속성 정보의 목록을 조회 한다.
 	 * 
-	 * @param searchVO
+	 * @param searchMap
 	 * @return Map<String, Object>
 	 * @throws Exception
 	 */
-	public Map<String, Object> selectNotUsedBdMstrList(BoardMasterVO searchVO) throws Exception {
-		List<BoardMasterVO> result = attrbMngMapper.selectNotUsedBdMstrList(searchVO);
-		int cnt = attrbMngMapper.selectNotUsedBdMstrListCnt(searchVO);
+	public Map<String, Object> selectNotUsedBdMstrList(Map<String, Object> searchMap) throws Exception {
+		List<Map<String, Object>> result = attrbMngMapper.selectNotUsedBdMstrList(searchMap);
+		int cnt = attrbMngMapper.selectNotUsedBdMstrListCnt(searchMap);
 
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = new HashMap<>();
 		map.put("resultList", result);
 		map.put("resultCnt", Integer.toString(cnt));
 

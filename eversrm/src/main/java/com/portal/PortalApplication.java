@@ -26,6 +26,7 @@ import java.util.Arrays;
 })
 @ComponentScan(basePackages = {
         "com.portal",
+        "com.builder",
         "org.egovframe.rte.fdl.security",
         "org.egovframe.rte.fdl.crypto"
 })

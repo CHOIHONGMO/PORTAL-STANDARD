@@ -1,0 +1,90 @@
+{
+  "screenId": "EgovBoardMstrList-001",
+  "screenName": "EgovBoardMstrList",
+  "title": "게시판 생성관리",
+  "description": "시스템 내 모든 게시판 마스터 정보 및 속성을 조회하고 편집합니다.",
+  "route": "admin/board",
+  "domainPath": "board/bbs",
+  "pageType": "list",
+  "formColumns": 2,
+  "fields": [
+    {
+      "id": "field-search-cnd",
+      "fieldName": "searchCnd",
+      "label": "검색조건",
+      "type": "combo",
+      "isSearchCondition": true,
+      "options": [
+        { "value": "0", "label": "게시판명" },
+        { "value": "1", "label": "게시판유형" }
+      ]
+    },
+    {
+      "id": "field-search-wrd",
+      "fieldName": "searchWrd",
+      "label": "검색어",
+      "type": "text",
+      "placeholder": "검색어를 입력해 주세요",
+      "isSearchCondition": true
+    }
+  ],
+  "gridColumns": [
+    {
+      "id": "col-bbsNm",
+      "fieldName": "bbsNm",
+      "label": "게시판명",
+      "type": "text",
+      "columnWidth": 30
+    },
+    {
+      "id": "col-bbsTyCodeNm",
+      "fieldName": "bbsTyCodeNm",
+      "label": "게시판유형",
+      "type": "text",
+      "columnWidth": 20
+    },
+    {
+      "id": "col-bbsAttrbCodeNm",
+      "fieldName": "bbsAttrbCodeNm",
+      "label": "게시판속성",
+      "type": "text",
+      "columnWidth": 20
+    },
+    {
+      "id": "col-frstRegisterPnttm",
+      "fieldName": "frstRegisterPnttm",
+      "label": "생성일",
+      "type": "text",
+      "columnWidth": 20
+    },
+    {
+      "id": "col-useAt",
+      "fieldName": "useAt",
+      "label": "사용여부",
+      "type": "text",
+      "columnWidth": 10
+    }
+  ],
+  "actions": [
+    {
+      "id": "action-search",
+      "label": "조회",
+      "buttonType": "search",
+      "method": "GET",
+      "endpoint": "/cop/bbs/SelectBBSMasterInfs.api"
+    },
+    {
+      "id": "action-create",
+      "label": "등록",
+      "buttonType": "navigate",
+      "method": "GET",
+      "endpoint": "",
+      "navigateTo": "/admin/board/new"
+    }
+  ],
+  "pagination": {
+    "recordCountPerPage": 10,
+    "pageSize": 10
+  },
+  "updatedAt": "2026-06-26T00:00:00.000Z"
+}

@@ -45,6 +45,8 @@ function FormField<T extends FieldValues>({
     disabled,
     readOnly,
     rows = 4,
+    colSpan,
+    rowSpan,
   } = schema;
 
   const inputClass = `form-control${error ? ' is-invalid' : ''}`;
@@ -170,7 +172,13 @@ function FormField<T extends FieldValues>({
   };
 
   return (
-    <div className={`form-field-row${className ? ` ${className}` : ''}`}>
+    <div 
+      className={`form-field-row${className ? ` ${className}` : ''}`}
+      style={{
+        gridColumn: colSpan ? `span ${colSpan}` : undefined,
+        gridRow: rowSpan ? `span ${rowSpan}` : undefined,
+      }}
+    >
       <label htmlFor={type === 'radio' ? undefined : name} className="form-label">
         {required && <span className="required-mark" aria-hidden="true">*</span>}
         {label}

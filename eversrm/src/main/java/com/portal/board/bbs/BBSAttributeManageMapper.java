@@ -1,9 +1,9 @@
 package com.portal.board.bbs;
 
 import java.util.List;
+import java.util.Map;
 import org.egovframe.rte.psl.dataaccess.mapper.EgovMapper;
 import com.portal.board.bbs.service.BoardMaster;
-import com.portal.board.bbs.service.BoardMasterVO;
 
 /**
  * 게시판 속성정보 관리를 위한 MyBatis Mapper 인터페이스
@@ -19,25 +19,25 @@ public interface BBSAttributeManageMapper {
 
     int insertBBSMasterInf(BoardMaster boardMaster) throws Exception;
 
-    BoardMasterVO selectBBSMasterInf(BoardMaster vo) throws Exception;
+    Map<String, Object> selectBBSMasterInf(BoardMaster vo) throws Exception;
 
-    List<BoardMasterVO> selectBBSMasterInfs(BoardMasterVO vo) throws Exception;
+    List<Map<String, Object>> selectBBSMasterInfs(Map<String, Object> searchMap) throws Exception;
 
-    int selectBBSMasterInfsCnt(BoardMasterVO vo) throws Exception;
+    int selectBBSMasterInfsCnt(Map<String, Object> searchMap) throws Exception;
 
     void updateBBSMasterInf(BoardMaster boardMaster) throws Exception;
 
-    boolean validateTemplate(BoardMasterVO vo) throws Exception;
+    boolean validateTemplate(Map<String, Object> searchMap) throws Exception;
 
-    List<BoardMasterVO> selectAllBBSMasteInf(BoardMasterVO vo) throws Exception;
+    List<Map<String, Object>> selectAllBBSMasteInf(Map<String, Object> searchMap) throws Exception;
 
-    List<BoardMasterVO> selectBdMstrListByTrget(BoardMasterVO vo) throws Exception;
+    List<Map<String, Object>> selectBdMstrListByTrget(Map<String, Object> searchMap) throws Exception;
 
-    int selectBdMstrListCntByTrget(BoardMasterVO vo) throws Exception;
+    int selectBdMstrListCntByTrget(Map<String, Object> searchMap) throws Exception;
 
-    List<BoardMasterVO> selectAllBdMstrByTrget(BoardMasterVO vo) throws Exception;
+    List<Map<String, Object>> selectAllBdMstrByTrget(Map<String, Object> searchMap) throws Exception;
 
-    List<BoardMasterVO> selectNotUsedBdMstrList(BoardMasterVO vo) throws Exception;
+    List<Map<String, Object>> selectNotUsedBdMstrList(Map<String, Object> searchMap) throws Exception;
 
-    int selectNotUsedBdMstrListCnt(BoardMasterVO vo) throws Exception;
+    int selectNotUsedBdMstrListCnt(Map<String, Object> searchMap) throws Exception;
 }

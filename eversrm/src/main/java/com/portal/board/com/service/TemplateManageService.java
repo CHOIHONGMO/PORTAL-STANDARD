@@ -51,26 +51,26 @@ public class TemplateManageService extends EgovAbstractServiceImpl {
 	/**
 	 * 템플릿에 대한 상세정보를 조회한다.
 	 * 
-	 * @param tmplatInfVO
-	 * @return TemplateInfVO
-	 * @throws Exception
-	 */
-	public TemplateInfVO selectTemplateInf(TemplateInfVO tmplatInfVO) throws Exception {
-		return tmplatMapper.selectTemplateInf(tmplatInfVO);
-	}
-
-	/**
-	 * 템플릿에 대한 목록를 조회한다.
-	 * 
-	 * @param tmplatInfVO
+	 * @param searchMap
 	 * @return Map<String, Object>
 	 * @throws Exception
 	 */
-	public Map<String, Object> selectTemplateInfs(TemplateInfVO tmplatInfVO) throws Exception {
-		List<TemplateInfVO> result = tmplatMapper.selectTemplateInfs(tmplatInfVO);
-		int cnt = tmplatMapper.selectTemplateInfsCnt(tmplatInfVO);
+	public Map<String, Object> selectTemplateInf(Map<String, Object> searchMap) throws Exception {
+		return tmplatMapper.selectTemplateInf(searchMap);
+	}
 
-		Map<String, Object> map = new HashMap<String, Object>();
+	/**
+	 * 템플릿에 대한 목록을 조회한다.
+	 * 
+	 * @param searchMap
+	 * @return Map<String, Object>
+	 * @throws Exception
+	 */
+	public Map<String, Object> selectTemplateInfs(Map<String, Object> searchMap) throws Exception {
+		List<Map<String, Object>> result = tmplatMapper.selectTemplateInfs(searchMap);
+		int cnt = tmplatMapper.selectTemplateInfsCnt(searchMap);
+
+		Map<String, Object> map = new HashMap<>();
 		map.put("resultList", result);
 		map.put("resultCnt", Integer.toString(cnt));
 
@@ -80,12 +80,12 @@ public class TemplateManageService extends EgovAbstractServiceImpl {
 	/**
 	 * 템플릿에 대한 미리보기 정보를 조회한다.
 	 * 
-	 * @param tmplatInfVO
-	 * @return TemplateInfVO
+	 * @param searchMap
+	 * @return Map<String, Object>
 	 * @throws Exception
 	 */
-	public TemplateInfVO selectTemplatePreview(TemplateInfVO tmplatInfVO) throws Exception {
-		return tmplatMapper.selectTemplatePreview(tmplatInfVO);
+	public Map<String, Object> selectTemplatePreview(Map<String, Object> searchMap) throws Exception {
+		return tmplatMapper.selectTemplatePreview(searchMap);
 	}
 
 	/**
@@ -101,11 +101,11 @@ public class TemplateManageService extends EgovAbstractServiceImpl {
 	/**
 	 * 템플릿 구분에 따른 목록을 조회한다.
 	 * 
-	 * @param tmplatInfVO
-	 * @return List<TemplateInfVO>
+	 * @param searchMap
+	 * @return List<Map<String, Object>>
 	 * @throws Exception
 	 */
-	public List<TemplateInfVO> selectTemplateInfsByCode(TemplateInfVO tmplatInfVO) throws Exception {
-		return tmplatMapper.selectTemplateInfsByCode(tmplatInfVO);
+	public List<Map<String, Object>> selectTemplateInfsByCode(Map<String, Object> searchMap) throws Exception {
+		return tmplatMapper.selectTemplateInfsByCode(searchMap);
 	}
 }

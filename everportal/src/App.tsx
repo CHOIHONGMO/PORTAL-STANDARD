@@ -1,3 +1,4 @@
+import React, { Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
 import MainPage from '@/pages/MainPage';
@@ -115,12 +116,28 @@ import EgovServiceIssuance from '@/pages/service/EgovServiceIssuance';
 import EgovServiceManage from '@/pages/service/EgovServiceManage';
 import EgovServiceResult from '@/pages/service/EgovServiceResult';
 
+// Visual Screen Builder (독립 레이아웃, 동적 로딩)
+const BuilderPage = React.lazy(() => import('@/builder/BuilderPage'));
+const isBuilderEnabled = import.meta.env.VITE_BUILDER_ENABLED === 'true';
+
 import '@/index.css';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Visual Screen Builder — 독립 라우트 (운영 빌드 시 제외) */}
+        {isBuilderEnabled && (
+          <Route 
+            path="/builder" 
+            element={
+              <Suspense fallback={<div style={{ padding: 20, color: '#fff' }}>Loading Builder...</div>}>
+                <BuilderPage />
+              </Suspense>
+            } 
+          />
+        )}
+
         <Route path="/" element={<Layout />}>
           <Route index element={<MainPage />} />
           

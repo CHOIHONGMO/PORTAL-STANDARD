@@ -88,43 +88,44 @@ public class BBSManageService extends EgovAbstractServiceImpl {
 	/**
 	 * 게시물 대하여 상세 내용을 조회 한다.
 	 * 
-	 * @param boardVO
-	 * @return BoardVO
+	 * @param searchMap
+	 * @return Map<String, Object>
 	 * @throws Exception
 	 */
-	public BoardVO selectBoardArticle(BoardVO boardVO) throws Exception {
-		if (boardVO.isPlusCount()) {
-			int iniqireCo = bbsManageMapper.selectMaxInqireCo(boardVO);
-			boardVO.setInqireCo(iniqireCo);
-			bbsManageMapper.updateInqireCo(boardVO);
+	public Map<String, Object> selectBoardArticle(Map<String, Object> searchMap) throws Exception {
+		boolean plusCount = Boolean.TRUE.equals(searchMap.get("plusCount"));
+		if (plusCount) {
+			int iniqireCo = bbsManageMapper.selectMaxInqireCo(searchMap);
+			searchMap.put("inqireCo", iniqireCo);
+			bbsManageMapper.updateInqireCo(searchMap);
 		}
-
-		return bbsManageMapper.selectBoardArticle(boardVO);
+		return bbsManageMapper.selectBoardArticle(searchMap);
 	}
 
 	/**
 	 * 조건에 맞는 게시물 목록을 조회 한다.
 	 * 
-	 * @param boardVO
+	 * @param searchMap
 	 * @param attrbFlag
 	 * @return Map<String, Object>
 	 * @throws Exception
 	 */
-	public Map<String, Object> selectBoardArticles(BoardVO boardVO, String attrbFlag) throws Exception {
-		List<BoardVO> list = bbsManageMapper.selectBoardArticleList(boardVO);
-		List<BoardVO> result = new ArrayList<BoardVO>();
+	public Map<String, Object> selectBoardArticles(Map<String, Object> searchMap, String attrbFlag) throws Exception {
+		List<Map<String, Object>> list = bbsManageMapper.selectBoardArticleList(searchMap);
+		List<Map<String, Object>> result = new ArrayList<>();
 
 		if ("BBSA01".equals(attrbFlag)) {
 			String today = DateUtil.getToday();
 
-			BoardVO vo;
-			Iterator<BoardVO> iter = list.iterator();
+			Iterator<Map<String, Object>> iter = list.iterator();
 			while (iter.hasNext()) {
-				vo = (BoardVO) iter.next();
+				Map<String, Object> vo = iter.next();
+				String ntceBgnde = (String) vo.get("ntceBgnde");
+				String ntceEndde = (String) vo.get("ntceEndde");
 
-				if (vo.getNtceBgnde() != null && !"".equals(vo.getNtceBgnde()) || vo.getNtceEndde() != null && !"".equals(vo.getNtceEndde())) {
-					if (DateUtil.getDaysDiff(today, vo.getNtceBgnde()) > 0 || DateUtil.getDaysDiff(today, vo.getNtceEndde()) < 0) {
-						vo.setIsExpired("Y");
+				if ((ntceBgnde != null && !ntceBgnde.isEmpty()) || (ntceEndde != null && !ntceEndde.isEmpty())) {
+					if (DateUtil.getDaysDiff(today, ntceBgnde) > 0 || DateUtil.getDaysDiff(today, ntceEndde) < 0) {
+						vo.put("isExpired", "Y");
 					}
 				}
 				result.add(vo);
@@ -133,9 +134,9 @@ public class BBSManageService extends EgovAbstractServiceImpl {
 			result = list;
 		}
 
-		int cnt = bbsManageMapper.selectBoardArticleListCnt(boardVO);
+		int cnt = bbsManageMapper.selectBoardArticleListCnt(searchMap);
 
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = new HashMap<>();
 		map.put("resultList", result);
 		map.put("resultCnt", Integer.toString(cnt));
 
@@ -155,25 +156,25 @@ public class BBSManageService extends EgovAbstractServiceImpl {
 	/**
 	 * 방명록 내용을 삭제 한다.
 	 * 
-	 * @param boardVO
+	 * @param searchMap
 	 * @throws Exception
 	 */
-	public void deleteGuestList(BoardVO boardVO) throws Exception {
-		bbsManageMapper.deleteGuestList(boardVO);
+	public void deleteGuestList(Map<String, Object> searchMap) throws Exception {
+		bbsManageMapper.deleteGuestList(searchMap);
 	}
 
 	/**
 	 * 방명록에 대한 목록을 조회 한다.
 	 * 
-	 * @param boardVO
+	 * @param searchMap
 	 * @return Map<String, Object>
 	 * @throws Exception
 	 */
-	public Map<String, Object> selectGuestList(BoardVO boardVO) throws Exception {
-		List<BoardVO> result = bbsManageMapper.selectGuestList(boardVO);
-		int cnt = bbsManageMapper.selectGuestListCnt(boardVO);
+	public Map<String, Object> selectGuestList(Map<String, Object> searchMap) throws Exception {
+		List<Map<String, Object>> result = bbsManageMapper.selectGuestList(searchMap);
+		int cnt = bbsManageMapper.selectGuestListCnt(searchMap);
 
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = new HashMap<>();
 		map.put("resultList", result);
 		map.put("resultCnt", Integer.toString(cnt));
 

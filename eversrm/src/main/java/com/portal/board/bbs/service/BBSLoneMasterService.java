@@ -76,26 +76,26 @@ public class BBSLoneMasterService extends EgovAbstractServiceImpl {
 	/**
 	 * 게시판 속성정보 한 건을 상세조회한다.
 	 * 
-	 * @param searchVO
-	 * @return BoardMasterVO
+	 * @param boardMaster
+	 * @return Map<String, Object>
 	 * @throws Exception
 	 */
-	public BoardMasterVO selectMaster(BoardMaster searchVO) throws Exception {
-		return masterMapper.selectMaster(searchVO);
+	public Map<String, Object> selectMaster(BoardMaster boardMaster) throws Exception {
+		return masterMapper.selectMaster(boardMaster);
 	}
 
 	/**
 	 * 게시판 속성 정보의 목록을 조회 한다.
 	 * 
-	 * @param searchVO
+	 * @param searchMap
 	 * @return Map<String, Object>
 	 * @throws Exception
 	 */
-	public Map<String, Object> selectMasterList(BoardMasterVO searchVO) throws Exception {
-		List<BoardMasterVO> result = masterMapper.selectMasterList(searchVO);
-		int cnt = masterMapper.selectMasterListCnt(searchVO);
+	public Map<String, Object> selectMasterList(Map<String, Object> searchMap) throws Exception {
+		List<Map<String, Object>> result = masterMapper.selectMasterList(searchMap);
+		int cnt = masterMapper.selectMasterListCnt(searchMap);
 
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = new HashMap<>();
 		map.put("resultList", result);
 		map.put("resultCnt", Integer.toString(cnt));
 

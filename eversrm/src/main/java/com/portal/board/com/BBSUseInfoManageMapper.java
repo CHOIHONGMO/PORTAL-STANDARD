@@ -1,9 +1,9 @@
 package com.portal.board.com;
 
 import java.util.List;
+import java.util.Map;
 import org.egovframe.rte.psl.dataaccess.mapper.EgovMapper;
 import com.portal.board.com.service.BoardUseInf;
-import com.portal.board.com.service.BoardUseInfVO;
 
 /**
  * 게시판 이용정보를 관리하기 위한 MyBatis Mapper 인터페이스
@@ -17,29 +17,29 @@ public interface BBSUseInfoManageMapper {
 
     void deleteBBSUseInf(BoardUseInf bdUseInf) throws Exception;
 
-    List<BoardUseInf> selectBBSUseInfByCmmnty(BoardUseInfVO bdUseVO) throws Exception;
+    List<BoardUseInf> selectBBSUseInfByCmmnty(Map<String, Object> searchMap) throws Exception;
 
-    List<BoardUseInf> selectBBSUseInfByClub(BoardUseInfVO bdUseVO) throws Exception;
+    List<BoardUseInf> selectBBSUseInfByClub(Map<String, Object> searchMap) throws Exception;
 
-    void deleteAllBBSUseInfByCmmnty(BoardUseInfVO bdUseVO) throws Exception;
+    void deleteAllBBSUseInfByCmmnty(Map<String, Object> searchMap) throws Exception;
 
-    void deleteAllBBSUseInfByClub(BoardUseInfVO bdUseVO) throws Exception;
+    void deleteAllBBSUseInfByClub(Map<String, Object> searchMap) throws Exception;
 
     void insertBBSUseInf(BoardUseInf bdUseInf) throws Exception;
 
-    List<BoardUseInfVO> selectBBSUseInfs(BoardUseInfVO bdUseVO) throws Exception;
+    List<Map<String, Object>> selectBBSUseInfs(Map<String, Object> searchMap) throws Exception;
 
-    int selectBBSUseInfsCnt(BoardUseInfVO bdUseVO) throws Exception;
+    int selectBBSUseInfsCnt(Map<String, Object> searchMap) throws Exception;
 
-    BoardUseInfVO selectBBSUseInf(BoardUseInfVO bdUseVO) throws Exception;
+    Map<String, Object> selectBBSUseInf(Map<String, Object> searchMap) throws Exception;
 
     void updateBBSUseInf(BoardUseInf bdUseInf) throws Exception;
 
     void deleteBBSUseInfByBoardId(BoardUseInf bdUseInf) throws Exception;
 
-    List<BoardUseInfVO> selectBBSUseInfsByTrget(BoardUseInfVO bdUseVO) throws Exception;
+    List<Map<String, Object>> selectBBSUseInfsByTrget(Map<String, Object> searchMap) throws Exception;
 
-    int selectBBSUseInfsCntByTrget(BoardUseInfVO bdUseVO) throws Exception;
+    int selectBBSUseInfsCntByTrget(Map<String, Object> searchMap) throws Exception;
 
     void updateBBSUseInfByTrget(BoardUseInf bdUseInf) throws Exception;
 }

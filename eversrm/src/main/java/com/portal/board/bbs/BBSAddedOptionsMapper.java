@@ -1,8 +1,8 @@
 package com.portal.board.bbs;
 
+import java.util.Map;
 import org.egovframe.rte.psl.dataaccess.mapper.EgovMapper;
 import com.portal.board.bbs.service.BoardMaster;
-import com.portal.board.bbs.service.BoardMasterVO;
 
 /**
  * 2단계 기능 추가 (댓글관리, 만족도조사) 관리를 위한 MyBatis Mapper 인터페이스
@@ -16,7 +16,7 @@ public interface BBSAddedOptionsMapper {
 
     int insertAddedOptionsInf(BoardMaster boardMaster) throws Exception;
 
-    BoardMasterVO selectAddedOptionsInf(BoardMaster vo) throws Exception;
+    Map<String, Object> selectAddedOptionsInf(BoardMaster vo) throws Exception;
 
     void updateAddedOptionsInf(BoardMaster boardMaster) throws Exception;
 }

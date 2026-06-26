@@ -80,6 +80,12 @@ export interface FieldSchema {
 
   /** textarea 줄 수 (type: 'textarea'에서 사용, default: 4) */
   rows?: number;
+
+  /** 레이아웃 렌더링 시 사용할 colSpan (컬럼 차지 수) */
+  colSpan?: number;
+
+  /** 레이아웃 렌더링 시 사용할 rowSpan (행 차지 수) */
+  rowSpan?: number;
 }
 
 /**

@@ -26,15 +26,15 @@ public class UserInfManageService extends EgovAbstractServiceImpl {
 	/**
 	 * 동호회 운영자 목록을 조회한다.
 	 * 
-	 * @param userVO
+	 * @param searchMap
 	 * @return Map<String, Object>
 	 * @throws Exception
 	 */
-	public Map<String, Object> selectClubOprtrList(UserInfVO userVO) throws Exception {
-		List<UserInfVO> result = userInfMapper.selectClubOprtrList(userVO);
-		int cnt = userInfMapper.selectClubOprtrListCnt(userVO);
+	public Map<String, Object> selectClubOprtrList(Map<String, Object> searchMap) throws Exception {
+		List<Map<String, Object>> result = userInfMapper.selectClubOprtrList(searchMap);
+		int cnt = userInfMapper.selectClubOprtrListCnt(searchMap);
 
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = new HashMap<>();
 		map.put("resultList", result);
 		map.put("resultCnt", Integer.toString(cnt));
 
@@ -44,15 +44,15 @@ public class UserInfManageService extends EgovAbstractServiceImpl {
 	/**
 	 * 동호회 사용자 목록을 조회한다.
 	 * 
-	 * @param userVO
+	 * @param searchMap
 	 * @return Map<String, Object>
 	 * @throws Exception
 	 */
-	public Map<String, Object> selectClubUserList(UserInfVO userVO) throws Exception {
-		List<UserInfVO> result = userInfMapper.selectClubUserList(userVO);
-		int cnt = userInfMapper.selectClubUserListCnt(userVO);
+	public Map<String, Object> selectClubUserList(Map<String, Object> searchMap) throws Exception {
+		List<Map<String, Object>> result = userInfMapper.selectClubUserList(searchMap);
+		int cnt = userInfMapper.selectClubUserListCnt(searchMap);
 
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = new HashMap<>();
 		map.put("resultList", result);
 		map.put("resultCnt", Integer.toString(cnt));
 
@@ -62,15 +62,15 @@ public class UserInfManageService extends EgovAbstractServiceImpl {
 	/**
 	 * 커뮤니티 관리자 목록을 조회한다.
 	 * 
-	 * @param userVO
+	 * @param searchMap
 	 * @return Map<String, Object>
 	 * @throws Exception
 	 */
-	public Map<String, Object> selectCmmntyMngrList(UserInfVO userVO) throws Exception {
-		List<UserInfVO> result = userInfMapper.selectCmmntyMngrList(userVO);
-		int cnt = userInfMapper.selectCmmntyMngrListCnt(userVO);
+	public Map<String, Object> selectCmmntyMngrList(Map<String, Object> searchMap) throws Exception {
+		List<Map<String, Object>> result = userInfMapper.selectCmmntyMngrList(searchMap);
+		int cnt = userInfMapper.selectCmmntyMngrListCnt(searchMap);
 
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = new HashMap<>();
 		map.put("resultList", result);
 		map.put("resultCnt", Integer.toString(cnt));
 
@@ -80,15 +80,15 @@ public class UserInfManageService extends EgovAbstractServiceImpl {
 	/**
 	 * 커뮤니티 사용자 목록을 조회한다.
 	 * 
-	 * @param userVO
+	 * @param searchMap
 	 * @return Map<String, Object>
 	 * @throws Exception
 	 */
-	public Map<String, Object> selectCmmntyUserList(UserInfVO userVO) throws Exception {
-		List<UserInfVO> result = userInfMapper.selectCmmntyUserList(userVO);
-		int cnt = userInfMapper.selectCmmntyUserListCnt(userVO);
+	public Map<String, Object> selectCmmntyUserList(Map<String, Object> searchMap) throws Exception {
+		List<Map<String, Object>> result = userInfMapper.selectCmmntyUserList(searchMap);
+		int cnt = userInfMapper.selectCmmntyUserListCnt(searchMap);
 
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = new HashMap<>();
 		map.put("resultList", result);
 		map.put("resultCnt", Integer.toString(cnt));
 
@@ -98,15 +98,15 @@ public class UserInfManageService extends EgovAbstractServiceImpl {
 	/**
 	 * 사용자 정보에 대한 목록을 조회한다.
 	 * 
-	 * @param userVO
+	 * @param searchMap
 	 * @return Map<String, Object>
 	 * @throws Exception
 	 */
-	public Map<String, Object> selectUserList(UserInfVO userVO) throws Exception {
-		List<UserInfVO> result = userInfMapper.selectUserList(userVO);
-		int cnt = userInfMapper.selectUserListCnt(userVO);
+	public Map<String, Object> selectUserList(Map<String, Object> searchMap) throws Exception {
+		List<Map<String, Object>> result = userInfMapper.selectUserList(searchMap);
+		int cnt = userInfMapper.selectUserListCnt(searchMap);
 
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = new HashMap<>();
 		map.put("resultList", result);
 		map.put("resultCnt", Integer.toString(cnt));
 
@@ -116,22 +116,22 @@ public class UserInfManageService extends EgovAbstractServiceImpl {
 	/**
 	 * 동호회에 대한 모든 사용자 목록을 조회한다.
 	 * 
-	 * @param userVO
-	 * @return List<UserInfVO>
+	 * @param searchMap
+	 * @return List<Map<String, Object>>
 	 * @throws Exception
 	 */
-	public List<UserInfVO> selectAllClubUser(UserInfVO userVO) throws Exception {
-		return userInfMapper.selectAllClubUser(userVO);
+	public List<Map<String, Object>> selectAllClubUser(Map<String, Object> searchMap) throws Exception {
+		return userInfMapper.selectAllClubUser(searchMap);
 	}
 
 	/**
 	 * 커뮤니티에 대한 모든 사용자 목록을 조회한다.
 	 * 
-	 * @param userVO
-	 * @return List<UserInfVO>
+	 * @param searchMap
+	 * @return List<Map<String, Object>>
 	 * @throws Exception
 	 */
-	public List<UserInfVO> selectAllCmmntyUser(UserInfVO userVO) throws Exception {
-		return userInfMapper.selectAllCmmntyUser(userVO);
+	public List<Map<String, Object>> selectAllCmmntyUser(Map<String, Object> searchMap) throws Exception {
+		return userInfMapper.selectAllCmmntyUser(searchMap);
 	}
 }

@@ -15,7 +15,6 @@ import java.util.HashMap;
 
 import com.portal.common.model.ComDefaultVO;
 import com.portal.common.model.LoginVO;
-import com.portal.board.bbs.service.BoardVO;
 import com.portal.board.bbs.service.BBSManageService;
 import com.portal.user.help.faq.service.FaqManageService;
 import com.portal.user.poll.qri.service.QustnrRespondInfoService;
@@ -63,42 +62,39 @@ public class MainController {
 		Map<String, Object> resultMap = new HashMap<>();
 		
 		// 공지사항 메인 컨텐츠 조회 시작 ---------------------------------
-		BoardVO boardVO = new BoardVO();
-		boardVO.setUseAt("Y");
-		boardVO.setPageUnit(5);
-		boardVO.setPageSize(10);
-		boardVO.setBbsId("BBSMSTR_AAAAAAAAAAAA");
+		Map<String, Object> boardSearchMap = new HashMap<>();
+		boardSearchMap.put("useAt", "Y");
+		boardSearchMap.put("bbsId", "BBSMSTR_AAAAAAAAAAAA");
 
 		PaginationInfo paginationInfo = new PaginationInfo();
+		paginationInfo.setCurrentPageNo(1);
+		paginationInfo.setRecordCountPerPage(5);
+		paginationInfo.setPageSize(10);
 
-		paginationInfo.setCurrentPageNo(boardVO.getPageIndex());
-		paginationInfo.setRecordCountPerPage(boardVO.getPageUnit());
-		paginationInfo.setPageSize(boardVO.getPageSize());
+		boardSearchMap.put("firstIndex", paginationInfo.getFirstRecordIndex());
+		boardSearchMap.put("lastIndex", paginationInfo.getLastRecordIndex());
+		boardSearchMap.put("recordCountPerPage", paginationInfo.getRecordCountPerPage());
 
-		boardVO.setFirstIndex(paginationInfo.getFirstRecordIndex());
-		boardVO.setLastIndex(paginationInfo.getLastRecordIndex());
-		boardVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
-
-		Map<String, Object> map = bbsMngService.selectBoardArticles(boardVO, "BBSA02");
+		Map<String, Object> map = bbsMngService.selectBoardArticles(boardSearchMap, "BBSA02");
 		resultMap.put("notiList", map.get("resultList"));
 
 
 		// 공지사항 메인컨텐츠 조회 끝 -----------------------------------
 
 		// 자유게시판 메인 컨텐츠 조회 시작 ---------------------------------
-		boardVO.setPageUnit(5);
-		boardVO.setPageSize(10);
-		boardVO.setBbsId("BBSMSTR_BBBBBBBBBBBB");
+		Map<String, Object> bbsSearchMap = new HashMap<>();
+		bbsSearchMap.put("useAt", "Y");
+		bbsSearchMap.put("bbsId", "BBSMSTR_BBBBBBBBBBBB");
 
-		paginationInfo.setCurrentPageNo(boardVO.getPageIndex());
-		paginationInfo.setRecordCountPerPage(boardVO.getPageUnit());
-		paginationInfo.setPageSize(boardVO.getPageSize());
+		paginationInfo.setCurrentPageNo(1);
+		paginationInfo.setRecordCountPerPage(5);
+		paginationInfo.setPageSize(10);
 
-		boardVO.setFirstIndex(paginationInfo.getFirstRecordIndex());
-		boardVO.setLastIndex(paginationInfo.getLastRecordIndex());
-		boardVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
+		bbsSearchMap.put("firstIndex", paginationInfo.getFirstRecordIndex());
+		bbsSearchMap.put("lastIndex", paginationInfo.getLastRecordIndex());
+		bbsSearchMap.put("recordCountPerPage", paginationInfo.getRecordCountPerPage());
 
-		resultMap.put("bbsList", bbsMngService.selectBoardArticles(boardVO, "BBSA02").get("resultList"));
+		resultMap.put("bbsList", bbsMngService.selectBoardArticles(bbsSearchMap, "BBSA02").get("resultList"));
 
 		// 자유게시판 메인컨텐츠 조회 끝 -----------------------------------
 

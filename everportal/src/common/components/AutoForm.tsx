@@ -25,10 +25,14 @@ interface AutoFormProps<T extends FieldValues> {
   description?: string;
   /** 추가 className */
   className?: string;
+  /** 폼 단수 (그리드 레이아웃 설정 시 사용) */
+  columns?: number;
   /** 스키마 키 순서 재정의 (없으면 Object.keys 순서 사용) */
   fieldOrder?: Array<keyof T>;
   /** 특정 필드를 제외하고 렌더링 (AutoForm 외부에서 직접 렌더링할 필드) */
   excludeFields?: Array<keyof T>;
+  /** 기본 제공 액션 버튼 숨김 여부 (외부에서 액션을 렌더링할 경우 사용) */
+  hideActions?: boolean;
   /** 버튼 영역 아래에 추가로 렌더링할 컨텐츠 */
   children?: React.ReactNode;
 }
@@ -44,6 +48,7 @@ interface AutoFormProps<T extends FieldValues> {
  *   onSubmit={handleSave}
  *   onCancel={() => navigate(-1)}
  *   submitLabel="저장"
+ *   columns={2}
  * />
  */
 function AutoForm<T extends FieldValues>({
@@ -57,8 +62,10 @@ function AutoForm<T extends FieldValues>({
   title,
   description,
   className,
+  columns = 1,
   fieldOrder,
   excludeFields = [],
+  hideActions = false,
   children,
 }: AutoFormProps<T>) {
   const {
@@ -74,6 +81,12 @@ function AutoForm<T extends FieldValues>({
 
   const isDisabled = isLoading || isSubmitting;
 
+  const gridStyle = columns > 1 ? {
+    display: 'grid',
+    gridTemplateColumns: `repeat(${columns}, 1fr)`,
+    gap: '16px'
+  } : undefined;
+
   return (
     <div className={`auto-form-container${className ? ` ${className}` : ''}`}>
       {/* 폼 헤더 */}
@@ -86,7 +99,7 @@ function AutoForm<T extends FieldValues>({
 
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         {/* 필드 자동 렌더링 */}
-        <div className="auto-form-fields">
+        <div className="auto-form-fields" style={gridStyle}>
           {fieldKeys.map((key) => (
             <FormField<T>
               key={String(key)}
@@ -102,25 +115,27 @@ function AutoForm<T extends FieldValues>({
         {children}
 
         {/* 버튼 영역 */}
-        <div className="auto-form-actions">
-          {onCancel && (
+        {!hideActions && (
+          <div className="auto-form-actions">
+            {onCancel && (
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={onCancel}
+                disabled={isDisabled}
+              >
+                {cancelLabel}
+              </button>
+            )}
             <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={onCancel}
+              type="submit"
+              className="btn btn-primary"
               disabled={isDisabled}
             >
-              {cancelLabel}
+              {isDisabled ? '처리 중...' : submitLabel}
             </button>
-          )}
-          <button
-            type="submit"
-            className="btn btn-primary"
-            disabled={isDisabled}
-          >
-            {isDisabled ? '처리 중...' : submitLabel}
-          </button>
-        </div>
+          </div>
+        )}
       </form>
     </div>
   );
