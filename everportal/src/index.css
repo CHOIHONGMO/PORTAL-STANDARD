@@ -96,3 +96,95 @@ button {
   margin: -1px;
   overflow: hidden;
 }
+
+/* Builder-styled generated components */
+.builder-styled-block {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* === Dark Theme === */
+.builder-theme-dark label {
+  color: #94a3b8 !important;
+  font-weight: 500;
+}
+
+.builder-theme-dark input,
+.builder-theme-dark select {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+  border: 1px solid #334155 !important;
+  border-radius: 6px;
+  padding: 8px 12px;
+}
+
+.builder-theme-dark input:focus,
+.builder-theme-dark select:focus {
+  outline: none;
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.builder-theme-dark .builder-styled-table th {
+  background-color: #0f172a !important;
+  color: #e2e8f0 !important;
+  border-bottom: 1px solid #334155 !important;
+  padding: 12px;
+}
+
+.builder-theme-dark .builder-styled-table td {
+  color: #cbd5e1 !important;
+  border-bottom: 1px solid #334155 !important;
+  padding: 12px;
+}
+
+/* === Light Theme === */
+.builder-theme-light label {
+  color: #475569 !important;
+  font-weight: 600;
+}
+
+.builder-theme-light input,
+.builder-theme-light select {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 6px;
+  padding: 8px 12px;
+}
+
+.builder-theme-light input:focus,
+.builder-theme-light select:focus {
+  outline: none;
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.builder-theme-light .builder-styled-table th {
+  background-color: #f1f5f9 !important;
+  color: #334155 !important;
+  border-bottom: 1px solid #cbd5e1 !important;
+  padding: 12px;
+  font-weight: 600;
+}
+
+.builder-theme-light .builder-styled-table td {
+  color: #334155 !important;
+  border-bottom: 1px solid #cbd5e1 !important;
+  padding: 12px;
+}
+
+/* Buttons */
+.builder-styled-btn {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed) !important;
+  border: none !important;
+  color: white !important;
+  border-radius: 6px !important;
+  font-weight: 600 !important;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s !important;
+}
+
+.builder-styled-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3) !important;
+}

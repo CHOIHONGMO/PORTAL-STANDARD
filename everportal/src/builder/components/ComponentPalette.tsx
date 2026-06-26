@@ -11,16 +11,16 @@ interface PaletteComponentItem {
 }
 
 const PALETTE_ITEMS: PaletteComponentItem[] = [
-  { type: 'text',     label: '텍스트',     icon: '𝐓',  iconBg: '#1e3a5f', description: 'input text' },
-  { type: 'number',   label: '숫자',       icon: '#',  iconBg: '#1e3a3a', description: 'input number' },
-  { type: 'email',    label: '이메일',     icon: '@',  iconBg: '#2d1e5f', description: 'input email' },
-  { type: 'password', label: '비밀번호',   icon: '🔒', iconBg: '#3a1e2a', description: 'input password' },
-  { type: 'tel',      label: '전화번호',   icon: '📞', iconBg: '#1e3a2f', description: 'input tel' },
-  { type: 'date',     label: '날짜',       icon: '📅', iconBg: '#3a2a1e', description: 'input date' },
-  { type: 'combo',    label: '셀렉트박스', icon: '▽',  iconBg: '#1e2d4a', description: 'select' },
-  { type: 'radio',    label: '라디오',     icon: '◎',  iconBg: '#2a1e3a', description: 'radio group' },
-  { type: 'checkbox', label: '체크박스',   icon: '☑',  iconBg: '#1e3a2a', description: 'checkbox' },
-  { type: 'textarea', label: '텍스트영역', icon: '¶',  iconBg: '#3a3a1e', description: 'textarea' },
+  { type: 'text',     label: 'Text',     icon: '𝐓',  iconBg: '#1e3a5f', description: 'input text' },
+  { type: 'number',   label: 'Number',       icon: '#',  iconBg: '#1e3a3a', description: 'input number' },
+  { type: 'email',    label: 'eMail',     icon: '@',  iconBg: '#2d1e5f', description: 'input email' },
+  { type: 'password', label: 'Passwd',   icon: '🔒', iconBg: '#3a1e2a', description: 'input password' },
+  { type: 'tel',      label: 'Tel',   icon: '📞', iconBg: '#1e3a2f', description: 'input tel' },
+  { type: 'date',     label: 'Date',       icon: '📅', iconBg: '#3a2a1e', description: 'input date' },
+  { type: 'combo',    label: 'Select', icon: '▽',  iconBg: '#1e2d4a', description: 'select' },
+  { type: 'radio',    label: 'Radio',     icon: '◎',  iconBg: '#2a1e3a', description: 'radio group' },
+  { type: 'checkbox', label: 'Check',   icon: '☑',  iconBg: '#1e3a2a', description: 'checkbox' },
+  { type: 'textarea', label: 'TextArea', icon: '¶',  iconBg: '#3a3a1e', description: 'textarea' },
 ];
 
 interface DraggablePaletteItemProps {

@@ -3,12 +3,11 @@ import { useDroppable } from '@dnd-kit/core';
 import {
   SortableContext,
   useSortable,
-  verticalListSortingStrategy,
   rectSortingStrategy,
   horizontalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import type { ScreenDefinition, FieldDefinition, ApiAction, PageType } from '../types/screenDefinition';
+import type { ScreenDefinition, FieldDefinition, ApiAction, PageType, LayoutBlock, FormBlock, GridBlock, ActionBlock, BlockType } from '../types/screenDefinition';
 
 // ─────────────────────────────────────────────────────────────────────
 // 정렬 가능한 필드 카드
@@ -19,7 +18,8 @@ interface SortableFieldCardProps {
   isSelected: boolean;
   pageType: PageType;
   onSelect: (id: string) => void;
-  onDelete: (id: string) => void;
+  onDelete: (id: string, blockId: string) => void;
+  blockId: string;
 }
 
 function SortableFieldCard({
@@ -28,6 +28,7 @@ function SortableFieldCard({
   pageType,
   onSelect,
   onDelete,
+  blockId,
 }: SortableFieldCardProps) {
   const {
     attributes,
@@ -36,7 +37,7 @@ function SortableFieldCard({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: field.id });
+  } = useSortable({ id: field.id, data: { blockId } });
 
   const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),
@@ -51,42 +52,27 @@ function SortableFieldCard({
       ref={setNodeRef}
       style={style}
       className={`canvas-field-card${isSelected ? ' selected' : ''}`}
-      onClick={() => onSelect(field.id)}
+      onClick={(e) => {
+        e.stopPropagation();
+        onSelect(field.id);
+      }}
       {...attributes}
       {...listeners}
     >
-      {/* 드래그 핸들 (이제 전체 카드가 드래그되므로 시각적 요소로만 남김) */}
-      <span
-        className="canvas-field-drag-handle"
-        title="드래그하여 순서 변경"
-      >
-        ⠿
-      </span>
-
-      {/* 필드 정보 */}
+      <span className="canvas-field-drag-handle" title="드래그하여 순서 변경">⠿</span>
       <div className="canvas-field-info">
         <div className="canvas-field-name">{field.fieldName || '(미설정)'}</div>
         <div className="canvas-field-label-text">{field.label || '라벨 없음'}</div>
       </div>
-
-      {/* 배지 영역 */}
       <div className="canvas-field-badges">
         <span className="canvas-field-type-badge">{field.type}</span>
         {field.required && <span className="canvas-field-badge-required">필수</span>}
-        {pageType === 'list' && field.isSearchCondition && (
-          <span className="canvas-field-badge-search">검색</span>
-        )}
-        {pageType === 'list' && field.isTableColumn && (
-          <span className="canvas-field-badge-column">컬럼</span>
-        )}
       </div>
-
-      {/* 삭제 버튼 */}
       <button
         className="canvas-field-delete"
         onClick={(e) => {
           e.stopPropagation();
-          onDelete(field.id);
+          onDelete(field.id, blockId);
         }}
         title="필드 삭제"
       >
@@ -97,30 +83,152 @@ function SortableFieldCard({
 }
 
 // ─────────────────────────────────────────────────────────────────────
-// 액션(버튼) 섹션
+// 레이아웃 블록 렌더링
 // ─────────────────────────────────────────────────────────────────────
 
-interface ActionsSectionProps {
-  actions: ApiAction[];
-  onAddAction: () => void;
-  onDeleteAction: (id: string) => void;
-  onUpdateAction: (id: string, key: keyof ApiAction, value: string) => void;
+interface BlockProps {
+  block: LayoutBlock;
+  screen: ScreenDefinition;
+  selectedElementId: string | null;
+  onSelectElement: (id: string | null) => void;
+  onDeleteField: (fieldId: string, blockId: string) => void;
+  onDeleteAction: (actionId: string, blockId: string) => void;
+  onDeleteBlock: (blockId: string) => void;
+  onUpdateAction: (actionId: string, blockId: string, updates: Partial<ApiAction>) => void;
+  onAddAction: (blockId: string) => void;
 }
 
-function ActionsSection({ actions, onAddAction, onDeleteAction, onUpdateAction }: ActionsSectionProps) {
+function FormBlockView({ block, ...props }: BlockProps & { block: FormBlock }) {
+  const { setNodeRef, isOver } = useDroppable({ id: `drop-zone-${block.id}`, data: { blockId: block.id, type: 'form' } });
+  
   return (
-    <div style={{ marginTop: '20px' }}>
-      <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '10px' }}>
-        API 액션 / 버튼
+    <div 
+      className={`layout-block form-block ${props.selectedElementId === block.id ? 'selected' : ''}`}
+      style={{ width: block.width || '100%', padding: '16px', border: '1px solid #334155', borderRadius: '8px', marginBottom: '16px', backgroundColor: block.backgroundColor || '#0f172a' }}
+      onClick={(e) => {
+        e.stopPropagation();
+        props.onSelectElement(block.id);
+      }}
+    >
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+        <div style={{ fontWeight: 'bold', color: '#e2e8f0' }}>{block.title || '폼 영역'} ({block.width})</div>
+        <button className="canvas-field-delete" onClick={(e) => { e.stopPropagation(); props.onDeleteBlock(block.id); }}>✕ 블록삭제</button>
       </div>
+
+      <SortableContext items={block.fields.map(f => f.id)} strategy={rectSortingStrategy}>
+        <div
+          ref={setNodeRef}
+          className={`canvas-drop-zone${isOver ? ' drag-over' : ''}`}
+          style={{
+            display: 'grid',
+            gridTemplateColumns: `repeat(${block.columns || 1}, 1fr)`,
+            gap: '12px',
+            minHeight: '80px'
+          }}
+        >
+          {block.fields.length === 0 ? (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#374151', fontSize: '0.85rem', gridColumn: '1 / -1' }}>
+              ← 입력 필드를 드롭하세요
+            </div>
+          ) : (
+            block.fields.map(field => (
+              <SortableFieldCard
+                key={field.id}
+                field={field}
+                isSelected={props.selectedElementId === field.id}
+                pageType={props.screen.pageType}
+                onSelect={props.onSelectElement}
+                onDelete={props.onDeleteField}
+                blockId={block.id}
+              />
+            ))
+          )}
+        </div>
+      </SortableContext>
+    </div>
+  );
+}
+
+function GridBlockView({ block, ...props }: BlockProps & { block: GridBlock }) {
+  const { setNodeRef, isOver } = useDroppable({ id: `drop-zone-${block.id}`, data: { blockId: block.id, type: 'grid' } });
+  
+  return (
+    <div 
+      className={`layout-block grid-block ${props.selectedElementId === block.id ? 'selected' : ''}`}
+      style={{ width: block.width || '100%', padding: '16px', border: '1px solid #334155', borderRadius: '8px', marginBottom: '16px', backgroundColor: '#0f172a' }}
+      onClick={(e) => {
+        e.stopPropagation();
+        props.onSelectElement(block.id);
+      }}
+    >
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+        <div style={{ fontWeight: 'bold', color: '#e2e8f0' }}>{block.title || '그리드 영역'} ({block.width})</div>
+        <button className="canvas-field-delete" onClick={(e) => { e.stopPropagation(); props.onDeleteBlock(block.id); }}>✕ 블록삭제</button>
+      </div>
+
+      <SortableContext items={block.gridColumns.map(f => f.id)} strategy={horizontalListSortingStrategy}>
+        <div
+          ref={setNodeRef}
+          className={`canvas-drop-zone${isOver ? ' drag-over' : ''}`}
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            flexWrap: 'nowrap',
+            gap: '8px',
+            overflowX: 'auto',
+            minHeight: '80px',
+            padding: '16px',
+            backgroundColor: '#0f172a',
+            border: '1px dashed #334155'
+          }}
+        >
+          {block.gridColumns.length === 0 ? (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', color: '#374151', fontSize: '0.85rem' }}>
+              ← 그리드 컬럼을 드롭하세요
+            </div>
+          ) : (
+            block.gridColumns.map(col => (
+              <div key={col.id} style={{ minWidth: '150px', maxWidth: '200px' }}>
+                <SortableFieldCard
+                  field={col}
+                  isSelected={props.selectedElementId === col.id}
+                  pageType={props.screen.pageType}
+                  onSelect={props.onSelectElement}
+                  onDelete={props.onDeleteField}
+                  blockId={block.id}
+                />
+              </div>
+            ))
+          )}
+        </div>
+      </SortableContext>
+    </div>
+  );
+}
+
+function ActionBlockView({ block, ...props }: BlockProps & { block: ActionBlock }) {
+  return (
+    <div 
+      className={`layout-block action-block ${props.selectedElementId === block.id ? 'selected' : ''}`}
+      style={{ width: block.width || '100%', padding: '16px', border: '1px solid #334155', borderRadius: '8px', marginBottom: '16px', backgroundColor: '#0f172a' }}
+      onClick={(e) => {
+        e.stopPropagation();
+        props.onSelectElement(block.id);
+      }}
+    >
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+        <div style={{ fontWeight: 'bold', color: '#e2e8f0' }}>{block.title || '액션 영역'} ({block.width})</div>
+        <button className="canvas-field-delete" onClick={(e) => { e.stopPropagation(); props.onDeleteBlock(block.id); }}>✕ 블록삭제</button>
+      </div>
+
       <div className="action-list">
-        {actions.map(action => (
-          <div key={action.id} className="action-item">
+        {block.actions.map(action => (
+          <div key={action.id} className="action-item" onClick={(e) => { e.stopPropagation(); props.onSelectElement(action.id); }}>
             <div className="action-item-header">
               <span className="action-item-label">{action.label || '(이름 없음)'}</span>
               <button
                 className="canvas-field-delete"
-                onClick={() => onDeleteAction(action.id)}
+                onClick={(e) => { e.stopPropagation(); props.onDeleteAction(action.id, block.id); }}
                 title="액션 삭제"
               >✕</button>
             </div>
@@ -129,12 +237,12 @@ function ActionsSection({ actions, onAddAction, onDeleteAction, onUpdateAction }
                 className="canvas-field-input"
                 placeholder="버튼명"
                 value={action.label}
-                onChange={e => onUpdateAction(action.id, 'label', e.target.value)}
+                onChange={e => props.onUpdateAction(action.id, block.id, { label: e.target.value })}
               />
               <select
                 className="canvas-field-select"
                 value={action.buttonType}
-                onChange={e => onUpdateAction(action.id, 'buttonType', e.target.value)}
+                onChange={e => props.onUpdateAction(action.id, block.id, { buttonType: e.target.value as any })}
               >
                 <option value="search">조회(검색)</option>
                 <option value="submit">저장(등록)</option>
@@ -142,36 +250,11 @@ function ActionsSection({ actions, onAddAction, onDeleteAction, onUpdateAction }
                 <option value="navigate">페이지이동</option>
                 <option value="custom">커스텀</option>
               </select>
-              <select
-                className="canvas-field-select"
-                value={action.method}
-                onChange={e => onUpdateAction(action.id, 'method', e.target.value)}
-              >
-                <option value="GET">GET</option>
-                <option value="POST">POST</option>
-                <option value="PUT">PUT</option>
-                <option value="DELETE">DELETE</option>
-              </select>
-              <input
-                className="canvas-field-input"
-                placeholder="API 경로 (/api/...)"
-                value={action.endpoint}
-                onChange={e => onUpdateAction(action.id, 'endpoint', e.target.value)}
-              />
             </div>
-            {action.buttonType === 'navigate' && (
-              <input
-                className="canvas-field-input"
-                placeholder="이동 경로 (예: /admin/member)"
-                value={action.navigateTo || ''}
-                onChange={e => onUpdateAction(action.id, 'navigateTo', e.target.value)}
-                style={{ marginTop: '6px', width: '100%', boxSizing: 'border-box' }}
-              />
-            )}
           </div>
         ))}
       </div>
-      <button className="action-add-btn" onClick={onAddAction}>
+      <button className="action-add-btn" onClick={(e) => { e.stopPropagation(); props.onAddAction(block.id); }}>
         + 액션 추가
       </button>
     </div>
@@ -184,13 +267,15 @@ function ActionsSection({ actions, onAddAction, onDeleteAction, onUpdateAction }
 
 interface CanvasAreaProps {
   screen: ScreenDefinition | null;
-  selectedFieldId: string | null;
-  onSelectField: (id: string | null) => void;
-  onDeleteField: (id: string) => void;
+  selectedElementId: string | null;
+  onSelectElement: (id: string | null) => void;
+  onDeleteField: (id: string, blockId: string) => void;
   onUpdateScreen: (key: keyof ScreenDefinition, value: any) => void;
-  onAddAction: () => void;
-  onDeleteAction: (id: string) => void;
-  onUpdateAction: (id: string, key: keyof ApiAction, value: string) => void;
+  onAddBlock: (type: BlockType) => void;
+  onDeleteBlock: (blockId: string) => void;
+  onAddAction: (blockId: string) => void;
+  onDeleteAction: (id: string, blockId: string) => void;
+  onUpdateAction: (id: string, blockId: string, updates: Partial<ApiAction>) => void;
 }
 
 const PAGE_TYPE_OPTIONS: { value: PageType; label: string }[] = [
@@ -201,25 +286,24 @@ const PAGE_TYPE_OPTIONS: { value: PageType; label: string }[] = [
 
 const CanvasArea: React.FC<CanvasAreaProps> = ({
   screen,
-  selectedFieldId,
-  onSelectField,
+  selectedElementId,
+  onSelectElement,
   onDeleteField,
   onUpdateScreen,
+  onAddBlock,
+  onDeleteBlock,
   onAddAction,
   onDeleteAction,
   onUpdateAction,
 }) => {
-  const { setNodeRef: setFormNodeRef, isOver: isFormOver } = useDroppable({ id: 'canvas-drop-zone' });
-  const { setNodeRef: setGridNodeRef, isOver: isGridOver } = useDroppable({ id: 'canvas-drop-grid-zone' });
-
   const handleCanvasClick = useCallback(
     (e: React.MouseEvent) => {
-      // 카드 외부 클릭 시 선택 해제
-      if ((e.target as HTMLElement).classList.contains('canvas-drop-zone')) {
-        onSelectField(null);
+      // 배경 클릭 시 선택 해제
+      if ((e.target as HTMLElement).classList.contains('builder-canvas')) {
+        onSelectElement(null);
       }
     },
-    [onSelectField]
+    [onSelectElement]
   );
 
   if (!screen) {
@@ -236,10 +320,8 @@ const CanvasArea: React.FC<CanvasAreaProps> = ({
     );
   }
 
-  const fieldIds = screen.fields.map(f => f.id);
-
   return (
-    <div className="builder-canvas">
+    <div className="builder-canvas" onClick={handleCanvasClick}>
       {/* 화면 메타 정보 */}
       <div className="canvas-screen-meta">
         <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '12px' }}>
@@ -303,144 +385,66 @@ const CanvasArea: React.FC<CanvasAreaProps> = ({
               onChange={e => onUpdateScreen('description', e.target.value)}
             />
           </div>
-          <div>
-            <div className="canvas-field-label">폼 단수 (그리드 컬럼)</div>
-            <select
-              className="canvas-field-select"
-              value={screen.formColumns || 1}
-              onChange={e => onUpdateScreen('formColumns', Number(e.target.value))}
-            >
-              <option value={1}>1단</option>
-              <option value={2}>2단</option>
-              <option value={3}>3단</option>
-              <option value={4}>4단</option>
-            </select>
-          </div>
-          <div>
-            <div className="canvas-field-label">액션 버튼 위치</div>
-            <select
-              className="canvas-field-select"
-              value={screen.actionPosition || 'middle'}
-              onChange={e => onUpdateScreen('actionPosition', e.target.value)}
-            >
-              <option value="top">상단 (헤더 바로 아래)</option>
-              <option value="middle">중간 (폼과 그리드 사이)</option>
-              <option value="bottom">하단 (그리드 하단)</option>
-            </select>
-          </div>
-          {screen.pageType === 'list' && (
-            <>
-              <div>
-                <div className="canvas-field-label">하단 그리드 넓이(Width)</div>
-                <input
-                  className="canvas-field-input"
-                  placeholder="예: 100%"
-                  value={screen.gridWidth || ''}
-                  onChange={e => onUpdateScreen('gridWidth', e.target.value)}
-                />
-              </div>
-              <div>
-                <div className="canvas-field-label">하단 그리드 높이(Height)</div>
-                <input
-                  className="canvas-field-input"
-                  placeholder="예: 400px"
-                  value={screen.gridHeight || ''}
-                  onChange={e => onUpdateScreen('gridHeight', e.target.value)}
-                />
-              </div>
-            </>
-          )}
         </div>
       </div>
 
-      {/* 드롭 존 1 — 검색 폼 / 입력 필드 배치 영역 */}
-      <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '10px' }}>
-        {screen.pageType === 'list' ? '상단 검색 조건 (Form)' : '입력 필드 배치'} <span style={{ color: '#374151', fontWeight: 400 }}>(왼쪽 팔레트에서 추가)</span>
+      <div style={{ marginBottom: '16px', display: 'flex', gap: '8px' }}>
+        <button className="btn-builder btn-builder-ghost" onClick={() => onAddBlock('form')}>+ 폼 영역 추가</button>
+        <button className="btn-builder btn-builder-ghost" onClick={() => onAddBlock('grid')}>+ 그리드 영역 추가</button>
+        <button className="btn-builder btn-builder-ghost" onClick={() => onAddBlock('action')}>+ 액션 영역 추가</button>
       </div>
 
-      <SortableContext items={fieldIds} strategy={rectSortingStrategy}>
-        <div
-          ref={setFormNodeRef}
-          className={`canvas-drop-zone${isFormOver ? ' drag-over' : ''}`}
-          onClick={handleCanvasClick}
-          style={{
-            display: 'grid',
-            gridTemplateColumns: `repeat(${screen.formColumns || 1}, 1fr)`,
-            gap: '12px'
-          }}
-        >
-          {screen.fields.length === 0 ? (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '120px', color: '#374151', fontSize: '0.85rem', gridColumn: '1 / -1' }}>
-              ← 검색 조건 또는 입력 필드를 추가하세요
-            </div>
-          ) : (
-            screen.fields.map(field => (
-              <SortableFieldCard
-                key={field.id}
-                field={field}
-                isSelected={selectedFieldId === field.id}
-                pageType={screen.pageType}
-                onSelect={onSelectField}
-                onDelete={onDeleteField}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', alignItems: 'flex-start' }}>
+        {screen.blocks && screen.blocks.map(block => {
+          if (block.type === 'form') {
+            return (
+              <FormBlockView
+                key={block.id}
+                block={block as FormBlock}
+                screen={screen}
+                selectedElementId={selectedElementId}
+                onSelectElement={onSelectElement}
+                onDeleteField={onDeleteField}
+                onDeleteAction={onDeleteAction}
+                onDeleteBlock={onDeleteBlock}
+                onUpdateAction={onUpdateAction}
+                onAddAction={onAddAction}
               />
-            ))
-          )}
-        </div>
-      </SortableContext>
-
-      {/* 드롭 존 2 — 하단 데이터 그리드 영역 (pageType === 'list' 인 경우에만 노출) */}
-      {screen.pageType === 'list' && (
-        <div style={{ marginTop: '24px' }}>
-          <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '10px' }}>
-            하단 데이터 그리드 컬럼 <span style={{ color: '#374151', fontWeight: 400 }}>(목록에 표시할 항목 추가)</span>
-          </div>
-          
-          <SortableContext items={(screen.gridColumns || []).map(c => c.id)} strategy={horizontalListSortingStrategy}>
-            <div
-              ref={setGridNodeRef}
-              className={`canvas-drop-zone${isGridOver ? ' drag-over' : ''}`}
-              onClick={handleCanvasClick}
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                flexWrap: 'nowrap',
-                gap: '8px',
-                overflowX: 'auto',
-                minHeight: '80px',
-                padding: '16px',
-                backgroundColor: '#0f172a',
-                border: '1px dashed #334155'
-              }}
-            >
-              {(screen.gridColumns || []).length === 0 ? (
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', color: '#374151', fontSize: '0.85rem' }}>
-                  ← 그리드(테이블)에 표시될 컬럼을 추가하세요
-                </div>
-              ) : (
-                (screen.gridColumns || []).map(col => (
-                  <div key={col.id} style={{ minWidth: '150px', maxWidth: '200px' }}>
-                    <SortableFieldCard
-                      field={col}
-                      isSelected={selectedFieldId === col.id}
-                      pageType={screen.pageType}
-                      onSelect={onSelectField}
-                      onDelete={onDeleteField}
-                    />
-                  </div>
-                ))
-              )}
-            </div>
-          </SortableContext>
-        </div>
-      )}
-
-      {/* 액션 섹션 */}
-      <ActionsSection
-        actions={screen.actions}
-        onAddAction={onAddAction}
-        onDeleteAction={onDeleteAction}
-        onUpdateAction={onUpdateAction}
-      />
+            );
+          } else if (block.type === 'grid') {
+            return (
+              <GridBlockView
+                key={block.id}
+                block={block as GridBlock}
+                screen={screen}
+                selectedElementId={selectedElementId}
+                onSelectElement={onSelectElement}
+                onDeleteField={onDeleteField}
+                onDeleteAction={onDeleteAction}
+                onDeleteBlock={onDeleteBlock}
+                onUpdateAction={onUpdateAction}
+                onAddAction={onAddAction}
+              />
+            );
+          } else if (block.type === 'action') {
+            return (
+              <ActionBlockView
+                key={block.id}
+                block={block as ActionBlock}
+                screen={screen}
+                selectedElementId={selectedElementId}
+                onSelectElement={onSelectElement}
+                onDeleteField={onDeleteField}
+                onDeleteAction={onDeleteAction}
+                onDeleteBlock={onDeleteBlock}
+                onUpdateAction={onUpdateAction}
+                onAddAction={onAddAction}
+              />
+            );
+          }
+          return null;
+        })}
+      </div>
     </div>
   );
 };

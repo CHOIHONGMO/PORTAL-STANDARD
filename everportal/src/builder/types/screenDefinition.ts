@@ -60,6 +60,8 @@ export interface FieldDefinition {
   options?: FieldOption[];
   /** textarea 줄 수 */
   rows?: number;
+  /** 기본값 설정 */
+  defaultValue?: string;
   /** 레이아웃 설정 */
   layout?: FieldLayout;
   /** 목록 화면에서 검색 조건으로 사용 여부 */
@@ -90,9 +92,64 @@ export interface ApiAction {
   navigateTo?: string;
   /** 버튼 CSS 클래스 */
   className?: string;
+  /** 버튼 width */
+  width?: string;
+  /** 버튼 height */
+  height?: string;
   /** 확인 대화상자 메시지 (있으면 confirm 처리) */
   confirmMessage?: string;
 }
+
+// ─────────────────────────────────────────────────────────────────────
+// 레이아웃 블록 정의 (Form, Grid, Action을 블록 단위로 화면에 배치)
+// ─────────────────────────────────────────────────────────────────────
+
+export type BlockType = 'form' | 'grid' | 'action';
+
+export interface BaseBlock {
+  /** 블록 내부 식별 ID (uuid) */
+  id: string;
+  /** 블록 타입 */
+  type: BlockType;
+  /** 블록 타이틀 */
+  title?: string;
+  /** 블록 너비 (예: '100%', '50%', '300px') */
+  width: string;
+  /** 블록 테마 (기본: 사용자 환경 또는 설정에 따름) */
+  theme?: 'light' | 'dark';
+}
+
+export interface FormBlock extends BaseBlock {
+  type: 'form';
+  /** 실제 저장/코드생성 시 사용할 폼 식별자 (예: searchForm, detailForm) */
+  formId: string;
+  /** 폼 내부 컬럼 갯수 */
+  columns: number;
+  /** 폼 내부 행 갯수 */
+  rows?: number;
+  /** 폼 배경색 */
+  backgroundColor?: string;
+  /** 폼 내부에 배치된 필드 목록 */
+  fields: FieldDefinition[];
+}
+
+export interface GridBlock extends BaseBlock {
+  type: 'grid';
+  /** 실제 저장/코드생성 시 사용할 그리드 식별자 */
+  gridId: string;
+  /** 그리드에 배치된 컬럼 목록 */
+  gridColumns: FieldDefinition[];
+}
+
+export interface ActionBlock extends BaseBlock {
+  type: 'action';
+  /** 버튼 정렬 (좌/중/우) */
+  align?: 'left' | 'center' | 'right';
+  /** 배치된 액션 버튼들 */
+  actions: ApiAction[];
+}
+
+export type LayoutBlock = FormBlock | GridBlock | ActionBlock;
 
 /**
  * 목록 화면 페이지네이션 설정
@@ -122,22 +179,8 @@ export interface ScreenDefinition {
   pageType: PageType;
   /** 도메인 경로 (예: user/member) — 파일 생성 경로에 사용 */
   domainPath: string;
-  /** 폼 레이아웃 컬럼 수 (1~4) */
-  formColumns?: number;
-  /** 폼 레이아웃 행 수 (선택) */
-  formRows?: number;
-  /** 액션 버튼 위치 (top: 폼 상단, middle: 폼/그리드 사이, bottom: 그리드 하단) */
-  actionPosition?: 'top' | 'middle' | 'bottom';
-  /** 하단 데이터 그리드 가로 크기 (예: '100%') */
-  gridWidth?: string;
-  /** 하단 데이터 그리드 세로 크기 (예: '400px') */
-  gridHeight?: string;
-  /** 필드 목록 (검색 조건 및 폼 필드) */
-  fields: FieldDefinition[];
-  /** 데이터 그리드 컬럼 목록 (pageType이 list인 경우 사용) */
-  gridColumns?: FieldDefinition[];
-  /** API 액션 목록 */
-  actions: ApiAction[];
+  /** 화면에 배치된 레이아웃 블록 목록 (순서대로 렌더링) */
+  blocks: LayoutBlock[];
   /** 목록 화면 페이지네이션 설정 */
   pagination?: PaginationConfig;
   /** 목록 화면의 기본 조회 API endpoint */

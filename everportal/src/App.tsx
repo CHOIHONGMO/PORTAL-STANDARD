@@ -105,6 +105,9 @@ import EgovTemplateList from '@/pages/board/com/EgovTemplateList';
 import EgovTemplateRegist from '@/pages/board/com/EgovTemplateRegist';
 import EgovTemplateUpdt from '@/pages/board/com/EgovTemplateUpdt';
 
+// 테스트 생성 페이지
+import PrList from '@/test/prList';
+
 import AboutLayout from '@/components/layout/AboutLayout';
 import EgovAboutSite from '@/pages/about/EgovAboutSite';
 import EgovHistory from '@/pages/about/EgovHistory';
@@ -150,6 +153,9 @@ function App() {
           <Route path="admin/member/new" element={<EgovMberInsert />} />
           <Route path="admin/member/:id" element={<EgovMberSelectUpdt />} />
           <Route path="admin/member/:id/password" element={<EgovMberPasswordUpdt />} />
+
+          {/* 테스트 페이지 */}
+          <Route path="test/pr" element={<PrList />} />
 
           {/* 게시판 마스터 관리 */}
           <Route path="admin/board" element={<EgovBoardMstrList />} />

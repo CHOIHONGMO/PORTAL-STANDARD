@@ -239,8 +239,26 @@ const Header = () => {
                 </div>
               </div>
             </li>
+
+            <li className="dropdown">
+              <span className="nav-item dropdown-trigger">빌더 테스트</span>
+              <div className="mega-dropdown cols-1">
+                <div className="mega-col">
+                  <h4 className="mega-col-title">테스트 화면</h4>
+                  <ul className="mega-link-list">
+                    <li>
+                      <Link to="/test/pr" className="mega-link-item">
+                        <span className="mega-link-title">구매요청현황</span>
+                        <span className="mega-link-desc">Screen Builder로 자동 생성된 화면입니다.</span>
+                      </Link>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </li>
           </ul>
         </nav>
+
         <div className="header-utils">
           <Link to="/login" className="btn-login">로그인</Link>
           <Link to="/signup" className="btn-signup">회원가입</Link>
