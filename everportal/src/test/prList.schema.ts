@@ -5,13 +5,13 @@ import type { FormSchema } from '@/common/validator/types';
 // =====================================================================
 
 export interface MainFormData {
-  pr_num?: string;
-  pr_subject?: string;
-  reg_user_nm?: string;
+  PR_NUM?: string;
+  PR_SUBJECT?: string;
+  REG_USER_NM?: string;
 }
 
 export const mainFormSchema: FormSchema<MainFormData> = {
-  pr_num: { label: '구매요청번호', type: 'text', maxlength: 10, placeholder: '구매요청번호' },
-  pr_subject: { label: '구매요청명', type: 'text', maxlength: 50, placeholder: '구매요청명' },
-  reg_user_nm: { label: '등록자', type: 'text', maxlength: 50, placeholder: '등록자명' },
+  PR_NUM: { label: '구매요청번호', type: 'text', maxlength: 20, placeholder: '구매요청번호' },
+  PR_SUBJECT: { label: '구매요청명', type: 'text', maxlength: 200, placeholder: '구매요청명' },
+  REG_USER_NM: { label: '등록자', type: 'text', maxlength: 50, placeholder: '등록자' },
 };

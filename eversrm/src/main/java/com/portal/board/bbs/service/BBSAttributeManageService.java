@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import com.portal.board.bbs.BBSAddedOptionsMapper;
 import com.portal.board.bbs.BBSAttributeManageMapper;
 import com.portal.board.com.BBSUseInfoManageMapper;
-import com.portal.board.com.service.BoardUseInf;
 import com.portal.board.com.service.UserInfManageService;
 import jakarta.annotation.Resource;
 
@@ -51,15 +50,15 @@ public class BBSAttributeManageService extends EgovAbstractServiceImpl {
 	/**
 	 * 등록된 게시판 속성정보를 삭제한다.
 	 * 
-	 * @param boardMaster
+	 * @param paramMap
 	 * @throws Exception
 	 */
-	public void deleteBBSMasterInf(BoardMaster boardMaster) throws Exception {
-		attrbMngMapper.deleteBBSMasterInf(boardMaster);
+	public void deleteBBSMasterInf(Map<String, Object> paramMap) throws Exception {
+		attrbMngMapper.deleteBBSMasterInf(paramMap);
 
-		BoardUseInf bdUseInf = new BoardUseInf();
-		bdUseInf.setBbsId(boardMaster.getBbsId());
-		bdUseInf.setLastUpdusrId(boardMaster.getLastUpdusrId());
+		Map<String, Object> bdUseInf = new HashMap<>();
+		bdUseInf.put("bbsId", paramMap.get("bbsId"));
+		bdUseInf.put("lastUpdusrId", paramMap.get("lastUpdusrId"));
 
 		bbsUseMapper.deleteBBSUseInfByBoardId(bdUseInf);
 	}
@@ -67,54 +66,55 @@ public class BBSAttributeManageService extends EgovAbstractServiceImpl {
 	/**
 	 * 신규 게시판 속성정보를 생성한다.
 	 * 
-	 * @param boardMaster
+	 * @param paramMap
 	 * @return String
 	 * @throws Exception
 	 */
-	public String insertBBSMastetInf(BoardMaster boardMaster) throws Exception {
+	public String insertBBSMastetInf(Map<String, Object> paramMap) throws Exception {
 		String bbsId = idgenService.getNextStringId();
-		boardMaster.setBbsId(bbsId);
+		paramMap.put("bbsId", bbsId);
 
-		attrbMngMapper.insertBBSMasterInf(boardMaster);
+		attrbMngMapper.insertBBSMasterInf(paramMap);
 
-		if (boardMaster.getOption().equals("comment") || boardMaster.getOption().equals("stsfdg")) {
-			addedOptionsMapper.insertAddedOptionsInf(boardMaster);
+		String option = (String) paramMap.get("option");
+		if ("comment".equals(option) || "stsfdg".equals(option)) {
+			addedOptionsMapper.insertAddedOptionsInf(paramMap);
 		}
 
-		if ("Y".equals(boardMaster.getBbsUseFlag())) {
-			BoardUseInf bdUseInf = new BoardUseInf();
-			bdUseInf.setBbsId(bbsId);
-			bdUseInf.setTrgetId(boardMaster.getTrgetId());
-			bdUseInf.setRegistSeCode(boardMaster.getRegistSeCode());
-			bdUseInf.setFrstRegisterId(boardMaster.getFrstRegisterId());
-			bdUseInf.setUseAt("Y");
+		if ("Y".equals(paramMap.get("bbsUseFlag"))) {
+			Map<String, Object> bdUseInf = new HashMap<>();
+			bdUseInf.put("bbsId", bbsId);
+			bdUseInf.put("trgetId", paramMap.get("trgetId"));
+			bdUseInf.put("registSeCode", paramMap.get("registSeCode"));
+			bdUseInf.put("frstRegisterId", paramMap.get("frstRegisterId"));
+			bdUseInf.put("useAt", "Y");
 
 			bbsUseMapper.insertBBSUseInf(bdUseInf);
 
 			Map<String, Object> userSearchMap = new HashMap<>();
-			userSearchMap.put("trgetId", boardMaster.getTrgetId());
+			userSearchMap.put("trgetId", paramMap.get("trgetId"));
 
-			if ("REGC05".equals(boardMaster.getRegistSeCode())) {
+			if ("REGC05".equals(paramMap.get("registSeCode"))) {
 				List<Map<String, Object>> tmpList = userService.selectAllClubUser(userSearchMap);
 				for (Map<String, Object> userMap : tmpList) {
-					bdUseInf = new BoardUseInf();
-					bdUseInf.setBbsId(bbsId);
-					bdUseInf.setTrgetId((String) userMap.get("uniqId"));
-					bdUseInf.setRegistSeCode("REGC07");
-					bdUseInf.setUseAt("Y");
-					bdUseInf.setFrstRegisterId(boardMaster.getFrstRegisterId());
-					bbsUseMapper.insertBBSUseInf(bdUseInf);
+					Map<String, Object> userUseInf = new HashMap<>();
+					userUseInf.put("bbsId", bbsId);
+					userUseInf.put("trgetId", userMap.get("uniqId"));
+					userUseInf.put("registSeCode", "REGC07");
+					userUseInf.put("useAt", "Y");
+					userUseInf.put("frstRegisterId", paramMap.get("frstRegisterId"));
+					bbsUseMapper.insertBBSUseInf(userUseInf);
 				}
-			} else if ("REGC06".equals(boardMaster.getRegistSeCode())) {
+			} else if ("REGC06".equals(paramMap.get("registSeCode"))) {
 				List<Map<String, Object>> tmpList = userService.selectAllCmmntyUser(userSearchMap);
 				for (Map<String, Object> userMap : tmpList) {
-					bdUseInf = new BoardUseInf();
-					bdUseInf.setBbsId(bbsId);
-					bdUseInf.setTrgetId((String) userMap.get("uniqId"));
-					bdUseInf.setRegistSeCode("REGC07");
-					bdUseInf.setUseAt("Y");
-					bdUseInf.setFrstRegisterId(boardMaster.getFrstRegisterId());
-					bbsUseMapper.insertBBSUseInf(bdUseInf);
+					Map<String, Object> userUseInf = new HashMap<>();
+					userUseInf.put("bbsId", bbsId);
+					userUseInf.put("trgetId", userMap.get("uniqId"));
+					userUseInf.put("registSeCode", "REGC07");
+					userUseInf.put("useAt", "Y");
+					userUseInf.put("frstRegisterId", paramMap.get("frstRegisterId"));
+					bbsUseMapper.insertBBSUseInf(userUseInf);
 				}
 			}
 		}
@@ -135,16 +135,16 @@ public class BBSAttributeManageService extends EgovAbstractServiceImpl {
 	/**
 	 * 게시판 속성정보 한 건을 상세조회한다.
 	 * 
-	 * @param boardMaster
+	 * @param paramMap
 	 * @return Map<String, Object>
 	 * @throws Exception
 	 */
-	public Map<String, Object> selectBBSMasterInf(BoardMaster boardMaster) throws Exception {
-		Map<String, Object> result = attrbMngMapper.selectBBSMasterInf(boardMaster);
+	public Map<String, Object> selectBBSMasterInf(Map<String, Object> paramMap) throws Exception {
+		Map<String, Object> result = attrbMngMapper.selectBBSMasterInf(paramMap);
 
 		String flag = propertyService.getString("Globals.addedOptions");
 		if (flag != null && flag.trim().equalsIgnoreCase("true")) {
-			Map<String, Object> options = addedOptionsMapper.selectAddedOptionsInf(boardMaster);
+			Map<String, Object> options = addedOptionsMapper.selectAddedOptionsInf(paramMap);
 
 			if (options != null) {
 				if ("Y".equals(options.get("commentAt"))) {
@@ -181,22 +181,22 @@ public class BBSAttributeManageService extends EgovAbstractServiceImpl {
 	/**
 	 * 게시판 속성정보를 수정한다.
 	 * 
-	 * @param boardMaster
+	 * @param paramMap
 	 * @throws Exception
 	 */
-	public void updateBBSMasterInf(BoardMaster boardMaster) throws Exception {
-		attrbMngMapper.updateBBSMasterInf(boardMaster);
+	public void updateBBSMasterInf(Map<String, Object> paramMap) throws Exception {
+		attrbMngMapper.updateBBSMasterInf(paramMap);
 
 		String flag = propertyService.getString("Globals.addedOptions");
 		if (flag != null && flag.trim().equalsIgnoreCase("true")) {
-			if (boardMaster.getOption().equals("na")) {
+			if ("na".equals(paramMap.get("option"))) {
 				return;
 			}
-			Map<String, Object> options = addedOptionsMapper.selectAddedOptionsInf(boardMaster);
+			Map<String, Object> options = addedOptionsMapper.selectAddedOptionsInf(paramMap);
 
 			if (options == null) {
-				boardMaster.setFrstRegisterId(boardMaster.getLastUpdusrId());
-				addedOptionsMapper.insertAddedOptionsInf(boardMaster);
+				paramMap.put("frstRegisterId", paramMap.get("lastUpdusrId"));
+				addedOptionsMapper.insertAddedOptionsInf(paramMap);
 			} else {
 				LOGGER.debug("BBS Master update ignored...");
 			}

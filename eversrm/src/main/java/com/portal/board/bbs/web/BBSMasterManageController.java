@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.portal.common.service.CmmUseService;
-import com.portal.board.bbs.service.BoardMaster;
 import com.portal.board.bbs.service.BBSAttributeManageService;
 import jakarta.annotation.Resource;
 
@@ -72,9 +71,9 @@ public class BBSMasterManageController {
     public Map<String, Object> selectBBSMasterInf(@RequestParam("bbsId") String bbsId) throws Exception {
         Map<String, Object> response = new HashMap<>();
         try {
-            BoardMaster searchVO = new BoardMaster();
-            searchVO.setBbsId(bbsId);
-            Map<String, Object> vo = bbsAttrbService.selectBBSMasterInf(searchVO);
+            Map<String, Object> searchMap = new HashMap<>();
+            searchMap.put("bbsId", bbsId);
+            Map<String, Object> vo = bbsAttrbService.selectBBSMasterInf(searchMap);
 
             response.put("resultCode", "SUCCESS");
             response.put("result", vo);
@@ -89,20 +88,20 @@ public class BBSMasterManageController {
      * 신규 게시판 마스터 정보를 등록한다.
      */
     @RequestMapping(value = "/insertBBSMasterInf", method = RequestMethod.POST)
-    public Map<String, Object> insertBBSMasterInf(@RequestBody BoardMaster boardMaster) throws Exception {
+    public Map<String, Object> insertBBSMasterInf(@RequestBody Map<String, Object> paramMap) throws Exception {
         Map<String, Object> response = new HashMap<>();
         try {
-            boardMaster.setFrstRegisterId("USRCNFRM_00000000000");
-            boardMaster.setUseAt("Y");
-            boardMaster.setTrgetId("SYSTEMDEFAULT_REGIST");
+            paramMap.put("frstRegisterId", "USRCNFRM_00000000000");
+            paramMap.put("useAt", "Y");
+            paramMap.put("trgetId", "SYSTEMDEFAULT_REGIST");
 
             String fileSize = propertyService.getString("Globals.posblAtchFileSize");
             if (fileSize == null || fileSize.trim().isEmpty()) {
                 fileSize = "10485760"; // 10MB
             }
-            boardMaster.setPosblAtchFileSize(fileSize);
+            paramMap.put("posblAtchFileSize", fileSize);
 
-            bbsAttrbService.insertBBSMastetInf(boardMaster);
+            bbsAttrbService.insertBBSMastetInf(paramMap);
             response.put("resultCode", "SUCCESS");
         } catch (Exception e) {
             response.put("resultCode", "ERROR");
@@ -115,18 +114,18 @@ public class BBSMasterManageController {
      * 게시판 마스터 정보를 수정한다.
      */
     @RequestMapping(value = "/UpdateBBSMasterInf", method = RequestMethod.POST)
-    public Map<String, Object> updateBBSMasterInf(@RequestBody BoardMaster boardMaster) throws Exception {
+    public Map<String, Object> updateBBSMasterInf(@RequestBody Map<String, Object> paramMap) throws Exception {
         Map<String, Object> response = new HashMap<>();
         try {
-            boardMaster.setLastUpdusrId("USRCNFRM_00000000000");
+            paramMap.put("lastUpdusrId", "USRCNFRM_00000000000");
 
             String fileSize = propertyService.getString("Globals.posblAtchFileSize");
             if (fileSize == null || fileSize.trim().isEmpty()) {
                 fileSize = "10485760";
             }
-            boardMaster.setPosblAtchFileSize(fileSize);
+            paramMap.put("posblAtchFileSize", fileSize);
 
-            bbsAttrbService.updateBBSMasterInf(boardMaster);
+            bbsAttrbService.updateBBSMasterInf(paramMap);
             response.put("resultCode", "SUCCESS");
         } catch (Exception e) {
             response.put("resultCode", "ERROR");
@@ -139,11 +138,11 @@ public class BBSMasterManageController {
      * 게시판 마스터 정보를 삭제한다.
      */
     @RequestMapping(value = "/DeleteBBSMasterInf", method = RequestMethod.POST)
-    public Map<String, Object> deleteBBSMasterInf(@RequestBody BoardMaster boardMaster) throws Exception {
+    public Map<String, Object> deleteBBSMasterInf(@RequestBody Map<String, Object> paramMap) throws Exception {
         Map<String, Object> response = new HashMap<>();
         try {
-            boardMaster.setLastUpdusrId("USRCNFRM_00000000000");
-            bbsAttrbService.deleteBBSMasterInf(boardMaster);
+            paramMap.put("lastUpdusrId", "USRCNFRM_00000000000");
+            bbsAttrbService.deleteBBSMasterInf(paramMap);
             response.put("resultCode", "SUCCESS");
         } catch (Exception e) {
             response.put("resultCode", "ERROR");

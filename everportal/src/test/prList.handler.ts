@@ -10,6 +10,16 @@ import apiClient from '@/api/apiClient';
  * 조회
  */
 export const 조회 = async (data?: any): Promise<any> => {
-  const response: any = await apiClient.post('/api/pr/doSearch', data);
-  return response;
+  try {
+    // 폼 데이터를 담아 조회 API 호출
+    const response = await apiClient.post('/pr/doSearch', data);
+    
+    // TODO: 아래와 같이 Grid State에 맞게 데이터를 바인딩하세요.
+    // (예: setData_grid_xxxx(response.data || []))
+    
+    return response;
+  } catch (error) {
+    console.error('Search failed:', error);
+    alert('조회 중 에러가 발생했습니다.');
+  }
 };

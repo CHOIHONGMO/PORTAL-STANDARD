@@ -52,6 +52,17 @@ function FormField<T extends FieldValues>({
   const inputClass = `form-control${error ? ' is-invalid' : ''}`;
   const errorId = `${name}-error`;
 
+  if (type === 'hidden') {
+    return (
+      <input
+        {...register(name)}
+        type="hidden"
+        id={name}
+        defaultValue={schema.defaultValue}
+      />
+    );
+  }
+
   // ── 타입별 입력 요소 렌더링 ───────────────────────────────────────
   const renderInput = () => {
     const commonProps = {
@@ -158,6 +169,13 @@ function FormField<T extends FieldValues>({
             {...commonProps}
             type="password"
           />
+        );
+        
+      case 'static':
+        return (
+          <div className="form-control-plaintext" style={{ padding: '8px 0', minHeight: '38px', color: 'inherit' }}>
+            {schema.defaultValue || placeholder || ''}
+          </div>
         );
 
       default: // text, tel

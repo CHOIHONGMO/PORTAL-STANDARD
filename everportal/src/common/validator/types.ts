@@ -17,7 +17,9 @@ export type FieldType =
   | 'tel'        // 전화번호    → <input type="text"> + 숫자/하이픈 패턴
   | 'password'   // 비밀번호    → <input type="password">
   | 'radio'      // 라디오 그룹
-  | 'checkbox';  // 체크박스    → <input type="checkbox">
+  | 'checkbox'   // 체크박스    → <input type="checkbox">
+  | 'hidden'     // 히든 필드   → <input type="hidden">
+  | 'static';    // 일반 텍스트 표시용 -> <div>
 
 /**
  * 콤보박스 / 라디오 / 체크박스 옵션 타입

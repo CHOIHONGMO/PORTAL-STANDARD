@@ -131,4 +131,24 @@ public class BuilderController {
         }
         return result;
     }
+
+    /**
+     * src/pages 하위 디렉토리 목록 조회 API
+     * GET /api/builder/pages-dirs
+     */
+    @GetMapping("/pages-dirs")
+    public Map<String, Object> getPagesDirs() {
+        Map<String, Object> result = new HashMap<>();
+        try {
+            List<String> dirs = builderService.getPagesSubdirectories();
+            result.put("resultCode", "SUCCESS");
+            result.put("dirs", dirs);
+        } catch (Exception e) {
+            LOGGER.error("[BuilderController] 페이지 디렉토리 목록 조회 실패", e);
+            result.put("resultCode", "ERROR");
+            result.put("resultMessage", e.getMessage());
+            result.put("dirs", List.of());
+        }
+        return result;
+    }
 }

@@ -3,7 +3,6 @@ package com.portal.board.bbs;
 import java.util.List;
 import java.util.Map;
 import org.egovframe.rte.psl.dataaccess.mapper.EgovMapper;
-import com.portal.board.bbs.service.BoardMaster;
 
 /**
  * 게시판 속성정보 관리를 위한 MyBatis Mapper 인터페이스
@@ -15,17 +14,17 @@ import com.portal.board.bbs.service.BoardMaster;
 @EgovMapper("BBSAttributeManageMapper")
 public interface BBSAttributeManageMapper {
 
-    void deleteBBSMasterInf(BoardMaster boardMaster) throws Exception;
+    void deleteBBSMasterInf(Map<String, Object> paramMap) throws Exception;
 
-    int insertBBSMasterInf(BoardMaster boardMaster) throws Exception;
+    int insertBBSMasterInf(Map<String, Object> paramMap) throws Exception;
 
-    Map<String, Object> selectBBSMasterInf(BoardMaster vo) throws Exception;
+    Map<String, Object> selectBBSMasterInf(Map<String, Object> paramMap) throws Exception;
 
     List<Map<String, Object>> selectBBSMasterInfs(Map<String, Object> searchMap) throws Exception;
 
     int selectBBSMasterInfsCnt(Map<String, Object> searchMap) throws Exception;
 
-    void updateBBSMasterInf(BoardMaster boardMaster) throws Exception;
+    void updateBBSMasterInf(Map<String, Object> paramMap) throws Exception;
 
     boolean validateTemplate(Map<String, Object> searchMap) throws Exception;
 

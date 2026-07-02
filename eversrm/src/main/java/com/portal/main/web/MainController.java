@@ -53,7 +53,7 @@ public class MainController {
 	private FaqManageService faqManageService;
 
 	/** egovQustnrRespondInfoService */
-	@Resource(name = "egovQustnrRespondInfoService")
+	@Resource(name = "qustnrRespondInfoService")
 	private QustnrRespondInfoService egovQustnrRespondInfoService;
 
 	@RequestMapping(value = "/cmm/main/mainPage.do")

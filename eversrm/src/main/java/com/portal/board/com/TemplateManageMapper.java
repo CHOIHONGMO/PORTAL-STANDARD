@@ -3,7 +3,6 @@ package com.portal.board.com;
 import java.util.List;
 import java.util.Map;
 import org.egovframe.rte.psl.dataaccess.mapper.EgovMapper;
-import com.portal.board.com.service.TemplateInf;
 
 /**
  * 템플릿 정보관리를 위한 MyBatis Mapper 인터페이스
@@ -15,11 +14,11 @@ import com.portal.board.com.service.TemplateInf;
 @EgovMapper("TemplateManageMapper")
 public interface TemplateManageMapper {
 
-    void deleteTemplateInf(TemplateInf tmplatInf) throws Exception;
+    void deleteTemplateInf(Map<String, Object> paramMap) throws Exception;
 
-    void insertTemplateInf(TemplateInf tmplatInf) throws Exception;
+    void insertTemplateInf(Map<String, Object> paramMap) throws Exception;
 
-    void updateTemplateInf(TemplateInf tmplatInf) throws Exception;
+    void updateTemplateInf(Map<String, Object> paramMap) throws Exception;
 
     List<Map<String, Object>> selectTemplateInfs(Map<String, Object> searchMap) throws Exception;
 

@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.portal.common.service.CmmUseService;
 import com.portal.board.com.service.TemplateManageService;
-import com.portal.board.com.service.TemplateInf;
 import jakarta.annotation.Resource;
 
 @RestController
@@ -89,11 +88,11 @@ public class TemplateManageController {
      * 템플릿 정보를 등록한다.
      */
     @RequestMapping(value = "/insertTemplateInf", method = RequestMethod.POST)
-    public Map<String, Object> insertTemplateInf(@RequestBody TemplateInf templateInf) throws Exception {
+    public Map<String, Object> insertTemplateInf(@RequestBody Map<String, Object> paramMap) throws Exception {
         Map<String, Object> response = new HashMap<>();
         try {
-            templateInf.setFrstRegisterId("USRCNFRM_00000000000");
-            tmplatService.insertTemplateInf(templateInf);
+            paramMap.put("frstRegisterId", "USRCNFRM_00000000000");
+            tmplatService.insertTemplateInf(paramMap);
             response.put("resultCode", "SUCCESS");
         } catch (Exception e) {
             response.put("resultCode", "ERROR");
@@ -106,11 +105,11 @@ public class TemplateManageController {
      * 템플릿 정보를 수정한다.
      */
     @RequestMapping(value = "/updateTemplateInf", method = RequestMethod.POST)
-    public Map<String, Object> updateTemplateInf(@RequestBody TemplateInf templateInf) throws Exception {
+    public Map<String, Object> updateTemplateInf(@RequestBody Map<String, Object> paramMap) throws Exception {
         Map<String, Object> response = new HashMap<>();
         try {
-            templateInf.setLastUpdusrId("USRCNFRM_00000000000");
-            tmplatService.updateTemplateInf(templateInf);
+            paramMap.put("lastUpdusrId", "USRCNFRM_00000000000");
+            tmplatService.updateTemplateInf(paramMap);
             response.put("resultCode", "SUCCESS");
         } catch (Exception e) {
             response.put("resultCode", "ERROR");
@@ -123,11 +122,11 @@ public class TemplateManageController {
      * 템플릿 정보를 삭제한다.
      */
     @RequestMapping(value = "/deleteTemplateInf", method = RequestMethod.POST)
-    public Map<String, Object> deleteTemplateInf(@RequestBody TemplateInf templateInf) throws Exception {
+    public Map<String, Object> deleteTemplateInf(@RequestBody Map<String, Object> paramMap) throws Exception {
         Map<String, Object> response = new HashMap<>();
         try {
-            templateInf.setLastUpdusrId("USRCNFRM_00000000000");
-            tmplatService.deleteTemplateInf(templateInf);
+            paramMap.put("lastUpdusrId", "USRCNFRM_00000000000");
+            tmplatService.deleteTemplateInf(paramMap);
             response.put("resultCode", "SUCCESS");
         } catch (Exception e) {
             response.put("resultCode", "ERROR");

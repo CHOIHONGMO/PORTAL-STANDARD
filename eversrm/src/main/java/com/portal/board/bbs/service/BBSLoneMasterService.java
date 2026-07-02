@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.portal.board.bbs.BBSLoneMasterMapper;
 import com.portal.board.com.BBSUseInfoManageMapper;
-import com.portal.board.com.service.BoardUseInf;
 import jakarta.annotation.Resource;
 
 /**
@@ -35,15 +34,15 @@ public class BBSLoneMasterService extends EgovAbstractServiceImpl {
 	/**
 	 * 등록된 게시판 속성정보를 삭제한다.
 	 * 
-	 * @param boardMaster
+	 * @param paramMap
 	 * @throws Exception
 	 */
-	public void deleteMaster(BoardMaster boardMaster) throws Exception {
-		masterMapper.deleteMaster(boardMaster);
+	public void deleteMaster(Map<String, Object> paramMap) throws Exception {
+		masterMapper.deleteMaster(paramMap);
 
-		BoardUseInf bdUseInf = new BoardUseInf();
-		bdUseInf.setBbsId(boardMaster.getBbsId());
-		bdUseInf.setLastUpdusrId(boardMaster.getLastUpdusrId());
+		Map<String, Object> bdUseInf = new HashMap<>();
+		bdUseInf.put("bbsId", paramMap.get("bbsId"));
+		bdUseInf.put("lastUpdusrId", paramMap.get("lastUpdusrId"));
 
 		bbsUseMapper.deleteBBSUseInfByBoardId(bdUseInf);
 	}
@@ -51,22 +50,22 @@ public class BBSLoneMasterService extends EgovAbstractServiceImpl {
 	/**
 	 * 신규 게시판 속성정보를 생성한다.
 	 * 
-	 * @param boardMaster
+	 * @param paramMap
 	 * @return String
 	 * @throws Exception
 	 */
-	public String insertMaster(BoardMaster boardMaster) throws Exception {
+	public String insertMaster(Map<String, Object> paramMap) throws Exception {
 		String bbsId = idgenService.getNextStringId();
-		boardMaster.setBbsId(bbsId);
+		paramMap.put("bbsId", bbsId);
 
-		masterMapper.insertMaster(boardMaster);
+		masterMapper.insertMaster(paramMap);
 
-		BoardUseInf bdUseInf = new BoardUseInf();
-		bdUseInf.setBbsId(bbsId);
-		bdUseInf.setTrgetId("SYSTEM_DEFAULT_BOARD");
-		bdUseInf.setRegistSeCode("REGC01");
-		bdUseInf.setFrstRegisterId(boardMaster.getFrstRegisterId());
-		bdUseInf.setUseAt("Y");
+		Map<String, Object> bdUseInf = new HashMap<>();
+		bdUseInf.put("bbsId", bbsId);
+		bdUseInf.put("trgetId", "SYSTEM_DEFAULT_BOARD");
+		bdUseInf.put("registSeCode", "REGC01");
+		bdUseInf.put("frstRegisterId", paramMap.get("frstRegisterId"));
+		bdUseInf.put("useAt", "Y");
 
 		bbsUseMapper.insertBBSUseInf(bdUseInf);
 
@@ -76,12 +75,12 @@ public class BBSLoneMasterService extends EgovAbstractServiceImpl {
 	/**
 	 * 게시판 속성정보 한 건을 상세조회한다.
 	 * 
-	 * @param boardMaster
+	 * @param paramMap
 	 * @return Map<String, Object>
 	 * @throws Exception
 	 */
-	public Map<String, Object> selectMaster(BoardMaster boardMaster) throws Exception {
-		return masterMapper.selectMaster(boardMaster);
+	public Map<String, Object> selectMaster(Map<String, Object> paramMap) throws Exception {
+		return masterMapper.selectMaster(paramMap);
 	}
 
 	/**
@@ -105,10 +104,10 @@ public class BBSLoneMasterService extends EgovAbstractServiceImpl {
 	/**
 	 * 게시판 속성정보를 수정한다.
 	 * 
-	 * @param boardMaster
+	 * @param paramMap
 	 * @throws Exception
 	 */
-	public void updateMaster(BoardMaster boardMaster) throws Exception {
-		masterMapper.updateMaster(boardMaster);
+	public void updateMaster(Map<String, Object> paramMap) throws Exception {
+		masterMapper.updateMaster(paramMap);
 	}
 }

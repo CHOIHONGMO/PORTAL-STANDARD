@@ -15,14 +15,13 @@ import type {
   ScreenDefinition,
   FieldDefinition,
   ApiAction,
-  PageType,
   LayoutBlock,
   FormBlock,
   GridBlock,
   ActionBlock,
-  BlockType
+  BlockType,
+  BuilderComponentType
 } from './types/screenDefinition';
-import type { FieldType } from '@/common/validator/types';
 import { generateCode } from './utils/codeGenerator';
 import { generateAndSaveFiles } from './api/builderApi';
 
@@ -42,9 +41,7 @@ const createNewScreen = (): ScreenDefinition => ({
   screenName: '',
   title: '',
   description: '',
-  route: '',
   domainPath: '',
-  pageType: 'form',
   blocks: [
     {
       id: uuidv4(),
@@ -60,11 +57,12 @@ const createNewScreen = (): ScreenDefinition => ({
   updatedAt: new Date().toISOString(),
 });
 
-const createNewField = (type: FieldType): FieldDefinition => ({
+const createNewField = (type: BuilderComponentType): FieldDefinition => ({
   id: uuidv4(),
   fieldName: '',
   label: '',
   type,
+  inputType: type === 'input' ? 'text' : undefined,
   required: false,
 });
 
@@ -81,15 +79,24 @@ const createNewAction = (): ApiAction => ({
 // ─────────────────────────────────────────────────────────────────────
 
 const BuilderPage: React.FC = () => {
+  const [theme, setTheme] = React.useState<'dark' | 'light'>(() => (localStorage.getItem('builder-ui-theme') as 'dark' | 'light') || 'dark');
   const [activeScreen, setActiveScreen] = useState<ScreenDefinition | null>(null);
   const [selectedElementId, setSelectedElementId] = useState<string | null>(null);
+
+  const toggleTheme = useCallback(() => {
+    setTheme(prev => {
+      const next = prev === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('builder-ui-theme', next);
+      return next;
+    });
+  }, []);
   
   const [showCodeModal, setShowCodeModal] = useState(false);
   const [generatedCode, setGeneratedCode] = useState<ReturnType<typeof generateCode> | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
 
-  const [draggingType, setDraggingType] = useState<FieldType | null>(null);
+  const [draggingType, setDraggingType] = useState<BuilderComponentType | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const sensors = useSensors(
@@ -120,19 +127,48 @@ const BuilderPage: React.FC = () => {
     const reader = new FileReader();
     reader.onload = (event) => {
       const text = event.target?.result as string;
-      // 정규식으로 주석 찾기: // @everportal-screen-definition: {...}
-      const match = text.match(/\/\/\s*@everportal-screen-definition:\s*({.*})/);
-      if (match && match[1]) {
+
+      // 1. 단일 행 매치 시도
+      const singleLineMatch = text.match(/\/\/\s*@everportal-screen-definition:\s*({.*})/);
+      if (singleLineMatch && singleLineMatch[1]) {
         try {
-          const parsed = JSON.parse(match[1]);
+          const parsed = JSON.parse(singleLineMatch[1]);
           setActiveScreen(parsed);
           setSelectedElementId(null);
+          return;
         } catch (err) {
-          alert('파일을 파싱하는 중 오류가 발생했습니다. 올바른 포맷이 아닙니다.');
+          // 파싱 에러 시 다중 행 처리로 넘어감
         }
-      } else {
-        alert('이 파일에는 Screen Builder 화면 정의 메타데이터가 존재하지 않습니다.');
       }
+
+      // 2. 다중 행 처리 (포매터 등에 의해 주석이 줄바꿈된 경우 대응)
+      const marker = '@everportal-screen-definition:';
+      const index = text.indexOf(marker);
+      if (index !== -1) {
+        try {
+          const rawContent = text.substring(index + marker.length).trim();
+          // 각 행의 '//' 주석 접두사 제거
+          const cleanedLines = rawContent
+            .split('\n')
+            .map(line => line.trim().replace(/^\/\/\s*/, ''))
+            .join('\n')
+            .trim();
+
+          const firstBrace = cleanedLines.indexOf('{');
+          const lastBrace = cleanedLines.lastIndexOf('}');
+          if (firstBrace !== -1 && lastBrace !== -1) {
+            const jsonText = cleanedLines.substring(firstBrace, lastBrace + 1);
+            const parsed = JSON.parse(jsonText);
+            setActiveScreen(parsed);
+            setSelectedElementId(null);
+            return;
+          }
+        } catch (err) {
+          // 다중 행 처리 실패
+        }
+      }
+
+      alert('이 파일에는 올바른 형식의 Screen Builder 화면 정의 메타데이터가 존재하지 않거나 파일 파싱에 실패했습니다.');
     };
     reader.readAsText(file);
   }, []);
@@ -150,7 +186,18 @@ const BuilderPage: React.FC = () => {
       if (type === 'form') {
         newBlock = { id: uuidv4(), type: 'form', formId: `form_${uuidv4().substring(0,4)}`, title: '새 폼', width: '100%', columns: 1, fields: [] } as FormBlock;
       } else if (type === 'grid') {
-        newBlock = { id: uuidv4(), type: 'grid', gridId: `grid_${uuidv4().substring(0,4)}`, title: '새 그리드', width: '100%', gridColumns: [] } as GridBlock;
+        const defaultColumns = Array.from({ length: 10 }).map((_, i) => ({
+          id: uuidv4(),
+          fieldName: `col${i+1}`,
+          label: `컬럼 ${i+1}`,
+          type: 'grid_column',
+          gridColumnType: 'text',
+          width: '100',
+          editable: false,
+          required: false,
+          align: 'center',
+        } as FieldDefinition));
+        newBlock = { id: uuidv4(), type: 'grid', gridId: `grid_${uuidv4().substring(0,4)}`, title: '새 그리드', width: '100%', gridColumns: defaultColumns } as GridBlock;
       } else {
         newBlock = { id: uuidv4(), type: 'action', title: '액션 영역', width: '100%', actions: [] } as ActionBlock;
       }
@@ -257,7 +304,7 @@ const BuilderPage: React.FC = () => {
   const handleDragStart = useCallback((event: DragStartEvent) => {
     const data = event.active.data.current;
     if (data?.source === 'palette') {
-      setDraggingType(data.type as FieldType);
+      setDraggingType(data.type as BuilderComponentType);
     }
   }, []);
 
@@ -274,7 +321,7 @@ const BuilderPage: React.FC = () => {
     // 팔레트 → 블록(Form/Grid)으로 드롭
     if (activeData?.source === 'palette' && String(over.id).startsWith('drop-zone-')) {
       const blockId = String(over.id).replace('drop-zone-', '');
-      const newField = createNewField(activeData.type as FieldType);
+      const newField = createNewField(activeData.type as BuilderComponentType);
       
       setActiveScreen(prev => {
         if (!prev) return null;
@@ -290,6 +337,20 @@ const BuilderPage: React.FC = () => {
         };
       });
       setSelectedElementId(newField.id);
+      return;
+    }
+
+    // 캔버스 내 블록 정렬
+    if (activeData?.type === 'block' && active.id !== over.id) {
+      setActiveScreen(prev => {
+        if (!prev) return null;
+        const oldIdx = prev.blocks.findIndex(b => b.id === active.id);
+        const newIdx = prev.blocks.findIndex(b => b.id === over.id);
+        if (oldIdx !== -1 && newIdx !== -1) {
+          return { ...prev, blocks: arrayMove(prev.blocks, oldIdx, newIdx), updatedAt: new Date().toISOString() };
+        }
+        return prev;
+      });
       return;
     }
 
@@ -327,7 +388,7 @@ const BuilderPage: React.FC = () => {
   // ── 코드 생성 / 저장 ──────────────────────────────────────────────────
   const handleGenerateCode = useCallback(() => {
     if (!activeScreen) return alert('화면을 선택하세요.');
-    if (!activeScreen.screenName) return alert('화면명(컴포넌트명)을 입력하세요.');
+    if (!activeScreen.screenName) return alert('화면ID(컴포넌트명)을 입력하세요.');
     if (!activeScreen.domainPath) return alert('도메인 경로를 입력하세요. (예: user/member)');
     const code = generateCode(activeScreen);
     setGeneratedCode(code);
@@ -354,7 +415,7 @@ const BuilderPage: React.FC = () => {
 
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-      <div className="builder-app" style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+      <div className={`builder-app ${theme}`} style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
         <input type="file" ref={fileInputRef} onChange={handleFileChange} accept=".tsx" style={{ display: 'none' }} />
         
         <div className="builder-main" style={{ flex: 1 }}>
@@ -365,11 +426,18 @@ const BuilderPage: React.FC = () => {
             </div>
             
             <div className="builder-toolbar-title" style={{ flex: 1, textAlign: 'center' }}>
-              {activeScreen ? `✏ ${activeScreen.screenName || '새 화면'} — ${activeScreen.title || '제목 없음'}` : '화면을 생성하거나 불러오세요'}
+              {activeScreen ? `✏ ${activeScreen.screenName || '새 화면ID'} — ${activeScreen.title || '화면명 없음'}` : '화면을 생성하거나 불러오세요'}
             </div>
 
             <div className="builder-toolbar-actions">
               {saveStatus && <span style={{ fontSize: '0.8rem', color: '#34d399', fontWeight: 600, marginRight: '12px' }}>{saveStatus}</span>}
+              <button 
+                className="btn-builder btn-builder-ghost" 
+                onClick={toggleTheme}
+                title={theme === 'dark' ? '라이트 모드로 전환' : '다크 모드로 전환'}
+              >
+                {theme === 'dark' ? '☀️ Light' : '🌙 Dark'}
+              </button>
               {activeScreen && (
                 <button className="btn-builder btn-builder-primary" onClick={handleGenerateCode}>⚡ 코드 생성</button>
               )}
@@ -380,6 +448,7 @@ const BuilderPage: React.FC = () => {
             {activeScreen && <ComponentPalette />}
             
             <CanvasArea
+              theme={theme}
               screen={activeScreen}
               selectedElementId={selectedElementId}
               onSelectElement={setSelectedElementId}
@@ -394,6 +463,7 @@ const BuilderPage: React.FC = () => {
             
             {activeScreen && (
               <PropertyPanel
+                theme={theme}
                 screen={activeScreen}
                 selectedElementId={selectedElementId}
                 onUpdateField={handleUpdateField}

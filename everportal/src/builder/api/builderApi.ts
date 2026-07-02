@@ -48,3 +48,11 @@ export const deleteScreenDefinition = async (
   const response: any = await apiClient.delete(`/builder/screens/${screenId}`);
   return response;
 };
+
+/**
+ * src/pages 하위 디렉토리 목록 조회
+ */
+export const fetchPagesDirs = async (): Promise<string[]> => {
+  const response: any = await apiClient.get('/builder/pages-dirs');
+  return response?.dirs || [];
+};

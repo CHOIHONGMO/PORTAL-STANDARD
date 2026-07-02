@@ -163,4 +163,37 @@ public class BuilderServiceImpl implements BuilderService {
             LOGGER.info("[BuilderService] 화면 정의 삭제: {} (result={})", filePath, deleted);
         }
     }
+
+    @Override
+    public List<String> getPagesSubdirectories() throws Exception {
+        Path pagesPath = Paths.get(frontendPath, "src/pages").normalize().toAbsolutePath();
+        List<String> relativeDirs = new ArrayList<>();
+        // Root directory itself as an option
+        relativeDirs.add(""); 
+        
+        if (pagesPath.toFile().exists()) {
+            scanDirectories(pagesPath.toFile(), pagesPath.toString(), relativeDirs);
+        }
+        return relativeDirs;
+    }
+
+    private void scanDirectories(File currentDir, String rootPath, List<String> result) {
+        File[] subFiles = currentDir.listFiles(File::isDirectory);
+        if (subFiles == null) return;
+        for (File subFile : subFiles) {
+            if (subFile.getName().startsWith(".")) continue;
+            if (subFile.getName().equalsIgnoreCase("node_modules")) continue;
+            
+            String relative = subFile.getAbsolutePath()
+                    .replace(rootPath, "")
+                    .replace("\\", "/");
+            if (relative.startsWith("/")) {
+                relative = relative.substring(1);
+            }
+            if (!relative.isEmpty()) {
+                result.add(relative);
+            }
+            scanDirectories(subFile, rootPath, result);
+        }
+    }
 }

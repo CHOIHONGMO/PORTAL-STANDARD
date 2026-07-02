@@ -1,7 +1,6 @@
 package com.portal.board.com.service;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -27,21 +26,21 @@ public class BBSUseInfoManageService extends EgovAbstractServiceImpl {
 	/**
 	 * 게시판 사용 정보를 삭제한다.
 	 * 
-	 * @param bdUseInf
+	 * @param paramMap
 	 * @throws Exception
 	 */
-	public void deleteBBSUseInf(BoardUseInf bdUseInf) throws Exception {
-		bbsUseMapper.deleteBBSUseInf(bdUseInf);
+	public void deleteBBSUseInf(Map<String, Object> paramMap) throws Exception {
+		bbsUseMapper.deleteBBSUseInf(paramMap);
 	}
 
 	/**
 	 * 게시판 사용정보를 등록한다.
 	 * 
-	 * @param bdUseInf
+	 * @param paramMap
 	 * @throws Exception
 	 */
-	public void insertBBSUseInf(BoardUseInf bdUseInf) throws Exception {
-		bbsUseMapper.insertBBSUseInf(bdUseInf);
+	public void insertBBSUseInf(Map<String, Object> paramMap) throws Exception {
+		bbsUseMapper.insertBBSUseInf(paramMap);
 	}
 
 	/**
@@ -65,11 +64,11 @@ public class BBSUseInfoManageService extends EgovAbstractServiceImpl {
 	/**
 	 * 게시판 사용정보를 수정한다.
 	 * 
-	 * @param bdUseInf
+	 * @param paramMap
 	 * @throws Exception
 	 */
-	public void updateBBSUseInf(BoardUseInf bdUseInf) throws Exception {
-		bbsUseMapper.updateBBSUseInf(bdUseInf);
+	public void updateBBSUseInf(Map<String, Object> paramMap) throws Exception {
+		bbsUseMapper.updateBBSUseInf(paramMap);
 	}
 
 	/**
@@ -90,15 +89,14 @@ public class BBSUseInfoManageService extends EgovAbstractServiceImpl {
 	 * @throws Exception
 	 */
 	public void deleteBBSUseInfByClub(Map<String, Object> searchMap) throws Exception {
-		List<BoardUseInf> result = bbsUseMapper.selectBBSUseInfByClub(searchMap);
+		List<Map<String, Object>> result = bbsUseMapper.selectBBSUseInfByClub(searchMap);
 
-		BoardUseInf bdUseInf = null;
-		Iterator<BoardUseInf> iter = result.iterator();
-		while (iter.hasNext()) {
-			bdUseInf = iter.next();
-			bdUseInf.setLastUpdusrId((String) searchMap.get("lastUpdusrId"));
-			bdUseInf.setTrgetId((String) searchMap.get("trgetId"));
-			bbsUseMapper.deleteBBSUseInf(bdUseInf);
+		for (Map<String, Object> item : result) {
+			Map<String, Object> paramMap = new HashMap<>();
+			paramMap.put("bbsId", item.get("BBS_ID"));
+			paramMap.put("lastUpdusrId", searchMap.get("lastUpdusrId"));
+			paramMap.put("trgetId", searchMap.get("trgetId"));
+			bbsUseMapper.deleteBBSUseInf(paramMap);
 		}
 	}
 
@@ -109,15 +107,14 @@ public class BBSUseInfoManageService extends EgovAbstractServiceImpl {
 	 * @throws Exception
 	 */
 	public void deleteBBSUseInfByCmmnty(Map<String, Object> searchMap) throws Exception {
-		List<BoardUseInf> result = bbsUseMapper.selectBBSUseInfByCmmnty(searchMap);
+		List<Map<String, Object>> result = bbsUseMapper.selectBBSUseInfByCmmnty(searchMap);
 
-		BoardUseInf bdUseInf = null;
-		Iterator<BoardUseInf> iter = result.iterator();
-		while (iter.hasNext()) {
-			bdUseInf = iter.next();
-			bdUseInf.setLastUpdusrId((String) searchMap.get("lastUpdusrId"));
-			bdUseInf.setTrgetId((String) searchMap.get("trgetId"));
-			bbsUseMapper.deleteBBSUseInf(bdUseInf);
+		for (Map<String, Object> item : result) {
+			Map<String, Object> paramMap = new HashMap<>();
+			paramMap.put("bbsId", item.get("BBS_ID"));
+			paramMap.put("lastUpdusrId", searchMap.get("lastUpdusrId"));
+			paramMap.put("trgetId", searchMap.get("trgetId"));
+			bbsUseMapper.deleteBBSUseInf(paramMap);
 		}
 	}
 
@@ -144,11 +141,11 @@ public class BBSUseInfoManageService extends EgovAbstractServiceImpl {
 	/**
 	 * 게시판에 대한 사용정보를 삭제한다.
 	 * 
-	 * @param bdUseInf
+	 * @param paramMap
 	 * @throws Exception
 	 */
-	public void deleteBBSUseInfByBoardId(BoardUseInf bdUseInf) throws Exception {
-		bbsUseMapper.deleteBBSUseInfByBoardId(bdUseInf);
+	public void deleteBBSUseInfByBoardId(Map<String, Object> paramMap) throws Exception {
+		bbsUseMapper.deleteBBSUseInfByBoardId(paramMap);
 	}
 
 	/**
@@ -172,10 +169,10 @@ public class BBSUseInfoManageService extends EgovAbstractServiceImpl {
 	/**
 	 * 커뮤니티, 동호회에 사용되는 게시판 사용정보를 수정한다.
 	 * 
-	 * @param bdUseInf
+	 * @param paramMap
 	 * @throws Exception
 	 */
-	public void updateBBSUseInfByTrget(BoardUseInf bdUseInf) throws Exception {
-		bbsUseMapper.updateBBSUseInfByTrget(bdUseInf);
+	public void updateBBSUseInfByTrget(Map<String, Object> paramMap) throws Exception {
+		bbsUseMapper.updateBBSUseInfByTrget(paramMap);
 	}
 }

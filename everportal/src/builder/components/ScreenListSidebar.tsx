@@ -9,11 +9,7 @@ interface ScreenListSidebarProps {
   onDeleteScreen: (id: string) => void;
 }
 
-const PAGE_TYPE_LABEL: Record<string, string> = {
-  list: 'L',
-  form: 'F',
-  detail: 'D',
-};
+
 
 const ScreenListSidebar: React.FC<ScreenListSidebarProps> = ({
   screens,
@@ -52,12 +48,7 @@ const ScreenListSidebar: React.FC<ScreenListSidebarProps> = ({
               className={`builder-screen-item${activeScreenId === screen.screenId ? ' active' : ''}`}
               onClick={() => onSelectScreen(screen.screenId)}
             >
-              <span
-                className={`screen-type-badge ${screen.pageType}`}
-                title={screen.pageType}
-              >
-                {PAGE_TYPE_LABEL[screen.pageType]}
-              </span>
+
               <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {screen.screenName || '(이름 없음)'}
               </span>

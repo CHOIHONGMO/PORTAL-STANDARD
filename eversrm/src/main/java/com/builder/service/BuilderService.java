@@ -50,4 +50,11 @@ public interface BuilderService {
      * @param screenId 화면 ID
      */
     void deleteScreenDefinition(String screenId) throws Exception;
+
+    /**
+     * src/pages 하위 디렉토리 목록을 조회합니다.
+     *
+     * @return 디렉토리 상대 경로 목록
+     */
+    List<String> getPagesSubdirectories() throws Exception;
 }

@@ -6,12 +6,32 @@
 import type { FieldType, FieldOption } from '@/common/validator/types';
 
 /**
- * 화면 유형
- * - list: 목록 화면 (검색 + 테이블)
- * - form: 등록/수정 화면 (AutoForm)
- * - detail: 상세 조회 화면 (읽기 전용)
+ * 빌더 화면에 배치되는 기본 컴포넌트 단위 (팔레트에 노출)
  */
-export type PageType = 'list' | 'form' | 'detail';
+export type BuilderComponentType =
+  | 'text'
+  | 'heading'
+  | 'input'
+  | 'textarea'
+  | 'select'
+  | 'radio'
+  | 'checkbox'
+  | 'button'
+  | 'hidden'
+  | 'grid_column';
+
+/**
+ * 그리드 전용 세부 컬럼 타입
+ */
+export type GridColumnType = 
+  | 'text' 
+  | 'number' 
+  | 'date' 
+  | 'combo' 
+  | 'multicombo' 
+  | 'textarea' 
+  | 'textlink' 
+  | 'search';
 
 /**
  * 필드 배치 위치 (그리드 기반)
@@ -36,8 +56,35 @@ export interface FieldDefinition {
   fieldName: string;
   /** 한글 라벨 */
   label: string;
-  /** 입력 타입 */
-  type: FieldType;
+  
+  /** 빌더 내 컴포넌트 뼈대 타입 */
+  type: BuilderComponentType;
+  /** 입력 컴포넌트일 경우 세부 입력 타입 (text, number, email, password 등) */
+  inputType?: FieldType;
+
+  /** [Form] 폼 렌더링 시 Alias 기본 매핑을 무시하고 강제 고정할 값 */
+  overrideValue?: string;
+
+  /** [Grid] 다단 헤더 구성 시 상위 그룹명 */
+  parentHeader?: string;
+
+  /** [Grid] 그리드 컬럼 전용 세부 타입 */
+  gridColumnType?: GridColumnType;
+
+  /** [Grid] 해당 셀 수정 가능 여부 */
+  editable?: boolean;
+
+  /** [Grid: Number] 소수점 표기 자릿수 */
+  fractionDigits?: number;
+
+  /** [Grid: Number] 천단위 구분 콤마 사용 여부 */
+  useThousandSeparator?: boolean;
+  
+  /** heading 컴포넌트일 경우 헤딩 레벨 */
+  headingLevel?: 'h1'|'h2'|'h3'|'h4'|'h5'|'h6';
+  /** button 컴포넌트일 경우 버튼 역할 */
+  buttonRole?: 'submit'|'button'|'reset';
+  
   /** 필수 여부 */
   required?: boolean;
   /** 최대 글자수 */
@@ -68,9 +115,9 @@ export interface FieldDefinition {
   isSearchCondition?: boolean;
   /** 목록 화면에서 테이블 컬럼으로 표시 여부 */
   isTableColumn?: boolean;
-  /** 테이블 컬럼 너비 (%) */
-  columnWidth?: number;
-  /** 테이블 컬럼 정렬 (좌/중/우) */
+  /** [Grid] 테이블 컬럼 너비 (px, % 등 문자열 허용, 0이면 숨김) */
+  width?: string | number;
+  /** [Grid] 테이블 컬럼 정렬 (좌/중/우) */
   align?: 'left' | 'center' | 'right';
 }
 
@@ -82,6 +129,8 @@ export interface ApiAction {
   id: string;
   /** 버튼 라벨 */
   label: string;
+  /** 액션 함수명 (onClick/Handler 명) */
+  actionName?: string;
   /** HTTP 메서드 */
   method: 'GET' | 'POST' | 'PUT' | 'DELETE';
   /** API 경로 (예: /user/member/mber/selectMberList.api) */
@@ -98,6 +147,8 @@ export interface ApiAction {
   height?: string;
   /** 확인 대화상자 메시지 (있으면 confirm 처리) */
   confirmMessage?: string;
+  /** 사용자 정의 onClick/API 호출 스크립트 */
+  customScript?: string;
 }
 
 // ─────────────────────────────────────────────────────────────────────
@@ -115,8 +166,10 @@ export interface BaseBlock {
   title?: string;
   /** 블록 너비 (예: '100%', '50%', '300px') */
   width: string;
-  /** 블록 테마 (기본: 사용자 환경 또는 설정에 따름) */
+  /** 블록 테마 (기본: 사용자 환경 또는 설정에 따름) (deprecated) */
   theme?: 'light' | 'dark';
+  /** 블록 배경색 */
+  backgroundColor?: string;
 }
 
 export interface FormBlock extends BaseBlock {
@@ -127,8 +180,6 @@ export interface FormBlock extends BaseBlock {
   columns: number;
   /** 폼 내부 행 갯수 */
   rows?: number;
-  /** 폼 배경색 */
-  backgroundColor?: string;
   /** 폼 내부에 배치된 필드 목록 */
   fields: FieldDefinition[];
 }
@@ -173,10 +224,8 @@ export interface ScreenDefinition {
   title: string;
   /** 화면 설명 */
   description?: string;
-  /** 라우터 경로 (예: admin/member) */
-  route: string;
-  /** 화면 유형 */
-  pageType: PageType;
+  /** 공통 화면 테마 */
+  screenTheme?: 'business-light' | 'business-dark' | 'navy-modern' | 'emerald-clean';
   /** 도메인 경로 (예: user/member) — 파일 생성 경로에 사용 */
   domainPath: string;
   /** 화면에 배치된 레이아웃 블록 목록 (순서대로 렌더링) */

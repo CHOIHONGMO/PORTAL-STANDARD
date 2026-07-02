@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.portal.board.com.service.BoardUseInf;
 import com.portal.board.com.service.BBSUseInfoManageService;
 import jakarta.annotation.Resource;
 
@@ -95,10 +94,10 @@ public class BBSUseInfoManageController {
      * 게시판 사용정보를 등록한다.
      */
     @RequestMapping(value = "/insertBBSUseInf", method = RequestMethod.POST)
-    public Map<String, Object> insertBBSUseInf(@RequestBody BoardUseInf boardUseInf) throws Exception {
+    public Map<String, Object> insertBBSUseInf(@RequestBody Map<String, Object> paramMap) throws Exception {
         Map<String, Object> response = new HashMap<>();
         try {
-            String trgetType = boardUseInf.getTrgetType();
+            String trgetType = (String) paramMap.get("trgetType");
             String registSeCode;
 
             if ("CMMNTY".equals(trgetType)) {
@@ -109,11 +108,11 @@ public class BBSUseInfoManageController {
                 registSeCode = "REGC01"; // SYSTEM
             }
 
-            boardUseInf.setUseAt("Y");
-            boardUseInf.setFrstRegisterId("USRCNFRM_00000000000");
-            boardUseInf.setRegistSeCode(registSeCode);
+            paramMap.put("useAt", "Y");
+            paramMap.put("frstRegisterId", "USRCNFRM_00000000000");
+            paramMap.put("registSeCode", registSeCode);
 
-            bbsUseService.insertBBSUseInf(boardUseInf);
+            bbsUseService.insertBBSUseInf(paramMap);
             response.put("resultCode", "SUCCESS");
         } catch (Exception e) {
             response.put("resultCode", "ERROR");
@@ -126,10 +125,10 @@ public class BBSUseInfoManageController {
      * 게시판 사용정보를 수정한다.
      */
     @RequestMapping(value = "/updateBBSUseInf", method = RequestMethod.POST)
-    public Map<String, Object> updateBBSUseInf(@RequestBody BoardUseInf boardUseInf) throws Exception {
+    public Map<String, Object> updateBBSUseInf(@RequestBody Map<String, Object> paramMap) throws Exception {
         Map<String, Object> response = new HashMap<>();
         try {
-            bbsUseService.updateBBSUseInf(boardUseInf);
+            bbsUseService.updateBBSUseInf(paramMap);
             response.put("resultCode", "SUCCESS");
         } catch (Exception e) {
             response.put("resultCode", "ERROR");
@@ -142,10 +141,10 @@ public class BBSUseInfoManageController {
      * 게시판 사용 정보를 삭제한다.
      */
     @RequestMapping(value = "/deleteBBSUseInf", method = RequestMethod.POST)
-    public Map<String, Object> deleteBBSUseInf(@RequestBody BoardUseInf boardUseInf) throws Exception {
+    public Map<String, Object> deleteBBSUseInf(@RequestBody Map<String, Object> paramMap) throws Exception {
         Map<String, Object> response = new HashMap<>();
         try {
-            bbsUseService.deleteBBSUseInf(boardUseInf);
+            bbsUseService.deleteBBSUseInf(paramMap);
             response.put("resultCode", "SUCCESS");
         } catch (Exception e) {
             response.put("resultCode", "ERROR");

@@ -1,5 +1,5 @@
 import React from 'react';
-import type { FieldValues, DefaultValues } from 'react-hook-form';
+import type { FieldValues, DefaultValues, UseFormReturn } from 'react-hook-form';
 import type { FormSchema } from '../validator/types';
 import { useFormSchema } from '../validator/useFormSchema';
 import FormField from './FormField';
@@ -35,6 +35,17 @@ interface AutoFormProps<T extends FieldValues> {
   hideActions?: boolean;
   /** 버튼 영역 아래에 추가로 렌더링할 컨텐츠 */
   children?: React.ReactNode;
+  /**
+   * 외부 useFormSchema 인스턴스 주입 (선택)
+   * 제공 시 AutoForm 내부에서 새 form을 생성하지 않고 이 인스턴스를 사용합니다.
+   * 조회 버튼처럼 AutoForm 외부에서 handleSubmit을 직접 호출해야 할 때 사용하세요.
+   *
+   * @example
+   * const mainForm = useFormSchema(mainFormSchema);
+   * <AutoForm schema={mainFormSchema} formInstance={mainForm} onSubmit={handleSearch} hideActions />
+   * <button onClick={mainForm.handleSubmit(handleSearch)}>조회</button>
+   */
+  formInstance?: UseFormReturn<T>;
 }
 
 /**
@@ -67,12 +78,16 @@ function AutoForm<T extends FieldValues>({
   excludeFields = [],
   hideActions = false,
   children,
+  formInstance,
 }: AutoFormProps<T>) {
+  // 외부 formInstance가 주입된 경우 그것을 사용, 아니면 내부에서 생성
+  const internalForm = useFormSchema<T>(schema, defaultValues as Partial<T>);
+  const resolvedForm = (formInstance ?? internalForm) as UseFormReturn<T>;
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useFormSchema<T>(schema, defaultValues as Partial<T>);
+  } = resolvedForm;
 
   // 렌더링할 필드 키 목록 결정
   const fieldKeys = (fieldOrder ?? (Object.keys(schema) as Array<keyof T>)).filter(

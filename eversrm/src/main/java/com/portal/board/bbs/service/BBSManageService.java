@@ -37,16 +37,16 @@ public class BBSManageService extends EgovAbstractServiceImpl {
 	/**
 	 * 게시물 한 건을 삭제 한다.
 	 * 
-	 * @param board
+	 * @param paramMap
 	 * @throws Exception
 	 */
-	public void deleteBoardArticle(Board board) throws Exception {
+	public void deleteBoardArticle(Map<String, Object> paramMap) throws Exception {
 		Map<String, Object> fvo = new HashMap<>();
-		fvo.put("atchFileId", board.getAtchFileId());
+		fvo.put("atchFileId", paramMap.get("atchFileId"));
 
-		board.setNttSj("이 글은 작성자에 의해서 삭제되었습니다.");
+		paramMap.put("nttSj", "이 글은 작성자에 의해서 삭제되었습니다.");
 
-		bbsManageMapper.deleteBoardArticle(board);
+		bbsManageMapper.deleteBoardArticle(paramMap);
 
 		if (fvo.get("atchFileId") != null && !"".equals(fvo.get("atchFileId"))) {
 			fileService.deleteAllFileInf(fvo);
@@ -56,32 +56,33 @@ public class BBSManageService extends EgovAbstractServiceImpl {
 	/**
 	 * 게시판에 게시물 또는 답변 게시물을 등록 한다.
 	 * 
-	 * @param board
+	 * @param paramMap
 	 * @throws Exception
 	 */
-	public void insertBoardArticle(Board board) throws Exception {
-		if ("Y".equals(board.getReplyAt())) {
+	public void insertBoardArticle(Map<String, Object> paramMap) throws Exception {
+		String replyAt = (String) paramMap.get("replyAt");
+		if ("Y".equals(replyAt)) {
 			long nttId = bbsManageMapper.selectMaxNttId();
-			board.setNttId(nttId);
+			paramMap.put("nttId", nttId);
 
-			bbsManageMapper.replyBoardArticle(board);
+			bbsManageMapper.replyBoardArticle(paramMap);
 
-			long nttNo = bbsManageMapper.getParentNttNo(board);
+			long nttNo = bbsManageMapper.getParentNttNo(paramMap);
 
-			board.setNttNo(nttNo);
-			bbsManageMapper.updateOtherNttNo(board);
+			paramMap.put("nttNo", nttNo);
+			bbsManageMapper.updateOtherNttNo(paramMap);
 
-			board.setNttNo(nttNo + 1);
-			bbsManageMapper.updateNttNo(board);
+			paramMap.put("nttNo", nttNo + 1);
+			bbsManageMapper.updateNttNo(paramMap);
 		} else {
-			board.setParnts("0");
-			board.setReplyLc("0");
-			board.setReplyAt("N");
+			paramMap.put("parnts", "0");
+			paramMap.put("replyLc", "0");
+			paramMap.put("replyAt", "N");
 
 			long nttId = bbsManageMapper.selectMaxNttId();
-			board.setNttId(nttId);
+			paramMap.put("nttId", nttId);
 
-			bbsManageMapper.insertBoardArticle(board);
+			bbsManageMapper.insertBoardArticle(paramMap);
 		}
 	}
 
@@ -146,11 +147,11 @@ public class BBSManageService extends EgovAbstractServiceImpl {
 	/**
 	 * 게시물 한 건의 내용을 수정 한다.
 	 * 
-	 * @param board
+	 * @param paramMap
 	 * @throws Exception
 	 */
-	public void updateBoardArticle(Board board) throws Exception {
-		bbsManageMapper.updateBoardArticle(board);
+	public void updateBoardArticle(Map<String, Object> paramMap) throws Exception {
+		bbsManageMapper.updateBoardArticle(paramMap);
 	}
 
 	/**
@@ -184,11 +185,11 @@ public class BBSManageService extends EgovAbstractServiceImpl {
 	/**
 	 * 방명록에 대한 패스워드를 조회 한다.
 	 * 
-	 * @param board
+	 * @param paramMap
 	 * @return String
 	 * @throws Exception
 	 */
-	public String getPasswordInf(Board board) throws Exception {
-		return bbsManageMapper.getPasswordInf(board);
+	public String getPasswordInf(Map<String, Object> paramMap) throws Exception {
+		return bbsManageMapper.getPasswordInf(paramMap);
 	}
 }

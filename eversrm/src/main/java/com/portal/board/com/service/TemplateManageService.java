@@ -30,22 +30,22 @@ public class TemplateManageService extends EgovAbstractServiceImpl {
 	/**
 	 * 템플릿 정보를 삭제한다.
 	 * 
-	 * @param tmplatInf
+	 * @param paramMap
 	 * @throws Exception
 	 */
-	public void deleteTemplateInf(TemplateInf tmplatInf) throws Exception {
-		tmplatMapper.deleteTemplateInf(tmplatInf);
+	public void deleteTemplateInf(Map<String, Object> paramMap) throws Exception {
+		tmplatMapper.deleteTemplateInf(paramMap);
 	}
 
 	/**
 	 * 템플릿 정보를 등록한다.
 	 * 
-	 * @param tmplatInf
+	 * @param paramMap
 	 * @throws Exception
 	 */
-	public void insertTemplateInf(TemplateInf tmplatInf) throws Exception {
-		tmplatInf.setTmplatId(idgenService.getNextStringId());
-		tmplatMapper.insertTemplateInf(tmplatInf);
+	public void insertTemplateInf(Map<String, Object> paramMap) throws Exception {
+		paramMap.put("tmplatId", idgenService.getNextStringId());
+		tmplatMapper.insertTemplateInf(paramMap);
 	}
 
 	/**
@@ -91,11 +91,11 @@ public class TemplateManageService extends EgovAbstractServiceImpl {
 	/**
 	 * 템플릿 정보를 수정한다.
 	 * 
-	 * @param tmplatInf
+	 * @param paramMap
 	 * @throws Exception
 	 */
-	public void updateTemplateInf(TemplateInf tmplatInf) throws Exception {
-		tmplatMapper.updateTemplateInf(tmplatInf);
+	public void updateTemplateInf(Map<String, Object> paramMap) throws Exception {
+		tmplatMapper.updateTemplateInf(paramMap);
 	}
 
 	/**

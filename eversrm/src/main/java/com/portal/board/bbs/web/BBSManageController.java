@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.egovframe.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 
-import com.portal.board.bbs.service.Board;
 import com.portal.board.bbs.service.BBSManageService;
 
 @RestController
@@ -87,17 +86,17 @@ public class BBSManageController {
      * 게시물을 등록한다.
      */
     @RequestMapping(value = "/insertBoardArticle", method = RequestMethod.POST)
-    public Map<String, Object> insertBoardArticle(@RequestBody Board board) throws Exception {
+    public Map<String, Object> insertBoardArticle(@RequestBody Map<String, Object> paramMap) throws Exception {
         Map<String, Object> response = new HashMap<>();
         try {
-            if (board.getBbsId() == null || board.getBbsId().isEmpty()) {
-                board.setBbsId("BBSMSTR_AAAAAAAAAAAA");
+            if (paramMap.get("bbsId") == null || "".equals(paramMap.get("bbsId"))) {
+                paramMap.put("bbsId", "BBSMSTR_AAAAAAAAAAAA");
             }
             // 임시 사용자 아이디 세팅 (로그인 연동 전)
-            board.setFrstRegisterId("USRCNFRM_00000000000");
-            board.setPassword("dummy");
+            paramMap.put("frstRegisterId", "USRCNFRM_00000000000");
+            paramMap.put("password", "dummy");
 
-            bbsMngService.insertBoardArticle(board);
+            bbsMngService.insertBoardArticle(paramMap);
             response.put("resultCode", "SUCCESS");
         } catch (Exception e) {
             response.put("resultCode", "ERROR");
@@ -110,15 +109,15 @@ public class BBSManageController {
      * 게시물을 수정한다.
      */
     @RequestMapping(value = "/updateBoardArticle", method = RequestMethod.POST)
-    public Map<String, Object> updateBoardArticle(@RequestBody Board board) throws Exception {
+    public Map<String, Object> updateBoardArticle(@RequestBody Map<String, Object> paramMap) throws Exception {
         Map<String, Object> response = new HashMap<>();
         try {
-            if (board.getBbsId() == null || board.getBbsId().isEmpty()) {
-                board.setBbsId("BBSMSTR_AAAAAAAAAAAA");
+            if (paramMap.get("bbsId") == null || "".equals(paramMap.get("bbsId"))) {
+                paramMap.put("bbsId", "BBSMSTR_AAAAAAAAAAAA");
             }
-            board.setLastUpdusrId("USRCNFRM_00000000000");
+            paramMap.put("lastUpdusrId", "USRCNFRM_00000000000");
 
-            bbsMngService.updateBoardArticle(board);
+            bbsMngService.updateBoardArticle(paramMap);
             response.put("resultCode", "SUCCESS");
         } catch (Exception e) {
             response.put("resultCode", "ERROR");
@@ -131,13 +130,13 @@ public class BBSManageController {
      * 게시물을 삭제한다.
      */
     @RequestMapping(value = "/deleteBoardArticle", method = RequestMethod.POST)
-    public Map<String, Object> deleteBoardArticle(@RequestBody Board board) throws Exception {
+    public Map<String, Object> deleteBoardArticle(@RequestBody Map<String, Object> paramMap) throws Exception {
         Map<String, Object> response = new HashMap<>();
         try {
-            if (board.getBbsId() == null || board.getBbsId().isEmpty()) {
-                board.setBbsId("BBSMSTR_AAAAAAAAAAAA");
+            if (paramMap.get("bbsId") == null || "".equals(paramMap.get("bbsId"))) {
+                paramMap.put("bbsId", "BBSMSTR_AAAAAAAAAAAA");
             }
-            bbsMngService.deleteBoardArticle(board);
+            bbsMngService.deleteBoardArticle(paramMap);
             response.put("resultCode", "SUCCESS");
         } catch (Exception e) {
             response.put("resultCode", "ERROR");
