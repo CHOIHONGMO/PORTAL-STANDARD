@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '@/api/apiClient';
-import EgovIdDplctCnfirm from '@/pages/user/member/EgovIdDplctCnfirm';
-import EgovCcmZipSearchList from '@/pages/system/zip/EgovCcmZipSearchList';
+import IdDplctCnfirm from '@/pages/user/member/IdDplctCnfirm';
+import CcmZipSearchList from '@/pages/system/zip/CcmZipSearchList';
 
-const EgovMberInsert: React.FC = () => {
+const MberInsert: React.FC = () => {
   const navigate = useNavigate();
 
   // Common Code States
@@ -419,7 +419,7 @@ const EgovMberInsert: React.FC = () => {
       </div>
 
       {/* ID duplication check modal */}
-      <EgovIdDplctCnfirm
+      <IdDplctCnfirm
         isOpen={isIdModalOpen}
         onClose={() => setIsIdModalOpen(false)}
         onSelect={handleIdSelect}
@@ -427,7 +427,7 @@ const EgovMberInsert: React.FC = () => {
       />
 
       {/* Zip code search modal */}
-      <EgovCcmZipSearchList
+      <CcmZipSearchList
         isOpen={isZipModalOpen}
         onClose={() => setIsZipModalOpen(false)}
         onSelect={handleZipSelect}
@@ -436,4 +436,4 @@ const EgovMberInsert: React.FC = () => {
   );
 };
 
-export default EgovMberInsert;
+export default MberInsert;

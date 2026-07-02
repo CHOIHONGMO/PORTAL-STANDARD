@@ -598,7 +598,7 @@ const CanvasArea: React.FC<CanvasAreaProps> = ({
             <div className="canvas-field-label">화면ID (영문/숫자/_)</div>
             <input
               className="canvas-field-input"
-              placeholder="예: EgovMberManage"
+              placeholder="예: MberManage"
               value={screen.screenName}
               onChange={e => onUpdateScreen('screenName', e.target.value.replace(/[^a-zA-Z0-9_]/g, ''))}
             />

@@ -11,7 +11,7 @@ interface BoardUseInfo {
   useAt: string;
 }
 
-const EgovBoardUseInfList: React.FC = () => {
+const BoardUseInfList: React.FC = () => {
   const [resultList, setResultList] = useState<BoardUseInfo[]>([]);
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -176,4 +176,4 @@ const EgovBoardUseInfList: React.FC = () => {
   );
 };
 
-export default EgovBoardUseInfList;
+export default BoardUseInfList;

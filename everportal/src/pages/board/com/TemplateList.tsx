@@ -11,7 +11,7 @@ interface Template {
   frstRegisterPnttm: string;
 }
 
-const EgovTemplateList: React.FC = () => {
+const TemplateList: React.FC = () => {
   const [resultList, setResultList] = useState<Template[]>([]);
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -179,4 +179,4 @@ const EgovTemplateList: React.FC = () => {
   );
 };
 
-export default EgovTemplateList;
+export default TemplateList;

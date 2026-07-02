@@ -6,11 +6,11 @@ interface FileVO {
   fileSn: string;
 }
 
-interface EgovImgFileListProps {
+interface ImgFileListProps {
   fileList?: FileVO[];
 }
 
-const EgovImgFileList: React.FC<EgovImgFileListProps> = ({ fileList = [] }) => {
+const ImgFileList: React.FC<ImgFileListProps> = ({ fileList = [] }) => {
   if (!fileList || fileList.length === 0) return null;
 
   return (
@@ -30,4 +30,4 @@ const EgovImgFileList: React.FC<EgovImgFileListProps> = ({ fileList = [] }) => {
   );
 };
 
-export default EgovImgFileList;
+export default ImgFileList;

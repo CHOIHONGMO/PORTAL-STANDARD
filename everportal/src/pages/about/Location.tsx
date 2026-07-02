@@ -1,4 +1,4 @@
-const EgovLocation = () => {
+const Location = () => {
   return (
     <div style={{ animation: 'fadeIn 0.5s ease-out' }}>
       {/* Breadcrumbs */}
@@ -95,4 +95,4 @@ const EgovLocation = () => {
   );
 };
 
-export default EgovLocation;
+export default Location;

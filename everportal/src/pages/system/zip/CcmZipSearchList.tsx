@@ -10,13 +10,13 @@ interface ZipInfo {
   lnbrDongHo: string;
 }
 
-interface EgovCcmZipSearchListProps {
+interface CcmZipSearchListProps {
   isOpen: boolean;
   onClose: () => void;
   onSelect: (zip: string, address: string) => void;
 }
 
-const EgovCcmZipSearchList: React.FC<EgovCcmZipSearchListProps> = ({ isOpen, onClose, onSelect }) => {
+const CcmZipSearchList: React.FC<CcmZipSearchListProps> = ({ isOpen, onClose, onSelect }) => {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [resultList, setResultList] = useState<ZipInfo[]>([]);
   const [loading, setLoading] = useState(false);
@@ -167,4 +167,4 @@ const EgovCcmZipSearchList: React.FC<EgovCcmZipSearchListProps> = ({ isOpen, onC
   );
 };
 
-export default EgovCcmZipSearchList;
+export default CcmZipSearchList;

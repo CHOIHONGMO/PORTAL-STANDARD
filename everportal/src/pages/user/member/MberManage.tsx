@@ -15,7 +15,7 @@ interface Member {
   userTy: string;
 }
 
-const EgovMberManage: React.FC = () => {
+const MberManage: React.FC = () => {
 
   const [memberList, setMemberList] = useState<Member[]>([]);
   const [totalCount, setTotalCount] = useState(0);
@@ -283,4 +283,4 @@ const EgovMberManage: React.FC = () => {
   );
 };
 
-export default EgovMberManage;
+export default MberManage;

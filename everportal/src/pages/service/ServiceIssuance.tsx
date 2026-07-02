@@ -16,7 +16,7 @@ const MOCK_SERVICES: CivilServiceItem[] = [
   { id: 1, title: '표준프레임워크 교육 수료증', applyText: '신청', handlingOrg: '한국지능정보사회진흥원', belongingOrg: '교육센터', deliveryMethod: '방문수령', certRequired: false }
 ];
 
-const EgovServiceIssuance = () => {
+const ServiceIssuance = () => {
   const [searchWrd, setSearchWrd] = useState('');
   const [belongingOrgFilter, setBelongingOrgFilter] = useState('ALL');
   const [handlingOrgFilter, setHandlingOrgFilter] = useState('ALL');
@@ -207,4 +207,4 @@ const EgovServiceIssuance = () => {
   );
 };
 
-export default EgovServiceIssuance;
+export default ServiceIssuance;

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '@/api/apiClient';
-import EgovTemplateInqirePopup from '@/pages/board/com/EgovTemplateInqirePopup';
+import TemplateInqirePopup from '@/pages/board/com/TemplateInqirePopup';
 
-const EgovBoardMstrRegist: React.FC = () => {
+const BoardMstrRegist: React.FC = () => {
   const navigate = useNavigate();
 
   // Code lists
@@ -252,7 +252,7 @@ const EgovBoardMstrRegist: React.FC = () => {
         </form>
       </div>
 
-      <EgovTemplateInqirePopup
+      <TemplateInqirePopup
         isOpen={isTemplateModalOpen}
         onClose={() => setIsTemplateModalOpen(false)}
         onSelect={handleTemplateSelect}
@@ -262,4 +262,4 @@ const EgovBoardMstrRegist: React.FC = () => {
   );
 };
 
-export default EgovBoardMstrRegist;
+export default BoardMstrRegist;

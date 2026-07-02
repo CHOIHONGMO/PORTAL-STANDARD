@@ -1,4 +1,4 @@
-const EgovHistory = () => {
+const History = () => {
   return (
     <div style={{ animation: 'fadeIn 0.5s ease-out' }}>
       {/* Breadcrumbs */}
@@ -27,4 +27,4 @@ const EgovHistory = () => {
   );
 };
 
-export default EgovHistory;
+export default History;

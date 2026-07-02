@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import apiClient from '@/api/apiClient';
-import EgovCcmZipSearchList from '@/pages/system/zip/EgovCcmZipSearchList';
+import CcmZipSearchList from '@/pages/system/zip/CcmZipSearchList';
 
-const EgovMberSelectUpdt: React.FC = () => {
+const MberSelectUpdt: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -447,7 +447,7 @@ const EgovMberSelectUpdt: React.FC = () => {
       </div>
 
       {/* Zip code search modal */}
-      <EgovCcmZipSearchList
+      <CcmZipSearchList
         isOpen={isZipModalOpen}
         onClose={() => setIsZipModalOpen(false)}
         onSelect={handleZipSelect}
@@ -456,4 +456,4 @@ const EgovMberSelectUpdt: React.FC = () => {
   );
 };
 
-export default EgovMberSelectUpdt;
+export default MberSelectUpdt;

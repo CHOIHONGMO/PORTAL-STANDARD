@@ -16,7 +16,7 @@ const MOCK_RESULTS: ServiceResultItem[] = [
   { id: 1, applyDate: '2026-06-11', title: '표준프레임워크 교육 수료증', count: 1, status: '발급완료', agency: '한국지능정보사회진흥원', contact: '1544-5555' }
 ];
 
-const EgovServiceResult = () => {
+const ServiceResult = () => {
   const [startMonth, setStartMonth] = useState('06');
   const [startDay, setStartDay] = useState('01');
   const [endMonth, setEndMonth] = useState('06');
@@ -206,4 +206,4 @@ const EgovServiceResult = () => {
   );
 };
 
-export default EgovServiceResult;
+export default ServiceResult;

@@ -218,7 +218,7 @@ export interface PaginationConfig {
 export interface ScreenDefinition {
   /** 유니크 ID */
   screenId: string;
-  /** 컴포넌트명 (PascalCase, 예: EgovMberManage) */
+  /** 컴포넌트명 (PascalCase, 예: MberManage) */
   screenName: string;
   /** 화면 제목 (예: 회원관리) */
   title: string;

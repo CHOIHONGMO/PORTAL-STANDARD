@@ -1,6 +1,6 @@
 {
-  "screenId": "EgovBoardMstrList-001",
-  "screenName": "EgovBoardMstrList",
+  "screenId": "BoardMstrList-001",
+  "screenName": "BoardMstrList",
   "title": "게시판 생성관리",
   "description": "시스템 내 모든 게시판 마스터 정보 및 속성을 조회하고 편집합니다.",
   "route": "admin/board",

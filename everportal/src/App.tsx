@@ -81,43 +81,43 @@ import AuthorGroupList from '@/pages/security/authorgroup/AuthorGroupList';
 // 공통 에러 페이지
 import AccessDenied from '@/pages/common/error/AccessDenied';
 import DataAccessFailure from '@/pages/common/error/DataAccessFailure';
-import EgovBizException from '@/pages/common/error/EgovBizException';
-import EgovError from '@/pages/common/error/EgovError';
+import BizException from '@/pages/common/error/BizException';
+import Error from '@/pages/common/error/Error';
 import TransactionFailure from '@/pages/common/error/TransactionFailure';
 
 // 회원 및 회원관리 페이지
-import EgovMberSbscrb from '@/pages/user/member/EgovMberSbscrb';
-import EgovMberManage from '@/pages/user/member/EgovMberManage';
-import EgovMberInsert from '@/pages/user/member/EgovMberInsert';
-import EgovMberSelectUpdt from '@/pages/user/member/EgovMberSelectUpdt';
-import EgovMberPasswordUpdt from '@/pages/user/member/EgovMberPasswordUpdt';
+import MberSbscrb from '@/pages/user/member/MberSbscrb';
+import MberManage from '@/pages/user/member/MberManage';
+import MberInsert from '@/pages/user/member/MberInsert';
+import MberSelectUpdt from '@/pages/user/member/MberSelectUpdt';
+import MberPasswordUpdt from '@/pages/user/member/MberPasswordUpdt';
 
 // 게시판 마스터 관리
-import EgovBoardMstrList from '@/pages/board/bbs/EgovBoardMstrList';
-import EgovBoardMstrRegist from '@/pages/board/bbs/EgovBoardMstrRegist';
-import EgovBoardMstrUpdt from '@/pages/board/bbs/EgovBoardMstrUpdt';
+import BoardMstrList from '@/pages/board/bbs/BoardMstrList';
+import BoardMstrRegist from '@/pages/board/bbs/BoardMstrRegist';
+import BoardMstrUpdt from '@/pages/board/bbs/BoardMstrUpdt';
 
 // 게시판 사용관리 & 템플릿 관리
-import EgovBoardUseInfList from '@/pages/board/com/EgovBoardUseInfList';
-import EgovBoardUseInfRegist from '@/pages/board/com/EgovBoardUseInfRegist';
-import EgovBoardUseInfInqire from '@/pages/board/com/EgovBoardUseInfInqire';
-import EgovTemplateList from '@/pages/board/com/EgovTemplateList';
-import EgovTemplateRegist from '@/pages/board/com/EgovTemplateRegist';
-import EgovTemplateUpdt from '@/pages/board/com/EgovTemplateUpdt';
+import BoardUseInfList from '@/pages/board/com/BoardUseInfList';
+import BoardUseInfRegist from '@/pages/board/com/BoardUseInfRegist';
+import BoardUseInfInqire from '@/pages/board/com/BoardUseInfInqire';
+import TemplateList from '@/pages/board/com/TemplateList';
+import TemplateRegist from '@/pages/board/com/TemplateRegist';
+import TemplateUpdt from '@/pages/board/com/TemplateUpdt';
 
 // 테스트 생성 페이지
 import PrList from '@/test/prList';
 
 import AboutLayout from '@/components/layout/AboutLayout';
-import EgovAboutSite from '@/pages/about/EgovAboutSite';
-import EgovHistory from '@/pages/about/EgovHistory';
-import EgovOrganization from '@/pages/about/EgovOrganization';
-import EgovLocation from '@/pages/about/EgovLocation';
+import AboutSite from '@/pages/about/AboutSite';
+import History from '@/pages/about/History';
+import Organization from '@/pages/about/Organization';
+import Location from '@/pages/about/Location';
 
 import ServiceLayout from '@/components/layout/ServiceLayout';
-import EgovServiceIssuance from '@/pages/service/EgovServiceIssuance';
-import EgovServiceManage from '@/pages/service/EgovServiceManage';
-import EgovServiceResult from '@/pages/service/EgovServiceResult';
+import ServiceIssuance from '@/pages/service/ServiceIssuance';
+import ServiceManage from '@/pages/service/ServiceManage';
+import ServiceResult from '@/pages/service/ServiceResult';
 
 // Visual Screen Builder (독립 레이아웃, 동적 로딩)
 const BuilderPage = React.lazy(() => import('@/builder/BuilderPage'));
@@ -146,45 +146,45 @@ function App() {
           
           {/* 로그인 & 회원가입 */}
           <Route path="login" element={<LoginUsr />} />
-          <Route path="signup" element={<EgovMberSbscrb />} />
+          <Route path="signup" element={<MberSbscrb />} />
           
           {/* 회원관리 (관리자용) */}
-          <Route path="admin/member" element={<EgovMberManage />} />
-          <Route path="admin/member/new" element={<EgovMberInsert />} />
-          <Route path="admin/member/:id" element={<EgovMberSelectUpdt />} />
-          <Route path="admin/member/:id/password" element={<EgovMberPasswordUpdt />} />
+          <Route path="admin/member" element={<MberManage />} />
+          <Route path="admin/member/new" element={<MberInsert />} />
+          <Route path="admin/member/:id" element={<MberSelectUpdt />} />
+          <Route path="admin/member/:id/password" element={<MberPasswordUpdt />} />
 
           {/* 테스트 페이지 */}
           <Route path="test/pr" element={<PrList />} />
 
           {/* 게시판 마스터 관리 */}
-          <Route path="admin/board" element={<EgovBoardMstrList />} />
-          <Route path="admin/board/new" element={<EgovBoardMstrRegist />} />
-          <Route path="admin/board/:id" element={<EgovBoardMstrUpdt />} />
+          <Route path="admin/board" element={<BoardMstrList />} />
+          <Route path="admin/board/new" element={<BoardMstrRegist />} />
+          <Route path="admin/board/:id" element={<BoardMstrUpdt />} />
 
           {/* 게시판 사용관리 */}
-          <Route path="admin/usage" element={<EgovBoardUseInfList />} />
-          <Route path="admin/usage/new" element={<EgovBoardUseInfRegist />} />
-          <Route path="admin/usage/:bbsId/:trgetId" element={<EgovBoardUseInfInqire />} />
+          <Route path="admin/usage" element={<BoardUseInfList />} />
+          <Route path="admin/usage/new" element={<BoardUseInfRegist />} />
+          <Route path="admin/usage/:bbsId/:trgetId" element={<BoardUseInfInqire />} />
 
           {/* 템플릿 관리 */}
-          <Route path="admin/template" element={<EgovTemplateList />} />
-          <Route path="admin/template/new" element={<EgovTemplateRegist />} />
-          <Route path="admin/template/:id" element={<EgovTemplateUpdt />} />
+          <Route path="admin/template" element={<TemplateList />} />
+          <Route path="admin/template/new" element={<TemplateRegist />} />
+          <Route path="admin/template/:id" element={<TemplateUpdt />} />
 
           {/* 포털소개 (About) */}
           <Route path="about" element={<AboutLayout />}>
-            <Route index element={<EgovAboutSite />} />
-            <Route path="history" element={<EgovHistory />} />
-            <Route path="organization" element={<EgovOrganization />} />
-            <Route path="location" element={<EgovLocation />} />
+            <Route index element={<AboutSite />} />
+            <Route path="history" element={<History />} />
+            <Route path="organization" element={<Organization />} />
+            <Route path="location" element={<Location />} />
           </Route>
 
           {/* 민원광장 (Service Plaza) */}
           <Route path="service" element={<ServiceLayout />}>
-            <Route path="issuance" element={<EgovServiceIssuance />} />
-            <Route path="apply" element={<EgovServiceManage />} />
-            <Route path="result" element={<EgovServiceResult />} />
+            <Route path="issuance" element={<ServiceIssuance />} />
+            <Route path="apply" element={<ServiceManage />} />
+            <Route path="result" element={<ServiceResult />} />
           </Route>
           
           {/* 게시판 (공지사항 기준) */}
@@ -276,8 +276,8 @@ function App() {
           {/* 에러 페이지 */}
           <Route path="cmm/error/accessDenied" element={<AccessDenied />} />
           <Route path="cmm/error/dataAccessFailure" element={<DataAccessFailure />} />
-          <Route path="cmm/error/egovBizException" element={<EgovBizException />} />
-          <Route path="cmm/error/egovError" element={<EgovError />} />
+          <Route path="cmm/error/egovBizException" element={<BizException />} />
+          <Route path="cmm/error/egovError" element={<Error />} />
           <Route path="cmm/error/transactionFailure" element={<TransactionFailure />} />
           
           {/* 404 예외 처리 */}

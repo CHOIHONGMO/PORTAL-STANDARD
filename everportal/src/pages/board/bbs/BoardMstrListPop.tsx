@@ -11,13 +11,13 @@ interface BoardMasterVO {
   useAt: string;
 }
 
-interface EgovBoardMstrListPopProps {
+interface BoardMstrListPopProps {
   isOpen: boolean;
   onClose: () => void;
   onSelect: (bbsId: string, bbsNm: string) => void;
 }
 
-const EgovBoardMstrListPop: React.FC<EgovBoardMstrListPopProps> = ({ isOpen, onClose, onSelect }) => {
+const BoardMstrListPop: React.FC<BoardMstrListPopProps> = ({ isOpen, onClose, onSelect }) => {
   const [searchCnd, setSearchCnd] = useState('0'); // 0: BBS Name, 1: BBS Type
   const [searchWrd, setSearchWrd] = useState('');
   const [resultList, setResultList] = useState<BoardMasterVO[]>([]);
@@ -172,4 +172,4 @@ const EgovBoardMstrListPop: React.FC<EgovBoardMstrListPopProps> = ({ isOpen, onC
   );
 };
 
-export default EgovBoardMstrListPop;
+export default BoardMstrListPop;

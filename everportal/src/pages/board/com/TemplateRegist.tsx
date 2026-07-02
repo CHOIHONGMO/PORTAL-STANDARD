@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '@/api/apiClient';
 
-const EgovTemplateRegist: React.FC = () => {
+const TemplateRegist: React.FC = () => {
   const navigate = useNavigate();
 
   // Code lists
@@ -152,4 +152,4 @@ const EgovTemplateRegist: React.FC = () => {
   );
 };
 
-export default EgovTemplateRegist;
+export default TemplateRegist;

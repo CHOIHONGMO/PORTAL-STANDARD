@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import '@/pages/pages.css';
 
-const EgovBizException = () => {
+const BizException = () => {
   const navigate = useNavigate();
 
   return (
@@ -26,4 +26,4 @@ const EgovBizException = () => {
   );
 };
 
-export default EgovBizException;
+export default BizException;

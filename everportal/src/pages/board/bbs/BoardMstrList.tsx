@@ -11,7 +11,7 @@ interface BoardMaster {
   useAt: string;
 }
 
-const EgovBoardMstrList: React.FC = () => {
+const BoardMstrList: React.FC = () => {
   const [resultList, setResultList] = useState<BoardMaster[]>([]);
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -179,4 +179,4 @@ const EgovBoardMstrList: React.FC = () => {
   );
 };
 
-export default EgovBoardMstrList;
+export default BoardMstrList;

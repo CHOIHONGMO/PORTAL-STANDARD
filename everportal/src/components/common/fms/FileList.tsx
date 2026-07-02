@@ -8,13 +8,13 @@ interface FileVO {
   fileMg: string;
 }
 
-interface EgovFileListProps {
+interface FileListProps {
   fileList?: FileVO[];
   updateFlag?: boolean;
   onDeleteFile?: (atchFileId: string, fileSn: string) => void;
 }
 
-const EgovFileList: React.FC<EgovFileListProps> = ({
+const FileList: React.FC<FileListProps> = ({
   fileList = [],
   updateFlag = false,
   onDeleteFile,
@@ -74,4 +74,4 @@ const EgovFileList: React.FC<EgovFileListProps> = ({
   );
 };
 
-export default EgovFileList;
+export default FileList;

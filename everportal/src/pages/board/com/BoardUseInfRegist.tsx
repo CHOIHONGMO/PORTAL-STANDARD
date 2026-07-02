@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '@/api/apiClient';
-import EgovBoardMstrListPop from '@/pages/board/bbs/EgovBoardMstrListPop';
+import BoardMstrListPop from '@/pages/board/bbs/BoardMstrListPop';
 
-const EgovBoardUseInfRegist: React.FC = () => {
+const BoardUseInfRegist: React.FC = () => {
   const navigate = useNavigate();
 
   // Modals
@@ -140,7 +140,7 @@ const EgovBoardUseInfRegist: React.FC = () => {
         </form>
       </div>
 
-      <EgovBoardMstrListPop
+      <BoardMstrListPop
         isOpen={isBoardModalOpen}
         onClose={() => setIsBoardModalOpen(false)}
         onSelect={handleBoardSelect}
@@ -149,4 +149,4 @@ const EgovBoardUseInfRegist: React.FC = () => {
   );
 };
 
-export default EgovBoardUseInfRegist;
+export default BoardUseInfRegist;

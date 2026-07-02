@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import apiClient from '@/api/apiClient';
 
-const EgovTemplateUpdt: React.FC = () => {
+const TemplateUpdt: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -211,4 +211,4 @@ const EgovTemplateUpdt: React.FC = () => {
   );
 };
 
-export default EgovTemplateUpdt;
+export default TemplateUpdt;

@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import '@/pages/pages.css';
 
-const EgovError = () => {
+const Error = () => {
   const navigate = useNavigate();
 
   return (
@@ -28,4 +28,4 @@ const EgovError = () => {
   );
 };
 
-export default EgovError;
+export default Error;

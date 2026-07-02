@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import apiClient from '@/api/apiClient';
 
-interface EgovIdDplctCnfirmProps {
+interface IdDplctCnfirmProps {
   isOpen: boolean;
   onClose: () => void;
   onSelect: (checkedId: string) => void;
   initialId: string;
 }
 
-const EgovIdDplctCnfirm: React.FC<EgovIdDplctCnfirmProps> = ({ isOpen, onClose, onSelect, initialId }) => {
+const IdDplctCnfirm: React.FC<IdDplctCnfirmProps> = ({ isOpen, onClose, onSelect, initialId }) => {
   const [checkId, setCheckId] = useState(initialId);
   const [usedCnt, setUsedCnt] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
@@ -147,4 +147,4 @@ const EgovIdDplctCnfirm: React.FC<EgovIdDplctCnfirmProps> = ({ isOpen, onClose, 
   );
 };
 
-export default EgovIdDplctCnfirm;
+export default IdDplctCnfirm;

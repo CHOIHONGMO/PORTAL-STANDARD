@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import apiClient from '@/api/apiClient';
 
-const EgovMberPasswordUpdt: React.FC = () => {
+const MberPasswordUpdt: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -132,4 +132,4 @@ const EgovMberPasswordUpdt: React.FC = () => {
   );
 };
 
-export default EgovMberPasswordUpdt;
+export default MberPasswordUpdt;

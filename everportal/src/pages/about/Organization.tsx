@@ -1,4 +1,4 @@
-const EgovOrganization = () => {
+const Organization = () => {
   return (
     <div style={{ animation: 'fadeIn 0.5s ease-out' }}>
       {/* Breadcrumbs */}
@@ -28,4 +28,4 @@ const EgovOrganization = () => {
   );
 };
 
-export default EgovOrganization;
+export default Organization;

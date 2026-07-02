@@ -9,14 +9,14 @@ interface TemplateInfo {
   useAt: string;
 }
 
-interface EgovTemplateInqirePopupProps {
+interface TemplateInqirePopupProps {
   isOpen: boolean;
   onClose: () => void;
   onSelect: (tmplatId: string, tmplatNm: string) => void;
   typeFlag?: string; // e.g. "BBS" (BBS template)
 }
 
-const EgovTemplateInqirePopup: React.FC<EgovTemplateInqirePopupProps> = ({ isOpen, onClose, onSelect, typeFlag = 'BBS' }) => {
+const TemplateInqirePopup: React.FC<TemplateInqirePopupProps> = ({ isOpen, onClose, onSelect, typeFlag = 'BBS' }) => {
   const [searchCnd, setSearchCnd] = useState('0'); // 0: Name, 1: Code
   const [searchWrd, setSearchWrd] = useState('');
   const [resultList, setResultList] = useState<TemplateInfo[]>([]);
@@ -171,4 +171,4 @@ const EgovTemplateInqirePopup: React.FC<EgovTemplateInqirePopupProps> = ({ isOpe
   );
 };
 
-export default EgovTemplateInqirePopup;
+export default TemplateInqirePopup;

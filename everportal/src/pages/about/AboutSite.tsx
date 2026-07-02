@@ -1,4 +1,4 @@
-const EgovAboutSite = () => {
+const AboutSite = () => {
   return (
     <div style={{ animation: 'fadeIn 0.5s ease-out' }}>
       {/* Breadcrumbs */}
@@ -28,4 +28,4 @@ const EgovAboutSite = () => {
   );
 };
 
-export default EgovAboutSite;
+export default AboutSite;

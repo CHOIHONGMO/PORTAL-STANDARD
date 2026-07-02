@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import apiClient from '@/api/apiClient';
 
-const EgovBoardUseInfInqire: React.FC = () => {
+const BoardUseInfInqire: React.FC = () => {
   const { bbsId, trgetId } = useParams();
   const navigate = useNavigate();
 
@@ -167,4 +167,4 @@ const EgovBoardUseInfInqire: React.FC = () => {
   );
 };
 
-export default EgovBoardUseInfInqire;
+export default BoardUseInfInqire;
