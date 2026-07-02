@@ -60,7 +60,7 @@
   overflow: hidden;
   background: var(--builder-bg);
   color: var(--builder-text-main);
-  font-family: 'Inter', 'Noto Sans KR', -apple-system, sans-serif;
+  font-family: 'Pretendard GOV', 'Pretendard', 'Inter', 'Noto Sans KR', -apple-system, sans-serif;
   transition: background 0.2s, color 0.2s;
 }
 
