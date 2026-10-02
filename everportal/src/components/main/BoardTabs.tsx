@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchMainNotices, type MainBoardArticle } from '@/api/mainApi';
-import { newsList } from '@/common/stOnesData';
+import { newsList } from '@/common/companyData';
 import '@/components/main/main.css';
 
 const BoardTabs = () => {

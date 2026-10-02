@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { solutionsData } from '@/common/stOnesData';
+import { solutionsData } from '@/common/companyData';
 import '@/components/main/main.css';
 
 const VisualBanner = () => {

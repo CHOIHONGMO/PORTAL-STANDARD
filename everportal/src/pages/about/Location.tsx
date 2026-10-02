@@ -1,4 +1,4 @@
-import { companyInfo } from '@/common/stOnesData';
+import { companyInfo } from '@/common/companyData';
 
 const Location = () => {
   const kakaoMapUrl = 'https://map.kakao.com/link/search/' + encodeURIComponent('서울특별시 강남구 강남대로66길 6');

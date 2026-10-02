@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { referencesData } from '@/common/stOnesData';
+import { referencesData } from '@/common/companyData';
 
 const ClientMarquee = () => {
   // 대표 고객사 리스트 추출

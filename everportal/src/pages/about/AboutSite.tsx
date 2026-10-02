@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { companyInfo } from '@/common/stOnesData';
+import { companyInfo } from '@/common/companyData';
 
 const AboutSite = () => {
   return (

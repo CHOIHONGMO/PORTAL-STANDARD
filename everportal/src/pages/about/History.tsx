@@ -1,4 +1,4 @@
-import { historyData } from '@/common/stOnesData';
+import { historyData } from '@/common/companyData';
 
 const History = () => {
   return (

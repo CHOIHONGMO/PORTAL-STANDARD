@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { referencesData } from '@/common/stOnesData';
+import { referencesData } from '@/common/companyData';
 
 const References = () => {
   const [filter, setFilter] = useState<string>('ALL');

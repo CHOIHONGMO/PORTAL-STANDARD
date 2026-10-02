@@ -1,4 +1,4 @@
-import { contactPersons } from '@/common/stOnesData';
+import { contactPersons } from '@/common/companyData';
 
 const Organization = () => {
   return (

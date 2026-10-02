@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { solutionsData } from '@/common/stOnesData';
+import { solutionsData } from '@/common/companyData';
 
 const SolutionCards = () => {
   return (
