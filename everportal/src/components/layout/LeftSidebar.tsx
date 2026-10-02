@@ -43,8 +43,14 @@ const LeftSidebar = () => {
                     <Link
                       to={item.path}
                       className={`usa-sidenav-link ${isActive ? 'usa-current' : ''}`}
+                      style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
                     >
                       <span>{item.title}</span>
+                      {item.badge && (
+                        <span style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--primary-color)', background: 'rgba(37,99,235,0.1)', padding: '1px 6px', borderRadius: '10px' }}>
+                          {item.badge}
+                        </span>
+                      )}
                     </Link>
                   </li>
                 );

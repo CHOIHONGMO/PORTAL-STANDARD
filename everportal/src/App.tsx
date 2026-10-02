@@ -110,6 +110,8 @@ import PrList from '@/test/prList';
 
 import AboutLayout from '@/components/layout/AboutLayout';
 import AboutSite from '@/pages/about/AboutSite';
+import Solutions from '@/pages/about/Solutions';
+import References from '@/pages/about/References';
 import History from '@/pages/about/History';
 import Organization from '@/pages/about/Organization';
 import Location from '@/pages/about/Location';
@@ -175,6 +177,8 @@ function App() {
           {/* 포털소개 (About) */}
           <Route path="about" element={<AboutLayout />}>
             <Route index element={<AboutSite />} />
+            <Route path="solutions" element={<Solutions />} />
+            <Route path="references" element={<References />} />
             <Route path="history" element={<History />} />
             <Route path="organization" element={<Organization />} />
             <Route path="location" element={<Location />} />

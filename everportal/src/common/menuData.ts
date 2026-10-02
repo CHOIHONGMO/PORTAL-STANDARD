@@ -2,6 +2,7 @@ export interface MenuItem {
   title: string;
   path: string;
   desc?: string;
+  badge?: string;
 }
 
 export interface MenuCategory {
@@ -19,43 +20,45 @@ export interface MainMenu {
 export const menuData: MainMenu[] = [
   {
     id: 'about',
-    title: '포털 소개 & 소식',
+    title: '회사 & 솔루션',
     path: '/about',
     categories: [
       {
-        title: '포털 소개',
+        title: '에스티원즈 소개',
         items: [
-          { title: '사이트소개', path: '/about', desc: '포털 서비스와 비전을 소개합니다.' },
-          { title: '연혁', path: '/about/history', desc: '포털의 주요 발자취와 역사입니다.' },
-          { title: '조직소개', path: '/about/organization', desc: '조직도 및 업무 분장 정보입니다.' },
-          { title: '찾아오시는 길', path: '/about/location', desc: '오시는 길과 연락처 안내입니다.' }
+          { title: '회사소개', path: '/about', desc: '전자구매 시스템 구축 전문기업 (주)에스티원즈입니다.' },
+          { title: '솔루션 소개', path: '/about/solutions', desc: 'Ever SRM, Contract, MRO, Seal 등 핵심 솔루션', badge: 'AI' },
+          { title: '고객사례/실적', path: '/about/references', desc: '국내 주요 대기업·중견기업·공공기관 구축 실적' },
+          { title: '연혁', path: '/about/history', desc: '2013년 설립 이래 꾸준히 성장해온 발자취입니다.' },
+          { title: '조직 및 담당자 안내', path: '/about/organization', desc: '전문 기술진 및 솔루션 도입 문의 담당자' },
+          { title: '찾아오시는 길', path: '/about/location', desc: '본사 위치 및 대중교통 안내입니다.' }
         ]
       },
       {
-        title: '정보마당',
+        title: '소식 & 보도자료',
         items: [
-          { title: '공지사항', path: '/board/notice', desc: '포털의 주요 소식 및 공지사항입니다.' }
+          { title: '공지사항', path: '/board/notice', desc: '에스티원즈 포털의 주요 소식 및 공지사항' }
         ]
       }
     ]
   },
   {
     id: 'service',
-    title: '민원 & 설문',
+    title: '구매 & 전자민원',
     path: '/service/issuance',
     categories: [
       {
-        title: '민원 서비스',
+        title: '포털 서비스',
         items: [
-          { title: '민원발급', path: '/service/issuance', desc: '각종 증명서 및 민원 서류 발급' },
-          { title: '민원신청', path: '/service/apply', desc: '온라인 민원 신청 및 접수' },
-          { title: '민원결과확인', path: '/service/result', desc: '신청한 민원의 처리 결과를 조회합니다.' }
+          { title: '증명서/민원발급', path: '/service/issuance', desc: '온라인 증명서 및 서류 발급' },
+          { title: '서비스 신청', path: '/service/apply', desc: '온라인 서비스 및 협력사 신청 접수' },
+          { title: '처리결과 확인', path: '/service/result', desc: '신청 내역의 진행 상태 및 처리 결과를 조회합니다.' }
         ]
       },
       {
-        title: '의견 수렴',
+        title: '고객 참여',
         items: [
-          { title: '설문참여', path: '/qustnr-respond', desc: '설문조사에 참여하여 의견을 나누어 주세요.' }
+          { title: '설문조사', path: '/qustnr-respond', desc: '서비스 만족도 및 개선 의견 설문조사' }
         ]
       }
     ]
@@ -68,8 +71,8 @@ export const menuData: MainMenu[] = [
       {
         title: '도움말 & 지원',
         items: [
-          { title: 'FAQ', path: '/faq', desc: '자주 묻는 질문과 답변입니다.' },
-          { title: 'Q&A', path: '/qna', desc: '궁금한 사항을 묻고 답하는 공간입니다.' }
+          { title: 'FAQ', path: '/faq', desc: '전자구매 시스템 및 포털 자주 묻는 질문' },
+          { title: 'Q&A', path: '/qna', desc: '도입 문의 및 궁금한 사항을 1:1로 질문하세요.' }
         ]
       }
     ]
@@ -118,13 +121,13 @@ export const menuData: MainMenu[] = [
   },
   {
     id: 'test',
-    title: '빌더 테스트',
+    title: '구매요청현황',
     path: '/test/pr',
     categories: [
       {
-        title: '테스트 화면',
+        title: '구매 업무 화면',
         items: [
-          { title: '구매요청현황', path: '/test/pr', desc: 'Screen Builder로 자동 생성된 화면입니다.' }
+          { title: '구매요청현황 (PR)', path: '/test/pr', desc: '전자구매 구매요청서 조회 및 결재 관리' }
         ]
       }
     ]

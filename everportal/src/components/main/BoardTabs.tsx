@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { fetchMainNotices, fetchMainFreeArticles, type MainBoardArticle } from '@/api/mainApi';
+import { fetchMainNotices, type MainBoardArticle } from '@/api/mainApi';
+import { newsList } from '@/common/stOnesData';
 import '@/components/main/main.css';
 
 const BoardTabs = () => {
-  const [activeTab, setActiveTab] = useState<'notice' | 'free'>('notice');
+  const [activeTab, setActiveTab] = useState<'notice' | 'news'>('notice');
   const [notices, setNotices] = useState<MainBoardArticle[]>([]);
-  const [freeArticles, setFreeArticles] = useState<MainBoardArticle[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -15,14 +15,9 @@ const BoardTabs = () => {
     const loadBoardData = async () => {
       setLoading(true);
       try {
-        const [noticeData, freeData] = await Promise.all([
-          fetchMainNotices(5),
-          fetchMainFreeArticles(5),
-        ]);
-
+        const noticeData = await fetchMainNotices(5);
         if (isMounted) {
           setNotices(noticeData);
-          setFreeArticles(freeData);
         }
       } catch (error) {
         console.error('메인 게시판 데이터 로드 실패:', error);
@@ -40,10 +35,6 @@ const BoardTabs = () => {
     };
   }, []);
 
-  const currentList = activeTab === 'notice' ? notices : freeArticles;
-  const moreLink = '/board/notice';
-  const detailLinkPrefix = '/board/notice/';
-
   return (
     <section className="dashboard glass">
       <div className="tab-header">
@@ -56,48 +47,86 @@ const BoardTabs = () => {
         </button>
         <button
           type="button"
-          className={`tab-btn ${activeTab === 'free' ? 'active' : ''}`}
-          onClick={() => setActiveTab('free')}
+          className={`tab-btn ${activeTab === 'news' ? 'active' : ''}`}
+          onClick={() => setActiveTab('news')}
         >
-          자유게시판 {freeArticles.length > 0 && <span className="tab-badge">{freeArticles.length}</span>}
+          보도자료 / 뉴스 <span className="tab-badge" style={{ background: '#3b82f6', color: '#fff' }}>{newsList.length}</span>
         </button>
       </div>
 
       <div className="tab-content">
-        {loading ? (
-          <div className="board-loading">
-            <div className="loading-spinner"></div>
-            <span>게시물을 불러오는 중입니다...</span>
-          </div>
-        ) : currentList.length === 0 ? (
-          <div className="board-empty">
-            <p>등록된 게시물이 없습니다.</p>
-          </div>
+        {activeTab === 'notice' ? (
+          loading ? (
+            <div className="board-loading">
+              <div className="loading-spinner"></div>
+              <span>공지사항을 불러오는 중입니다...</span>
+            </div>
+          ) : notices.length === 0 ? (
+            <div className="board-empty">
+              <p>등록된 공지사항이 없습니다.</p>
+            </div>
+          ) : (
+            <ul className="board-list">
+              {notices.map((item) => (
+                <li key={item.id} className="board-item hover-lift">
+                  <Link to={`/board/notice/${item.id}`}>
+                    <div className="board-info">
+                      <h3 className="board-title">{item.title}</h3>
+                      {item.content && <p className="board-desc">{item.content}</p>}
+                    </div>
+                    <div className="board-meta">
+                      <span className="board-writer">{item.writer}</span>
+                      <span className="board-date">{item.date}</span>
+                    </div>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )
         ) : (
+          /* 에스티원즈 공식 보도자료 목록 */
           <ul className="board-list">
-            {currentList.map((item) => (
+            {newsList.map((item) => (
               <li key={item.id} className="board-item hover-lift">
-                <Link to={`${detailLinkPrefix}${item.id}`}>
+                <a 
+                  href={item.url || 'https://www.st-ones.com'} 
+                  target="_blank" 
+                  rel="noreferrer" 
+                  style={{ textDecoration: 'none' }}
+                >
                   <div className="board-info">
-                    <h3 className="board-title">{item.title}</h3>
-                    {item.content && <p className="board-desc">{item.content}</p>}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                      <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#2563eb', background: '#dbeafe', padding: '2px 6px', borderRadius: '4px' }}>
+                        {item.source || '언론보도'}
+                      </span>
+                      <h3 className="board-title" style={{ margin: 0 }}>{item.title}</h3>
+                    </div>
+                    <p className="board-desc">{item.desc}</p>
                   </div>
                   <div className="board-meta">
-                    <span className="board-writer">{item.writer}</span>
+                    <span className="board-writer">에스티원즈 홍보팀</span>
                     <span className="board-date">{item.date}</span>
                   </div>
-                </Link>
+                </a>
               </li>
             ))}
           </ul>
         )}
 
-        <Link to={moreLink} className="btn-more">
-          <span>{activeTab === 'notice' ? '공지사항' : '자유게시판'} 더보기</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M5 12h14M12 5l7 7-7 7" />
-          </svg>
-        </Link>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '16px' }}>
+          {activeTab === 'notice' ? (
+            <Link to="/board/notice" className="btn-more">
+              <span>공지사항 전체보기</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </Link>
+          ) : (
+            <a href="https://www.st-ones.com/#news" target="_blank" rel="noreferrer" className="btn-more">
+              <span>보도자료 원문 더보기 ↗</span>
+            </a>
+          )}
+        </div>
       </div>
     </section>
   );

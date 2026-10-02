@@ -31,31 +31,38 @@ const ShortcutSection = () => {
 
   return (
     <div className="shortcut-section">
-      <div className="shortcut-card complaint hover-lift">
+      {/* Solution Quick Service Card */}
+      <div className="shortcut-card complaint hover-lift" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #172554 100%)', color: '#fff' }}>
         <div className="card-content">
-          <h2>
-            한방에 신청하는 <br />
-            <span>민원 서비스</span>
+          <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#93c5fd', letterSpacing: '1px' }}>
+            QUICK ACCESS
+          </span>
+          <h2 style={{ color: '#fff', margin: '6px 0 16px 0' }}>
+            전자구매 &amp; <span>업무 바로가기</span>
           </h2>
           <div className="shortcut-links">
-            <Link to="/service/apply" className="btn-shortcut">
-              기술지원 필요시
+            <Link to="/test/pr" className="btn-shortcut" style={{ background: 'rgba(255,255,255,0.1)', borderColor: 'rgba(255,255,255,0.2)', color: '#fff' }}>
+              전자구매 관리
               <br />
-              <strong>유지보수 민원</strong>
+              <strong style={{ color: '#60a5fa' }}>구매요청현황 (PR)</strong>
             </Link>
-            <Link to="/service/apply" className="btn-shortcut">
-              구매 제품
+            <Link to="/qna/new" className="btn-shortcut" style={{ background: 'rgba(255,255,255,0.1)', borderColor: 'rgba(255,255,255,0.2)', color: '#fff' }}>
+              솔루션 도입
               <br />
-              <strong>A/S 민원</strong>
+              <strong style={{ color: '#38bdf8' }}>데모 &amp; 견적 문의</strong>
             </Link>
           </div>
         </div>
       </div>
 
+      {/* Survey & Feedback Card */}
       <div className="shortcut-card survey hover-lift">
         <div className="card-content">
-          <h2>
-            포털 설문 <span>참여</span>
+          <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--primary-color)', letterSpacing: '1px' }}>
+            USER FEEDBACK
+          </span>
+          <h2 style={{ margin: '6px 0 12px 0' }}>
+            포털 설문조사 <span>참여</span>
           </h2>
           {latestPoll ? (
             <>
@@ -65,10 +72,12 @@ const ShortcutSection = () => {
               {latestPoll.purpose && <p className="poll-purpose">{latestPoll.purpose}</p>}
             </>
           ) : (
-            <p>표준프레임워크 경량환경 포털 홈페이지 이용에 대해서 사용자 여러분들께 설문조사를 진행합니다.</p>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', lineHeight: '1.6' }}>
+              (주)에스티원즈 포털 및 전자구매 솔루션 서비스 품질 향상을 위한 설문조사에 참여해 주세요.
+            </p>
           )}
           <Link to={surveyLink} className="btn-survey">
-            참여하기 &rarr;
+            설문 참여하기 &rarr;
           </Link>
         </div>
       </div>
