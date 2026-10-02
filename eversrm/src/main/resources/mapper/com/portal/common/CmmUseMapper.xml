@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.portal.common.CmmUseMapper">
 
+	<!--
+	====================================================================================================
+	 공통코드/조직/그룹 공통 resultMap (CmmCodeDetail)
+	====================================================================================================
+	-->
 	<resultMap id="CmmCodeDetail" type="map">
 		<result property="codeId" column="CODE_ID"/>
 		<result property="code" column="CODE"/>
@@ -10,43 +14,67 @@
 		<result property="codeDc" column="CODE_DC"/>
 	</resultMap>
 
+	<!--
+	====================================================================================================
+	 1. 공통코드 상세 목록 조회
+	  - 설명: 특정 분류 코드(codeId)에 속하고 사용 중(USE_AT='Y')인 공통코드 상세 목록을 조회합니다.
+	  - 테이블: LETTCCMMNDETAILCODE (공통 상세 코드 테이블)
+	  - 파라미터: codeId (예: COM004, COM009 등)
+	  - 반환: List<Map> (resultMap="CmmCodeDetail")
+	====================================================================================================
+	-->
 	<select id="selectCmmCodeDetail" parameterType="map" resultMap="CmmCodeDetail">
-			SELECT 
-			CODE_ID, CODE, CODE_NM, CODE_DC
-			FROM 
-			LETTCCMMNDETAILCODE
-			WHERE
-			USE_AT = 'Y'
-			AND CODE_ID = #{codeId}
+		/* com.portal.common.CmmUseMapper.selectCmmCodeDetail */
+		SELECT
+			CODE_ID,
+			CODE,
+			CODE_NM,
+			CODE_DC
+		  FROM LETTCCMMNDETAILCODE
+		 WHERE USE_AT  = 'Y'
+		   AND CODE_ID = #{codeId}
 	</select>
 
-    <select id="selectOgrnztIdDetail" parameterType="map" resultMap="CmmCodeDetail">
-            SELECT 
-                #{tableNm}     CODE_ID, 
-                ORGNZT_ID     CODE, 
-                ORGNZT_NM     CODE_NM, 
-                ORGNZT_DC     CODE_DC
-            FROM 
-                LETTNORGNZTINFO
-            WHERE 1=1
-            
-            <if test="haveDetailCondition == 'Y'">AND
-                ORGNZT_ID  LIKE  #{detailConditionValue}
-            </if>
-    </select>
-    
-    <select id="selectGroupIdDetail" parameterType="map" resultMap="CmmCodeDetail">
-            SELECT 
-                #{tableNm}     CODE_ID, 
-                GROUP_ID     CODE, 
-                GROUP_NM     CODE_NM, 
-                GROUP_DC     CODE_DC
-            FROM 
-                LETTNAUTHORGROUPINFO
-            WHERE 1=1
-            
-            <if test="haveDetailCondition == 'Y'">AND
-                GROUP_ID  LIKE  #{detailConditionValue}
-            </if>
-    </select>
+	<!--
+	====================================================================================================
+	 2. 조직 정보 공통코드 형태 조회
+	  - 설명: 조직 테이블(LETTNORGNZTINFO)의 조직 정보를 공통코드 포맷(CODE_ID, CODE, CODE_NM, CODE_DC)으로 변환 조회합니다.
+	  - 파라미터: tableNm, haveDetailCondition, detailConditionValue
+	====================================================================================================
+	-->
+	<select id="selectOgrnztIdDetail" parameterType="map" resultMap="CmmCodeDetail">
+		/* com.portal.common.CmmUseMapper.selectOgrnztIdDetail */
+		SELECT
+			#{tableNm}  AS CODE_ID,
+			ORGNZT_ID   AS CODE,
+			ORGNZT_NM   AS CODE_NM,
+			ORGNZT_DC   AS CODE_DC
+		  FROM LETTNORGNZTINFO
+		 WHERE 1 = 1
+		<if test="haveDetailCondition == 'Y'">
+		   AND ORGNZT_ID LIKE #{detailConditionValue}
+		</if>
+	</select>
+
+	<!--
+	====================================================================================================
+	 3. 권한 그룹 정보 공통코드 형태 조회
+	  - 설명: 권한그룹 테이블(LETTNAUTHORGROUPINFO)의 그룹 정보를 공통코드 포맷으로 변환 조회합니다.
+	  - 파라미터: tableNm, haveDetailCondition, detailConditionValue
+	====================================================================================================
+	-->
+	<select id="selectGroupIdDetail" parameterType="map" resultMap="CmmCodeDetail">
+		/* com.portal.common.CmmUseMapper.selectGroupIdDetail */
+		SELECT
+			#{tableNm}  AS CODE_ID,
+			GROUP_ID    AS CODE,
+			GROUP_NM    AS CODE_NM,
+			GROUP_DC    AS CODE_DC
+		  FROM LETTNAUTHORGROUPINFO
+		 WHERE 1 = 1
+		<if test="haveDetailCondition == 'Y'">
+		   AND GROUP_ID LIKE #{detailConditionValue}
+		</if>
+	</select>
+
 </mapper>

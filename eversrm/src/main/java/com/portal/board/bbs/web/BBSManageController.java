@@ -15,7 +15,7 @@ import org.egovframe.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 import com.portal.board.bbs.service.BBSManageService;
 
 @RestController
-@RequestMapping("/api/board/bbs")
+@RequestMapping({ "/api/board/bbs", "/api/cop/bbs" })
 public class BBSManageController {
 
     @Autowired
@@ -25,7 +25,7 @@ public class BBSManageController {
     /**
      * 게시물에 대한 목록을 조회한다.
      */
-    @RequestMapping(value = "/selectBoardList", method = RequestMethod.GET)
+    @RequestMapping(value = { "/selectBoardList", "/selectBoardList.api" }, method = RequestMethod.GET)
     public Map<String, Object> selectBoardList(@RequestParam Map<String, Object> searchMap) throws Exception {
         Map<String, Object> response = new HashMap<>();
 
@@ -33,9 +33,12 @@ public class BBSManageController {
             if (searchMap.get("bbsId") == null || "".equals(searchMap.get("bbsId"))) {
                 searchMap.put("bbsId", "BBSMSTR_AAAAAAAAAAAA");
             }
+            if (searchMap.get("useAt") == null || "".equals(searchMap.get("useAt"))) {
+                searchMap.put("useAt", "Y");
+            }
 
             int pageIndex = searchMap.get("pageIndex") != null ? Integer.parseInt(String.valueOf(searchMap.get("pageIndex"))) : 1;
-            int pageUnit = 10;
+            int pageUnit = searchMap.get("recordCountPerPage") != null ? Integer.parseInt(String.valueOf(searchMap.get("recordCountPerPage"))) : 10;
             int pageSize = 10;
 
             PaginationInfo paginationInfo = new PaginationInfo();
@@ -65,7 +68,7 @@ public class BBSManageController {
     /**
      * 게시물에 대한 상세 정보를 조회한다.
      */
-    @RequestMapping(value = "/selectBoardArticle", method = RequestMethod.GET)
+    @RequestMapping(value = { "/selectBoardArticle", "/selectBoardArticle.api" }, method = RequestMethod.GET)
     public Map<String, Object> selectBoardArticle(@RequestParam Map<String, Object> searchMap) throws Exception {
         Map<String, Object> response = new HashMap<>();
         try {
@@ -85,7 +88,7 @@ public class BBSManageController {
     /**
      * 게시물을 등록한다.
      */
-    @RequestMapping(value = "/insertBoardArticle", method = RequestMethod.POST)
+    @RequestMapping(value = { "/insertBoardArticle", "/insertBoardArticle.api" }, method = RequestMethod.POST)
     public Map<String, Object> insertBoardArticle(@RequestBody Map<String, Object> paramMap) throws Exception {
         Map<String, Object> response = new HashMap<>();
         try {
@@ -108,7 +111,7 @@ public class BBSManageController {
     /**
      * 게시물을 수정한다.
      */
-    @RequestMapping(value = "/updateBoardArticle", method = RequestMethod.POST)
+    @RequestMapping(value = { "/updateBoardArticle", "/updateBoardArticle.api" }, method = RequestMethod.POST)
     public Map<String, Object> updateBoardArticle(@RequestBody Map<String, Object> paramMap) throws Exception {
         Map<String, Object> response = new HashMap<>();
         try {
@@ -129,7 +132,7 @@ public class BBSManageController {
     /**
      * 게시물을 삭제한다.
      */
-    @RequestMapping(value = "/deleteBoardArticle", method = RequestMethod.POST)
+    @RequestMapping(value = { "/deleteBoardArticle", "/deleteBoardArticle.api" }, method = RequestMethod.POST)
     public Map<String, Object> deleteBoardArticle(@RequestBody Map<String, Object> paramMap) throws Exception {
         Map<String, Object> response = new HashMap<>();
         try {

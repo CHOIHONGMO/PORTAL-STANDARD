@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.portal.security.group.GroupManageMapper">
+
+	<!--
+	====================================================================================================
+	 1. 사용자 그룹 단건 상세 조회
+	  - 설명: 그룹 ID(groupId)에 해당하는 그룹 정보(명칭, 설명, 등록일)를 조회합니다.
+	  - 테이블: LETTNAUTHORGROUPINFO (권한그룹 정보)
+	  - 파라미터: groupId
+	====================================================================================================
+	-->
+	<select id="selectGroup" resultType="egovMap">
+		/* com.portal.security.group.GroupManageMapper.selectGroup */
+		SELECT
+			GROUP_ID       AS groupId,
+			GROUP_NM       AS groupNm,
+			GROUP_DC       AS groupDc,
+			GROUP_CREAT_DE AS groupCreatDe
+		  FROM LETTNAUTHORGROUPINFO
+		 WHERE GROUP_ID = #{groupId}
+	</select>
+
+	<!--
+	====================================================================================================
+	 2. 사용자 그룹 목록 페이징 조회
+	  - 설명: 사용자 그룹 목록을 페이징 및 그룹명 검색 조건으로 조회합니다.
+	  - 파라미터: searchCondition, searchKeyword, recordCountPerPage, firstIndex
+	====================================================================================================
+	-->
+	<select id="selectGroupList" resultType="egovMap">
+		/* com.portal.security.group.GroupManageMapper.selectGroupList */
+		SELECT
+			GROUP_ID       AS groupId,
+			GROUP_NM       AS groupNm,
+			GROUP_DC       AS groupDc,
+			GROUP_CREAT_DE AS groupCreatDe
+		  FROM LETTNAUTHORGROUPINFO
+		 WHERE 1 = 1
+		<if test="searchCondition == 1">
+		   AND GROUP_NM LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+		 ORDER BY GROUP_CREAT_DE DESC
+		 LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+	</select>
+
+	<!--
+	====================================================================================================
+	 3. 사용자 그룹 신규 등록
+	  - 설명: 새로운 사용자 권한그룹을 생성합니다.
+	  - 파라미터: groupId, groupNm, groupDc
+	====================================================================================================
+	-->
+	<insert id="insertGroup">
+		/* com.portal.security.group.GroupManageMapper.insertGroup */
+		INSERT INTO LETTNAUTHORGROUPINFO
+		(
+			GROUP_ID, GROUP_NM, GROUP_DC, GROUP_CREAT_DE
+		)
+		VALUES
+		(
+			#{groupId}, #{groupNm}, #{groupDc}, NOW()
+		)
+	</insert>
+
+	<!--
+	====================================================================================================
+	 4. 사용자 그룹 정보 수정
+	  - 설명: 그룹명 및 설명을 수정하고 수정일시를 갱신합니다.
+	  - 파라미터: groupNm, groupDc, groupId
+	====================================================================================================
+	-->
+	<update id="updateGroup">
+		/* com.portal.security.group.GroupManageMapper.updateGroup */
+		UPDATE LETTNAUTHORGROUPINFO
+		   SET GROUP_NM       = #{groupNm},
+		       GROUP_DC       = #{groupDc},
+		       GROUP_CREAT_DE = NOW()
+		 WHERE GROUP_ID = #{groupId}
+	</update>
+
+	<!--
+	====================================================================================================
+	 5. 사용자 그룹 삭제
+	  - 설명: 지정된 그룹을 테이블에서 물리 삭제합니다.
+	  - 파라미터: groupId
+	====================================================================================================
+	-->
+	<delete id="deleteGroup">
+		/* com.portal.security.group.GroupManageMapper.deleteGroup */
+		DELETE FROM LETTNAUTHORGROUPINFO
+		 WHERE GROUP_ID = #{groupId}
+	</delete>
+
+	<!--
+	====================================================================================================
+	 6. 사용자 그룹 목록 총 건수 조회
+	  - 설명: 그룹 목록 페이징용 총 건수를 계산합니다.
+	  - 파라미터: searchCondition, searchKeyword
+	====================================================================================================
+	-->
+	<select id="selectGroupListTotCnt" resultType="int">
+		/* com.portal.security.group.GroupManageMapper.selectGroupListTotCnt */
+		SELECT COUNT(*) AS totcnt
+		  FROM LETTNAUTHORGROUPINFO
+		 WHERE 1 = 1
+		<if test="searchCondition == 1">
+		   AND GROUP_NM LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+	</select>
+
+</mapper>

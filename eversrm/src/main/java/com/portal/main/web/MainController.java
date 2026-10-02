@@ -21,6 +21,9 @@ import com.portal.user.poll.qri.service.QustnrRespondInfoService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 
+import com.portal.user.poll.qmc.service.QustnrManageService;
+import org.springframework.web.bind.annotation.RequestMethod;
+
 /**
  * 템플릿 메인 페이지 컨트롤러 클래스(Sample 소스)
  * @author ST-Ones Corp.
@@ -56,10 +59,15 @@ public class MainController {
 	@Resource(name = "qustnrRespondInfoService")
 	private QustnrRespondInfoService egovQustnrRespondInfoService;
 
-	@RequestMapping(value = "/cmm/main/mainPage.do")
+	/** qustnrManageService */
+	@Resource(name = "qustnrManageService")
+	private QustnrManageService qustnrManageService;
+
+	@RequestMapping(value = { "/cmm/main/mainPage.do", "/api/main/mainPage.api", "/api/cmm/main/mainPage.api" }, method = { RequestMethod.GET, RequestMethod.POST })
 	public Map<String, Object> getMgtMainPage(HttpServletRequest request)
 	  throws Exception{
 		Map<String, Object> resultMap = new HashMap<>();
+		try {
 		
 		// 공지사항 메인 컨텐츠 조회 시작 ---------------------------------
 		Map<String, Object> boardSearchMap = new HashMap<>();
@@ -136,6 +144,24 @@ public class MainController {
 		resultMap.put("qriList", egovQustnrRespondInfoService.selectQustnrRespondInfoManageList(qVO));
 
 		// 설문참여 메인 컨텐츠 조회 끝 -----------------------------------
+
+		// 최신 설문지 메인 컨텐츠 조회 시작 ---------------------------------
+		Map<String, Object> qustnrSearchMap = new HashMap<>();
+		qustnrSearchMap.put("pageIndex", 1);
+		qustnrSearchMap.put("recordCountPerPage", 3);
+		qustnrSearchMap.put("firstIndex", 0);
+		qustnrSearchMap.put("lastIndex", 3);
+		resultMap.put("qustnrList", qustnrManageService.selectQustnrManageList(qustnrSearchMap));
+		// 최신 설문지 메인 컨텐츠 조회 끝 -----------------------------------
+
+		resultMap.put("resultCode", "SUCCESS");
+		resultMap.put("resultMessage", "메인 페이지 데이터 조회 성공");
+
+		} catch (Exception e) {
+			LOGGER.error("메인 페이지 데이터 조회 실패: {}", e.getMessage(), e);
+			resultMap.put("resultCode", "ERROR");
+			resultMap.put("resultMessage", "메인 페이지 데이터 조회 실패: " + e.getMessage());
+		}
 
 		return resultMap;
 	}

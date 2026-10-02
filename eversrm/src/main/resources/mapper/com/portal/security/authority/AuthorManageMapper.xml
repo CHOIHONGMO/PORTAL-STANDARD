@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.portal.security.authority.AuthorManageMapper">
+
+	<!--
+	====================================================================================================
+	 1. 권한 목록 페이징 조회
+	  - 설명: 등록된 시스템 권한 목록을 페이징 및 권한명 검색 조건으로 조회합니다.
+	  - 테이블: LETTNAUTHORINFO (권한 정보)
+	  - 파라미터: searchCondition, searchKeyword, recordCountPerPage, firstIndex
+	====================================================================================================
+	-->
+	<select id="selectAuthorList" resultType="egovMap">
+		/* com.portal.security.authority.AuthorManageMapper.selectAuthorList */
+		SELECT
+			AUTHOR_CODE     AS authorCode,
+			AUTHOR_NM       AS authorNm,
+			AUTHOR_DC       AS authorDc,
+			AUTHOR_CREAT_DE AS authorCreatDe
+		  FROM LETTNAUTHORINFO
+		 WHERE 1 = 1
+		<if test="searchCondition == 1">
+		   AND AUTHOR_NM LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+		 ORDER BY AUTHOR_CREAT_DE DESC
+		 LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+	</select>
+
+	<!--
+	====================================================================================================
+	 2. 권한 정보 신규 등록
+	  - 설명: 새로운 접근 권한 코드와 명칭, 설명을 등록합니다.
+	  - 파라미터: authorCode, authorNm, authorDc
+	====================================================================================================
+	-->
+	<insert id="insertAuthor">
+		/* com.portal.security.authority.AuthorManageMapper.insertAuthor */
+		INSERT INTO LETTNAUTHORINFO
+		(
+			AUTHOR_CODE, AUTHOR_NM, AUTHOR_DC, AUTHOR_CREAT_DE
+		)
+		VALUES
+		(
+			#{authorCode}, #{authorNm}, #{authorDc}, NOW()
+		)
+	</insert>
+
+	<!--
+	====================================================================================================
+	 3. 권한 정보 수정
+	  - 설명: 지정된 권한 코드의 명칭과 설명을 수정합니다.
+	  - 파라미터: authorNm, authorDc, authorCode
+	====================================================================================================
+	-->
+	<update id="updateAuthor">
+		/* com.portal.security.authority.AuthorManageMapper.updateAuthor */
+		UPDATE LETTNAUTHORINFO
+		   SET AUTHOR_NM = #{authorNm},
+		       AUTHOR_DC = #{authorDc}
+		 WHERE AUTHOR_CODE = #{authorCode}
+	</update>
+
+	<!--
+	====================================================================================================
+	 4. 권한 정보 삭제
+	  - 설명: 지정된 권한 코드를 테이블에서 물리 삭제합니다.
+	  - 파라미터: authorCode
+	====================================================================================================
+	-->
+	<delete id="deleteAuthor">
+		/* com.portal.security.authority.AuthorManageMapper.deleteAuthor */
+		DELETE FROM LETTNAUTHORINFO
+		 WHERE AUTHOR_CODE = #{authorCode}
+	</delete>
+
+	<!--
+	====================================================================================================
+	 5. 권한 단건 상세 조회
+	  - 설명: 특정 권한 코드(authorCode)의 상세 정보를 조회합니다.
+	  - 파라미터: authorCode
+	====================================================================================================
+	-->
+	<select id="selectAuthor" resultType="egovMap">
+		/* com.portal.security.authority.AuthorManageMapper.selectAuthor */
+		SELECT
+			AUTHOR_CODE     AS authorCode,
+			AUTHOR_NM       AS authorNm,
+			AUTHOR_DC       AS authorDc,
+			AUTHOR_CREAT_DE AS authorCreatDe
+		  FROM LETTNAUTHORINFO
+		 WHERE AUTHOR_CODE = #{authorCode}
+	</select>
+
+	<!--
+	====================================================================================================
+	 6. 권한 목록 총 건수 조회
+	  - 설명: 권한 목록 페이징을 위한 총 건수를 계산합니다.
+	  - 파라미터: searchCondition, searchKeyword
+	====================================================================================================
+	-->
+	<select id="selectAuthorListTotCnt" resultType="int">
+		/* com.portal.security.authority.AuthorManageMapper.selectAuthorListTotCnt */
+		SELECT COUNT(*) AS totcnt
+		  FROM LETTNAUTHORINFO
+		 WHERE 1 = 1
+		<if test="searchCondition == 1">
+		   AND AUTHOR_NM LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+	</select>
+
+	<!--
+	====================================================================================================
+	 7. 전체 권한 목록 조회
+	  - 설명: 시스템에 등록된 모든 권한 목록을 조회합니다. (권한 부여 선택 팝업/콤보박스용)
+	====================================================================================================
+	-->
+	<select id="selectAuthorAllList" resultType="egovMap">
+		/* com.portal.security.authority.AuthorManageMapper.selectAuthorAllList */
+		SELECT
+			AUTHOR_CODE     AS authorCode,
+			AUTHOR_NM       AS authorNm,
+			AUTHOR_DC       AS authorDc,
+			AUTHOR_CREAT_DE AS authorCreatDe
+		  FROM LETTNAUTHORINFO
+		 ORDER BY AUTHOR_CODE ASC
+	</select>
+
+</mapper>

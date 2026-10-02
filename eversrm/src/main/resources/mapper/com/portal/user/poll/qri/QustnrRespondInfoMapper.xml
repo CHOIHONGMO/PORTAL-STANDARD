@@ -3,274 +3,359 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.portal.user.poll.qri.QustnrRespondInfoMapper">
 
-	<!-- 설문조사(통계/객관식):: 설문지 전체 통계 -->
+	<!--
+		설문조사 통계 (객관식 문항)
+		- 기능: 특정 설문지 및 템플릿의 객관식 항목별 응답 건수(QUSTNR_IEM_ID_CNT) 및 백분율(QUSTNR_PERCENT) 집계
+		- 파라미터: qestnrId (설문지 ID), qestnrTmplatId (설문 템플릿 ID)
+		- 반환값: 템플릿ID, 설문지ID, 문항ID, 항목ID, 항목내용, 항목별선택수, 선택비율(%)
+	-->
 	<select id="selectQustnrRespondInfoManageStatistics1" parameterType="map" resultType="egovMap">
+		/* com.portal.user.poll.qri.QustnrRespondInfoMapper.selectQustnrRespondInfoManageStatistics1 */
 		SELECT
-			A.QUSTNR_TMPLAT_ID			qestnrTmplatId,
+			A.QUSTNR_TMPLAT_ID  AS qestnrTmplatId,
 			A.QESTNR_ID,
-			A.QUSTNR_QESITM_ID			qestnrQesitmId,
+			A.QUSTNR_QESITM_ID  AS qestnrQesitmId,
 			A.QUSTNR_IEM_ID,
 			(
-				SELECT IEM_CN FROM LETTNQUSTNRIEM
-				WHERE 1=1
-				AND QUSTNR_IEM_ID = A.QUSTNR_IEM_ID
-			) IEM_CN,
-			COUNT(A.QUSTNR_IEM_ID) QUSTNR_IEM_ID_CNT,
-			ROUND((100/ (SELECT COUNT(*) CNT FROM LETTNQUSTNRRSPNSRESULT WHERE QUSTNR_QESITM_ID = A.QUSTNR_QESITM_ID) ) * COUNT(A.QUSTNR_IEM_ID)) QUSTNR_PERCENT
+				SELECT IEM_CN 
+				FROM LETTNQUSTNRIEM
+				WHERE QUSTNR_IEM_ID = A.QUSTNR_IEM_ID
+			) AS IEM_CN,
+			COUNT(A.QUSTNR_IEM_ID) AS QUSTNR_IEM_ID_CNT,
+			ROUND((100 / (
+				SELECT COUNT(*) 
+				FROM LETTNQUSTNRRSPNSRESULT 
+				WHERE QUSTNR_QESITM_ID = A.QUSTNR_QESITM_ID
+			)) * COUNT(A.QUSTNR_IEM_ID)) AS QUSTNR_PERCENT
 		FROM LETTNQUSTNRRSPNSRESULT A
-		WHERE 1=1
-		AND A.QESTNR_ID = #{qestnrId}
-		AND A.QUSTNR_TMPLAT_ID = #{qestnrTmplatId}
-		AND (A.QUSTNR_IEM_ID IS NOT NULL AND A.QUSTNR_IEM_ID != '')
+		WHERE A.QESTNR_ID = #{qestnrId}
+			AND A.QUSTNR_TMPLAT_ID = #{qestnrTmplatId}
+			AND (A.QUSTNR_IEM_ID IS NOT NULL AND A.QUSTNR_IEM_ID != '')
 		GROUP BY A.QUSTNR_TMPLAT_ID, A.QESTNR_ID, A.QUSTNR_QESITM_ID, A.QUSTNR_IEM_ID
 	</select>
 	
-	<!-- 설문조사(통계/주관식):: 설문지 전체 통계 -->
+	<!--
+		설문조사 통계 (주관식/서술형 및 기타 답변)
+		- 기능: 객관식 보기를 선택하지 않은 주관식 응답 내역 및 기타 의견 텍스트 조회
+		- 파라미터: qestnrId, qestnrTmplatId
+		- 반환값: 템플릿ID, 설문지ID, 문항ID, 항목ID, 기타답변내용, 주관식응답내용, 응답자명
+	-->
 	<select id="selectQustnrRespondInfoManageStatistics2" parameterType="map" resultType="egovMap">
+		/* com.portal.user.poll.qri.QustnrRespondInfoMapper.selectQustnrRespondInfoManageStatistics2 */
 		SELECT
-			A.QUSTNR_TMPLAT_ID			qestnrTmplatId,
+			A.QUSTNR_TMPLAT_ID  AS qestnrTmplatId,
 			A.QESTNR_ID,
-			A.QUSTNR_QESITM_ID			qestnrQesitmId,
+			A.QUSTNR_QESITM_ID  AS qestnrQesitmId,
 			A.QUSTNR_IEM_ID,
 			A.ETC_ANSWER_CN,
 			A.RESPOND_ANSWER_CN,
 			A.RESPOND_NM
 		FROM LETTNQUSTNRRSPNSRESULT A
-		WHERE 1=1
-		AND A.QESTNR_ID = #{qestnrId}
-		AND A.QUSTNR_TMPLAT_ID = #{qestnrTmplatId}
-		AND (A.QUSTNR_IEM_ID IS NULL OR A.QUSTNR_IEM_ID = '')
+		WHERE A.QESTNR_ID = #{qestnrId}
+			AND A.QUSTNR_TMPLAT_ID = #{qestnrTmplatId}
+			AND (A.QUSTNR_IEM_ID IS NULL OR A.QUSTNR_IEM_ID = '')
 	</select>
 
-	<!-- 설문조사(설문등록):: 설문등록 /설문지정보-->
+	<!--
+		설문 등록용 설문지 기본 정보 조회
+		- 기능: 설문 참여 화면 렌더링 시 필요한 설문지 마스터 정보(제목, 목적, 작성안내, 기간 등) 조회
+		- 파라미터: qestnrId, qestnrTmplatId
+		- 반환값: 설문지 마스터 정보
+	-->
 	<select id="selectQustnrRespondInfoManageComtnqestnrinfo" parameterType="map" resultType="egovMap">
+		/* com.portal.user.poll.qri.QustnrRespondInfoMapper.selectQustnrRespondInfoManageComtnqestnrinfo */
 		SELECT
 			A.QESTNR_ID,
-			A.QUSTNR_SJ					qestnrSj,
-			A.QUSTNR_PURPS				qestnrPurps,
-			A.QUSTNR_WRITNG_GUIDANCE_CN	qestnrWritngGuidanceCn,
-			DATE_FORMAT(A.QUSTNR_BGNDE, '%Y-%m-%d') 	QESTNR_BEGIN_DE,
-			DATE_FORMAT(A.QUSTNR_ENDDE, '%Y-%m-%d') 	QESTNR_END_DE,
-			DATE_FORMAT(A.FRST_REGIST_PNTTM, '%Y-%m-%d') as FRST_REGIST_PNTTM,
+			A.QUSTNR_SJ                 AS qestnrSj,
+			A.QUSTNR_PURPS              AS qestnrPurps,
+			A.QUSTNR_WRITNG_GUIDANCE_CN AS qestnrWritngGuidanceCn,
+			DATE_FORMAT(A.QUSTNR_BGNDE, '%Y-%m-%d') AS QESTNR_BEGIN_DE,
+			DATE_FORMAT(A.QUSTNR_ENDDE, '%Y-%m-%d') AS QESTNR_END_DE,
+			DATE_FORMAT(A.FRST_REGIST_PNTTM, '%Y-%m-%d') AS FRST_REGIST_PNTTM,
 			A.FRST_REGISTER_ID,
-			DATE_FORMAT(A.LAST_UPDT_PNTTM,'%Y-%m-%d') as LAST_UPDT_PNTTM,
+			DATE_FORMAT(A.LAST_UPDT_PNTTM, '%Y-%m-%d') AS LAST_UPDT_PNTTM,
 			A.LAST_UPDUSR_ID,
-			A.QUSTNR_TRGET				qestnrTrget,
-			A.QUSTNR_TMPLAT_ID			qestnrTmplatId
+			A.QUSTNR_TRGET              AS qestnrTrget,
+			A.QUSTNR_TMPLAT_ID          AS qestnrTmplatId
 		FROM LETTNQESTNRINFO A
-		WHERE 1=1
-		AND A.QESTNR_ID = #{qestnrId}
-		AND A.QUSTNR_TMPLAT_ID = #{qestnrTmplatId}
+		WHERE A.QESTNR_ID = #{qestnrId}
+			AND A.QUSTNR_TMPLAT_ID = #{qestnrTmplatId}
 	</select>
 	
-	<!-- 설문조사(설문등록):: 설문등록 /설문문 항정보-->
+	<!--
+		설문 등록용 설문 문항 목록 조회
+		- 기능: 설문지에 속한 문항 리스트(질문 순번, 질문 유형, 질문 내용, 최대선택수 등) 조회
+		- 파라미터: qestnrId, qestnrTmplatId
+		- 반환값: 설문 문항 리스트
+	-->
 	<select id="selectQustnrRespondInfoManageComtnqustnrqesitm" parameterType="map" resultType="egovMap">
+		/* com.portal.user.poll.qri.QustnrRespondInfoMapper.selectQustnrRespondInfoManageComtnqustnrqesitm */
 		SELECT
-			A.QUSTNR_QESITM_ID			qestnrQesitmId,
+			A.QUSTNR_QESITM_ID  AS qestnrQesitmId,
 			A.QESTNR_ID,
-			DATE_FORMAT(A.FRST_REGIST_PNTTM, '%Y-%m-%d') as FRST_REGIST_PNTTM,
+			DATE_FORMAT(A.FRST_REGIST_PNTTM, '%Y-%m-%d') AS FRST_REGIST_PNTTM,
 			A.FRST_REGISTER_ID,
-			DATE_FORMAT(A.LAST_UPDT_PNTTM,'%Y-%m-%d') as LAST_UPDT_PNTTM,
+			DATE_FORMAT(A.LAST_UPDT_PNTTM, '%Y-%m-%d') AS LAST_UPDT_PNTTM,
 			A.LAST_UPDUSR_ID,
 			A.QESTN_SN,
 			A.QESTN_TY_CODE,
 			A.QESTN_CN,
 			A.MXMM_CHOISE_CO,
-			A.QUSTNR_TMPLAT_ID			qestnrTmplatId
+			A.QUSTNR_TMPLAT_ID  AS qestnrTmplatId
 		FROM LETTNQUSTNRQESITM A
-		WHERE 1=1
-		AND A.QESTNR_ID = #{qestnrId}
-		AND A.QUSTNR_TMPLAT_ID = #{qestnrTmplatId}
+		WHERE A.QESTNR_ID = #{qestnrId}
+			AND A.QUSTNR_TMPLAT_ID = #{qestnrTmplatId}
+		ORDER BY A.QESTN_SN ASC
 	</select>
 	
-	<!-- 설문조사(설문등록):: 설문등록 /설문 항목정보 -->
+	<!--
+		설문 등록용 설문 보기 항목 목록 조회
+		- 기능: 설문 문항들에 매핑된 객관식 보기 항목 리스트(항목 번호, 내용, 기타답변 여부 등) 조회
+		- 파라미터: qestnrId, qestnrTmplatId
+		- 반환값: 보기 항목 리스트
+	-->
 	<select id="selectQustnrRespondInfoManageComtnqustnriem" parameterType="map" resultType="egovMap">
+		/* com.portal.user.poll.qri.QustnrRespondInfoMapper.selectQustnrRespondInfoManageComtnqustnriem */
 		SELECT
-			A.QUSTNR_QESITM_ID		qestnrQesitmId,
+			A.QUSTNR_QESITM_ID  AS qestnrQesitmId,
 			A.QESTNR_ID,
 			A.IEM_SN,
-			DATE_FORMAT(A.FRST_REGIST_PNTTM, '%Y-%m-%d') as FRST_REGIST_PNTTM,
+			DATE_FORMAT(A.FRST_REGIST_PNTTM, '%Y-%m-%d') AS FRST_REGIST_PNTTM,
 			A.FRST_REGISTER_ID,
-			DATE_FORMAT(A.LAST_UPDT_PNTTM,'%Y-%m-%d') as LAST_UPDT_PNTTM,
+			DATE_FORMAT(A.LAST_UPDT_PNTTM, '%Y-%m-%d') AS LAST_UPDT_PNTTM,
 			A.LAST_UPDUSR_ID,
 			A.QUSTNR_IEM_ID,
 			A.IEM_CN,
 			A.ETC_ANSWER_AT,
-			A.QUSTNR_TMPLAT_ID		qestnrTmplatId
+			A.QUSTNR_TMPLAT_ID  AS qestnrTmplatId
 		FROM LETTNQUSTNRIEM A
-		WHERE 1=1
-		AND A.QESTNR_ID = #{qestnrId}
-		AND A.QUSTNR_TMPLAT_ID = #{qestnrTmplatId}
+		WHERE A.QESTNR_ID = #{qestnrId}
+			AND A.QUSTNR_TMPLAT_ID = #{qestnrTmplatId}
+		ORDER BY A.IEM_SN ASC
 	</select>
 
-	<!-- 응답자결과(설문조사)::삭제  -->
+	<!--
+		설문 응답 결과 단건 삭제
+		- 기능: 특정 설문 응답 결과 레코드(LETTNQUSTNRRSPNSRESULT)를 삭제
+		- 파라미터: qestnrQesrspnsId (응답 결과 ID)
+	-->
 	<delete id="deleteQustnrRespondInfo" parameterType="map">
+		/* com.portal.user.poll.qri.QustnrRespondInfoMapper.deleteQustnrRespondInfo */
 		DELETE FROM LETTNQUSTNRRSPNSRESULT
 		WHERE QUSTNR_RSPNS_RESULT_ID = #{qestnrQesrspnsId}
 	</delete>
 
-	<!-- 응답자결과(설문조사)::수정  -->
+	<!--
+		설문 응답 결과 단건 수정
+		- 기능: 기 제출된 설문 응답의 선택 항목, 주관식 답변 내용, 응답자명, 기타 답변 내용 등을 수정
+		- 파라미터: qustnrIemId, respondAnswerCn, respondNm, etcAnswerCn, lastUpdusrId, qestnrQesrspnsId
+	-->
 	<update id="updateQustnrRespondInfo" parameterType="map">
+		/* com.portal.user.poll.qri.QustnrRespondInfoMapper.updateQustnrRespondInfo */
 		UPDATE LETTNQUSTNRRSPNSRESULT
 		SET
-			QUSTNR_IEM_ID=#{qustnrIemId},
-			RESPOND_ANSWER_CN=#{respondAnswerCn},
-			RESPOND_NM=#{respondNm},
-			ETC_ANSWER_CN=#{etcAnswerCn},
-			LAST_UPDT_PNTTM = sysdate(),
-			LAST_UPDUSR_ID = #{lastUpdusrId}
+			QUSTNR_IEM_ID      = #{qustnrIemId},
+			RESPOND_ANSWER_CN  = #{respondAnswerCn},
+			RESPOND_NM         = #{respondNm},
+			ETC_ANSWER_CN      = #{etcAnswerCn},
+			LAST_UPDT_PNTTM    = sysdate(),
+			LAST_UPDUSR_ID     = #{lastUpdusrId}
 		WHERE QUSTNR_RSPNS_RESULT_ID = #{qestnrQesrspnsId}
 	</update>
 
-	<!-- 응답자결과(설문조사)::상세보기 -->
+	<!--
+		설문 응답 결과 상세 조회
+		- 기능: 특정 응답 결과 레코드 단건 및 관련된 설문지 제목, 질문 유형/내용, 항목 내용(서브쿼리) 조회
+		- 파라미터: qestnrQesrspnsId (응답 결과 ID)
+		- 반환값: 설문 응답 결과 상세 맵
+	-->
 	<select id="selectQustnrRespondInfoDetail" parameterType="map" resultType="egovMap">
+		/* com.portal.user.poll.qri.QustnrRespondInfoMapper.selectQustnrRespondInfoDetail */
 		SELECT
-			QUSTNR_RSPNS_RESULT_ID						qestnrQesrspnsId,
-			( SELECT QUSTNR_SJ FROM LETTNQESTNRINFO
-			  WHERE 1=1
-			  AND QESTNR_ID = A.QESTNR_ID ) qestnrSj,
-			( SELECT QESTN_TY_CODE FROM LETTNQUSTNRQESITM
-			  WHERE 1=1
-			  AND QUSTNR_QESITM_ID = A.QUSTNR_QESITM_ID	) QESTN_TY_CODE,
-			( SELECT QESTN_CN FROM LETTNQUSTNRQESITM
-			  WHERE 1=1
-			  AND QUSTNR_QESITM_ID = A.QUSTNR_QESITM_ID	) QESTN_CN,
-			( SELECT IEM_CN FROM LETTNQUSTNRIEM
-			  WHERE 1=1
-			  AND QUSTNR_IEM_ID = A.QUSTNR_IEM_ID ) IEM_CN,
+			A.QUSTNR_RSPNS_RESULT_ID AS qestnrQesrspnsId,
+			(
+				SELECT QUSTNR_SJ 
+				FROM LETTNQESTNRINFO
+				WHERE QESTNR_ID = A.QESTNR_ID
+			) AS qestnrSj,
+			(
+				SELECT QESTN_TY_CODE 
+				FROM LETTNQUSTNRQESITM
+				WHERE QUSTNR_QESITM_ID = A.QUSTNR_QESITM_ID
+			) AS QESTN_TY_CODE,
+			(
+				SELECT QESTN_CN 
+				FROM LETTNQUSTNRQESITM
+				WHERE QUSTNR_QESITM_ID = A.QUSTNR_QESITM_ID
+			) AS QESTN_CN,
+			(
+				SELECT IEM_CN 
+				FROM LETTNQUSTNRIEM
+				WHERE QUSTNR_IEM_ID = A.QUSTNR_IEM_ID
+			) AS IEM_CN,
 			A.QUSTNR_IEM_ID,
-			A.QUSTNR_QESITM_ID				qestnrQesitmId,
+			A.QUSTNR_QESITM_ID       AS qestnrQesitmId,
 			A.QESTNR_ID,
 			A.RESPOND_ANSWER_CN,
 			A.RESPOND_NM,
 			A.ETC_ANSWER_CN,
-			A.QUSTNR_TMPLAT_ID				qestnrTmplatId,
-			DATE_FORMAT(A.FRST_REGIST_PNTTM, '%Y-%m-%d') as FRST_REGIST_PNTTM,
+			A.QUSTNR_TMPLAT_ID       AS qestnrTmplatId,
+			DATE_FORMAT(A.FRST_REGIST_PNTTM, '%Y-%m-%d') AS FRST_REGIST_PNTTM,
 			A.FRST_REGISTER_ID,
-			DATE_FORMAT(A.LAST_UPDT_PNTTM,'%Y-%m-%d') as LAST_UPDT_PNTTM,
+			DATE_FORMAT(A.LAST_UPDT_PNTTM, '%Y-%m-%d') AS LAST_UPDT_PNTTM,
 			A.LAST_UPDUSR_ID
 		FROM LETTNQUSTNRRSPNSRESULT A
-		WHERE 1=1
-			AND A.QUSTNR_RSPNS_RESULT_ID = #{qestnrQesrspnsId}
+		WHERE A.QUSTNR_RSPNS_RESULT_ID = #{qestnrQesrspnsId}
 	</select>
 
-	<!-- 설문조사(설문등록)::목록조회_게시물정보 -->
+	<!--
+		설문조사(설문등록대상) 목록 페이징 조회
+		- 기능: 사용자가 응답할 수 있는 설문지 목록을 작성자 정보와 표준 INNER JOIN하여 페이징 조회
+		- 파라미터: searchCondition, searchKeyword, recordCountPerPage, firstIndex
+		- 반환값: 설문지 목록
+	-->
 	<select id="selectQustnrRespondInfoManageList" parameterType="map" resultType="egovMap">
+		/* com.portal.user.poll.qri.QustnrRespondInfoMapper.selectQustnrRespondInfoManageList */
 		SELECT
 			A.QESTNR_ID,
-			A.QUSTNR_SJ		qestnrSj,
-			A.QUSTNR_PURPS	qestnrPurps,
-			A.QUSTNR_WRITNG_GUIDANCE_CN		qestnrWritngGuidanceCn,
-			DATE_FORMAT(A.QUSTNR_BGNDE, '%Y-%m-%d') qestnrBeginDe,
-			DATE_FORMAT(A.QUSTNR_ENDDE, '%Y-%m-%d') qestnrEndDe,
-			A.QUSTNR_TRGET			qestnrTrget,
-			A.QUSTNR_TMPLAT_ID		qestnrTmplatId,
-			DATE_FORMAT(A.FRST_REGIST_PNTTM, '%Y-%m-%d') as FRST_REGIST_PNTTM,
+			A.QUSTNR_SJ                 AS qestnrSj,
+			A.QUSTNR_PURPS              AS qestnrPurps,
+			A.QUSTNR_WRITNG_GUIDANCE_CN AS qestnrWritngGuidanceCn,
+			DATE_FORMAT(A.QUSTNR_BGNDE, '%Y-%m-%d') AS qestnrBeginDe,
+			DATE_FORMAT(A.QUSTNR_ENDDE, '%Y-%m-%d') AS qestnrEndDe,
+			A.QUSTNR_TRGET              AS qestnrTrget,
+			A.QUSTNR_TMPLAT_ID          AS qestnrTmplatId,
+			DATE_FORMAT(A.FRST_REGIST_PNTTM, '%Y-%m-%d') AS FRST_REGIST_PNTTM,
 			A.FRST_REGISTER_ID,
-			B.USER_NM AS FRST_REGISTER_NM,
-			DATE_FORMAT(A.LAST_UPDT_PNTTM,'%Y-%m-%d') as LAST_UPDT_PNTTM,
+			B.USER_NM                   AS FRST_REGISTER_NM,
+			DATE_FORMAT(A.LAST_UPDT_PNTTM, '%Y-%m-%d') AS LAST_UPDT_PNTTM,
 			A.LAST_UPDUSR_ID
-		FROM LETTNQESTNRINFO A, COMVNUSERMASTER B
+		FROM LETTNQESTNRINFO A
+		INNER JOIN COMVNUSERMASTER B
+			ON A.FRST_REGISTER_ID = B.ESNTL_ID
 		WHERE 1=1
-		AND A.FRST_REGISTER_ID = B.ESNTL_ID
-	 <if test="searchKeyword != null and searchKeyword != ''">
-            <if test="searchCondition == 'QESTNR_SJ'">
-                AND A.QUSTNR_SJ LIKE CONCAT('%', #{searchKeyword}, '%')
-            </if>
-            <if test="searchCondition == 'FRST_REGISTER_ID'">
-                AND B.USER_NM LIKE CONCAT('%', #{searchKeyword}, '%')
-            </if>
-	 </if>
+		<if test="searchKeyword != null and searchKeyword != ''">
+			<if test="searchCondition == 'QESTNR_SJ'">
+				AND A.QUSTNR_SJ LIKE CONCAT('%', #{searchKeyword}, '%')
+			</if>
+			<if test="searchCondition == 'FRST_REGISTER_ID'">
+				AND B.USER_NM LIKE CONCAT('%', #{searchKeyword}, '%')
+			</if>
+		</if>
 		ORDER BY A.FRST_REGIST_PNTTM DESC
 		LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
 	</select>
 
-	<!-- 설문조사(설문등록)::목록조회_게시물 총갯수  -->
+	<!--
+		설문조사(설문등록대상) 목록 총 레코드 수 조회
+		- 기능: 설문지 목록 페이징을 위한 총 레코드 수 반환
+		- 파라미터: searchCondition, searchKeyword
+		- 반환값: 총 건수
+	-->
 	<select id="selectQustnrRespondInfoManageListCnt" parameterType="map" resultType="int">
+		/* com.portal.user.poll.qri.QustnrRespondInfoMapper.selectQustnrRespondInfoManageListCnt */
 		SELECT
-		COUNT(*) totcnt
-		FROM LETTNQESTNRINFO A, COMVNUSERMASTER B
+			COUNT(*) AS totcnt
+		FROM LETTNQESTNRINFO A
+		INNER JOIN COMVNUSERMASTER B
+			ON A.FRST_REGISTER_ID = B.ESNTL_ID
 		WHERE 1=1
-		AND A.FRST_REGISTER_ID = B.ESNTL_ID
-	 <if test="searchKeyword != null and searchKeyword != ''">
-            <if test="searchCondition == 'QESTNR_SJ'">
-                AND A.QUSTNR_SJ LIKE CONCAT('%', #{searchKeyword}, '%')
-            </if>
-            <if test="searchCondition == 'FRST_REGISTER_ID'">
-                AND B.USER_NM  LIKE CONCAT('%', #{searchKeyword}, '%')
-            </if>
-	 </if>
+		<if test="searchKeyword != null and searchKeyword != ''">
+			<if test="searchCondition == 'QESTNR_SJ'">
+				AND A.QUSTNR_SJ LIKE CONCAT('%', #{searchKeyword}, '%')
+			</if>
+			<if test="searchCondition == 'FRST_REGISTER_ID'">
+				AND B.USER_NM LIKE CONCAT('%', #{searchKeyword}, '%')
+			</if>
+		</if>
 	</select>
 
-	<!-- 응답자결과(설문조사)::목록조회_게시물정보 -->
+	<!--
+		개별 설문 응답 결과 목록 페이징 조회
+		- 기능: 제출된 설문 응답 결과 목록을 검색 조건(기타답변, 주관식답변, 응답자명)에 따라 페이징 조회
+		- 파라미터: searchCondition, searchKeyword, recordCountPerPage, firstIndex
+		- 반환값: 개별 응답 결과 목록
+	-->
 	<select id="selectQustnrRespondInfoList" parameterType="map" resultType="egovMap">
+		/* com.portal.user.poll.qri.QustnrRespondInfoMapper.selectQustnrRespondInfoList */
 		SELECT
-			QUSTNR_RSPNS_RESULT_ID			qestnrQesrspnsId,
+			A.QUSTNR_RSPNS_RESULT_ID AS qestnrQesrspnsId,
 			(
-			SELECT QESTN_TY_CODE FROM LETTNQUSTNRQESITM
-			WHERE 1=1
-			AND QUSTNR_QESITM_ID = A.QUSTNR_QESITM_ID
-			) QESTN_TY_CODE,
+				SELECT QESTN_TY_CODE 
+				FROM LETTNQUSTNRQESITM
+				WHERE QUSTNR_QESITM_ID = A.QUSTNR_QESITM_ID
+			) AS QESTN_TY_CODE,
 			(
-			SELECT QESTN_CN FROM LETTNQUSTNRQESITM
-			WHERE 1=1
-			AND QUSTNR_QESITM_ID = A.QUSTNR_QESITM_ID
-			) QESTN_CN,
+				SELECT QESTN_CN 
+				FROM LETTNQUSTNRQESITM
+				WHERE QUSTNR_QESITM_ID = A.QUSTNR_QESITM_ID
+			) AS QESTN_CN,
 			(
-			SELECT IEM_CN FROM LETTNQUSTNRIEM
-			WHERE 1=1
-			AND QUSTNR_IEM_ID = A.QUSTNR_IEM_ID
-			) IEM_CN,
+				SELECT IEM_CN 
+				FROM LETTNQUSTNRIEM
+				WHERE QUSTNR_IEM_ID = A.QUSTNR_IEM_ID
+			) AS IEM_CN,
 			A.QUSTNR_IEM_ID,
-			A.QUSTNR_QESITM_ID				qestnrQesitmId,
+			A.QUSTNR_QESITM_ID       AS qestnrQesitmId,
 			A.QESTNR_ID,
 			A.RESPOND_ANSWER_CN,
 			A.RESPOND_NM,
 			A.ETC_ANSWER_CN,
-			A.QUSTNR_TMPLAT_ID		qestnrTmplatId,
-			DATE_FORMAT(A.FRST_REGIST_PNTTM, '%Y-%m-%d') as FRST_REGIST_PNTTM,
+			A.QUSTNR_TMPLAT_ID       AS qestnrTmplatId,
+			DATE_FORMAT(A.FRST_REGIST_PNTTM, '%Y-%m-%d') AS FRST_REGIST_PNTTM,
 			A.FRST_REGISTER_ID,
-			(SELECT USER_NM FROM COMVNUSERMASTER WHERE ESNTL_ID = A.FRST_REGISTER_ID) FRST_REGISTER_NM,
-			DATE_FORMAT(A.LAST_UPDT_PNTTM,'%Y-%m-%d') as LAST_UPDT_PNTTM,
+			(SELECT USER_NM FROM COMVNUSERMASTER WHERE ESNTL_ID = A.FRST_REGISTER_ID) AS FRST_REGISTER_NM,
+			DATE_FORMAT(A.LAST_UPDT_PNTTM, '%Y-%m-%d') AS LAST_UPDT_PNTTM,
 			A.LAST_UPDUSR_ID
 		FROM LETTNQUSTNRRSPNSRESULT A
 		WHERE 1=1
-	 <if test="searchKeyword != null and searchKeyword != ''">
-            <if test="searchCondition == 'ETC_ANSWER_CN'">
-                AND ETC_ANSWER_CN  LIKE CONCAT('%', #{searchKeyword}, '%')
-            </if>
-            <if test="searchCondition == 'RESPOND_ANSWER_CN'">
-                AND RESPOND_ANSWER_CN  LIKE CONCAT('%', #{searchKeyword}, '%')
-            </if>
-            <if test="searchCondition == 'RESPOND_NM'">
-                AND RESPOND_NM  LIKE CONCAT('%', #{searchKeyword}, '%')
-            </if>
-	 </if>
+		<if test="searchKeyword != null and searchKeyword != ''">
+			<if test="searchCondition == 'ETC_ANSWER_CN'">
+				AND A.ETC_ANSWER_CN LIKE CONCAT('%', #{searchKeyword}, '%')
+			</if>
+			<if test="searchCondition == 'RESPOND_ANSWER_CN'">
+				AND A.RESPOND_ANSWER_CN LIKE CONCAT('%', #{searchKeyword}, '%')
+			</if>
+			<if test="searchCondition == 'RESPOND_NM'">
+				AND A.RESPOND_NM LIKE CONCAT('%', #{searchKeyword}, '%')
+			</if>
+		</if>
 		ORDER BY A.FRST_REGIST_PNTTM DESC
 		LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
 	</select>
 
-	<!-- 응답자결과(설문조사)::목록조회_게시물 총갯수  -->
+	<!--
+		개별 설문 응답 결과 목록 총 레코드 수 조회
+		- 기능: 설문 응답 결과 목록 페이징을 위한 총 레코드 수 반환
+		- 파라미터: searchCondition, searchKeyword
+		- 반환값: 총 건수
+	-->
 	<select id="selectQustnrRespondInfoListCnt" parameterType="map" resultType="int">
+		/* com.portal.user.poll.qri.QustnrRespondInfoMapper.selectQustnrRespondInfoListCnt */
 		SELECT
-		COUNT(*) totcnt
+			COUNT(*) AS totcnt
 		FROM LETTNQUSTNRRSPNSRESULT
 		WHERE 1=1
-	 <if test="searchKeyword != null and searchKeyword != ''">
-            <if test="searchCondition == 'ETC_ANSWER_CN'">
-                AND ETC_ANSWER_CN  LIKE CONCAT('%', #{searchKeyword}, '%')
-            </if>
-            <if test="searchCondition == 'RESPOND_ANSWER_CN'">
-                AND RESPOND_ANSWER_CN  LIKE CONCAT('%', #{searchKeyword}, '%')
-            </if>
-            <if test="searchCondition == 'RESPOND_NM'">
-                AND RESPOND_NM  LIKE CONCAT('%', #{searchKeyword}, '%')
-            </if>
-	 </if>
+		<if test="searchKeyword != null and searchKeyword != ''">
+			<if test="searchCondition == 'ETC_ANSWER_CN'">
+				AND ETC_ANSWER_CN LIKE CONCAT('%', #{searchKeyword}, '%')
+			</if>
+			<if test="searchCondition == 'RESPOND_ANSWER_CN'">
+				AND RESPOND_ANSWER_CN LIKE CONCAT('%', #{searchKeyword}, '%')
+			</if>
+			<if test="searchCondition == 'RESPOND_NM'">
+				AND RESPOND_NM LIKE CONCAT('%', #{searchKeyword}, '%')
+			</if>
+		</if>
 	</select>
 
-	<!-- 응답자결과(설문조사)::입력  -->
+	<!--
+		설문 응답 결과 신규 등록
+		- 기능: 참여자가 설문지 문항에 답변한 결과(선택한 항목 또는 주관식 텍스트)를 등록
+		- 파라미터: qestnrQesrspnsId, qestnrQesitmId, qestnrId, qestnrTmplatId, qustnrIemId, respondAnswerCn, respondNm, etcAnswerCn, frstRegisterId, lastUpdusrId
+	-->
 	<insert id="insertQustnrRespondInfo" parameterType="map">
+		/* com.portal.user.poll.qri.QustnrRespondInfoMapper.insertQustnrRespondInfo */
 		INSERT INTO LETTNQUSTNRRSPNSRESULT (
 			QUSTNR_RSPNS_RESULT_ID,
 			QUSTNR_QESITM_ID,
@@ -284,7 +369,7 @@
 			FRST_REGISTER_ID,
 			LAST_UPDT_PNTTM,
 			LAST_UPDUSR_ID
-		)VALUES(
+		) VALUES (
 			#{qestnrQesrspnsId},
 			#{qestnrQesitmId},
 			#{qestnrId},

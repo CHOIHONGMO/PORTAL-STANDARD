@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.portal.security.authority.AuthorRoleManageMapper">
+
+	<!--
+	====================================================================================================
+	 1. 권한별 롤(Role) 매핑 목록 페이징 조회
+	  - 설명: 시스템에 등록된 전체 롤 목록과 함께, 대상 권한(searchKeyword)에 매핑되어 있는지 여부(regYn: 'Y'/'N')를 조회합니다.
+	  - 테이블: LETTNROLEINFO a (롤 정보), LETTNAUTHORROLERELATE b (권한-롤 매핑)
+	  - 파라미터: searchKeyword (권한 코드), recordCountPerPage, firstIndex
+	====================================================================================================
+	-->
+	<select id="selectAuthorRoleList" resultType="egovMap">
+		/* com.portal.security.authority.AuthorRoleManageMapper.selectAuthorRoleList */
+		SELECT
+			a.ROLE_CODE                           AS roleCode,
+			a.ROLE_NM                             AS roleNm,
+			a.ROLE_PTTRN                          AS rolePtn,
+			a.ROLE_DC                             AS roleDc,
+			a.ROLE_TY                             AS roleTyp,
+			a.ROLE_SORT                           AS roleSort,
+			b.AUTHOR_CODE                         AS authorCode,
+			DATE_FORMAT(b.CREAT_DT, '%Y-%m-%d')  AS creatDt,
+			(CASE WHEN b.ROLE_CODE IS NULL THEN 'N' ELSE 'Y' END) AS regYn
+		  FROM LETTNROLEINFO a
+		  LEFT OUTER JOIN (
+		       SELECT AUTHOR_CODE, ROLE_CODE, CREAT_DT
+		         FROM LETTNAUTHORROLERELATE
+		        WHERE AUTHOR_CODE = #{searchKeyword}
+		  ) b
+		    ON a.ROLE_CODE = b.ROLE_CODE
+		 LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+	</select>
+
+	<!--
+	====================================================================================================
+	 2. 권한별 롤 매핑 목록 총 건수 조회
+	  - 설명: 롤 매핑 목록 페이징 처리를 위한 총 건수를 계산합니다.
+	  - 파라미터: searchKeyword (권한 코드)
+	====================================================================================================
+	-->
+	<select id="selectAuthorRoleListTotCnt" resultType="int">
+		/* com.portal.security.authority.AuthorRoleManageMapper.selectAuthorRoleListTotCnt */
+		SELECT COUNT(*) AS totcnt
+		  FROM LETTNROLEINFO a
+		  LEFT OUTER JOIN (
+		       SELECT AUTHOR_CODE, ROLE_CODE, CREAT_DT
+		         FROM LETTNAUTHORROLERELATE
+		        WHERE AUTHOR_CODE = #{searchKeyword}
+		  ) b
+		    ON a.ROLE_CODE = b.ROLE_CODE
+	</select>
+
+	<!--
+	====================================================================================================
+	 3. 권한에 롤 매핑 등록
+	  - 설명: 특정 권한(authorCode)에 특정 롤(roleCode)을 매핑합니다.
+	  - 파라미터: authorCode, roleCode
+	====================================================================================================
+	-->
+	<insert id="insertAuthorRole">
+		/* com.portal.security.authority.AuthorRoleManageMapper.insertAuthorRole */
+		INSERT INTO LETTNAUTHORROLERELATE
+		(
+			AUTHOR_CODE, ROLE_CODE, CREAT_DT
+		)
+		VALUES
+		(
+			#{authorCode}, #{roleCode}, NOW()
+		)
+	</insert>
+
+	<!--
+	====================================================================================================
+	 4. 권한에서 롤 매핑 해제
+	  - 설명: 특정 권한에 부여된 롤 매핑을 삭제합니다.
+	  - 파라미터: authorCode, roleCode
+	====================================================================================================
+	-->
+	<delete id="deleteAuthorRole">
+		/* com.portal.security.authority.AuthorRoleManageMapper.deleteAuthorRole */
+		DELETE FROM LETTNAUTHORROLERELATE
+		 WHERE AUTHOR_CODE = #{authorCode}
+		   AND ROLE_CODE   = #{roleCode}
+	</delete>
+
+</mapper>

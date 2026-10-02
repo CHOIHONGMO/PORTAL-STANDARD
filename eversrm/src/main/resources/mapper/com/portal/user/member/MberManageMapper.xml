@@ -2,123 +2,263 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.portal.user.member.MberManageMapper">
 
-    <select id="selectMberList" parameterType="map" resultType="egovMap">
-        SELECT uniqId, userTy, userId, userNm, emailAdres, areaNo, middleTelno, endTelno, moblphonNo, groupId, sttus, sbscrbDe
-        FROM (
-            SELECT 
-                ESNTL_ID uniqId, 'USR01' userTy, MBER_ID userId, MBER_NM userNm, MBER_EMAIL_ADRES emailAdres,
-                AREA_NO areaNo, MIDDLE_TELNO middleTelno, END_TELNO endTelno, MBTLNUM moblphonNo,
-                GROUP_ID groupId, MBER_STTUS sttus, DATE_FORMAT(SBSCRB_DE,'%Y-%m-%d') sbscrbDe
-            FROM LETTNGNRLMBER
-        ) A
-        WHERE 1=1
-        <if test='sbscrbSttus != "0"'>
-            AND sttus LIKE #{sbscrbSttus}
-        </if>
-        <if test='searchCondition == "0"'>
-            AND userId LIKE #{searchKeyword}
-        </if>
-        <if test='searchCondition == "1"'>
-            AND userNm LIKE '%' #{searchKeyword} '%'
-        </if>
-        ORDER BY sbscrbDe DESC
-        LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
-    </select>
+	<!--
+	====================================================================================================
+	 1. 일반회원 목록 페이징 조회
+	  - 설명: 등록된 일반회원 목록을 가입상태(sbscrbSttus), 회원ID, 회원명 검색조건 및 페이징을 적용하여 조회합니다.
+	  - 테이블: LETTNGNRLMBER (일반회원 테이블)
+	  - 파라미터: sbscrbSttus, searchCondition, searchKeyword, recordCountPerPage, firstIndex
+	====================================================================================================
+	-->
+	<select id="selectMberList" parameterType="map" resultType="egovMap">
+		/* com.portal.user.member.MberManageMapper.selectMberList */
+		SELECT
+			uniqId,
+			userTy,
+			userId,
+			userNm,
+			emailAdres,
+			areaNo,
+			middleTelno,
+			endTelno,
+			moblphonNo,
+			groupId,
+			sttus,
+			sbscrbDe
+		  FROM (
+		       SELECT
+		           ESNTL_ID                               AS uniqId,
+		           'USR01'                                AS userTy,
+		           MBER_ID                                AS userId,
+		           MBER_NM                                AS userNm,
+		           MBER_EMAIL_ADRES                       AS emailAdres,
+		           AREA_NO                                AS areaNo,
+		           MIDDLE_TELNO                           AS middleTelno,
+		           END_TELNO                              AS endTelno,
+		           MBTLNUM                                AS moblphonNo,
+		           GROUP_ID                               AS groupId,
+		           MBER_STTUS                             AS sttus,
+		           DATE_FORMAT(SBSCRB_DE, '%Y-%m-%d')    AS sbscrbDe
+		         FROM LETTNGNRLMBER
+		  ) a
+		 WHERE 1 = 1
+		<if test='sbscrbSttus != null and sbscrbSttus != "0" and sbscrbSttus != ""'>
+		   AND sttus LIKE #{sbscrbSttus}
+		</if>
+		<if test='searchCondition == "0"'>
+		   AND userId LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+		<if test='searchCondition == "1"'>
+		   AND userNm LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+		 ORDER BY sbscrbDe DESC
+		 LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+	</select>
 
-    <select id="selectMberListTotCnt" parameterType="map" resultType="int">
-        SELECT COUNT(1) totcnt
-        FROM (
-            SELECT 
-                ESNTL_ID uniqId, 'USR01' userTy, MBER_ID userId, MBER_NM userNm, MBER_EMAIL_ADRES emailAdres,
-                AREA_NO areaNo, MIDDLE_TELNO middleTelno, END_TELNO endTelno, MBTLNUM moblphonNo,
-                GROUP_ID groupId, MBER_STTUS sttus, SBSCRB_DE sbscrbDe
-            FROM LETTNGNRLMBER
-        ) A
-        WHERE 1=1
-        <if test='sbscrbSttus != "0"'>
-            AND sttus LIKE #{sbscrbSttus}
-        </if>
-        <if test='searchCondition == "0"'>
-            AND userId LIKE #{searchKeyword}
-        </if>
-        <if test='searchCondition == "1"'>
-            AND userNm LIKE '%' #{searchKeyword} '%'
-        </if>
-    </select>
+	<!--
+	====================================================================================================
+	 2. 일반회원 목록 총 건수 조회
+	  - 설명: 일반회원 목록 페이징을 위한 총 건수를 계산합니다.
+	  - 파라미터: sbscrbSttus, searchCondition, searchKeyword
+	====================================================================================================
+	-->
+	<select id="selectMberListTotCnt" parameterType="map" resultType="int">
+		/* com.portal.user.member.MberManageMapper.selectMberListTotCnt */
+		SELECT COUNT(1) AS totcnt
+		  FROM (
+		       SELECT
+		           ESNTL_ID         AS uniqId,
+		           'USR01'          AS userTy,
+		           MBER_ID          AS userId,
+		           MBER_NM          AS userNm,
+		           MBER_EMAIL_ADRES AS emailAdres,
+		           AREA_NO          AS areaNo,
+		           MIDDLE_TELNO     AS middleTelno,
+		           END_TELNO        AS endTelno,
+		           MBTLNUM          AS moblphonNo,
+		           GROUP_ID         AS groupId,
+		           MBER_STTUS       AS sttus,
+		           SBSCRB_DE        AS sbscrbDe
+		         FROM LETTNGNRLMBER
+		  ) a
+		 WHERE 1 = 1
+		<if test='sbscrbSttus != null and sbscrbSttus != "0" and sbscrbSttus != ""'>
+		   AND sttus LIKE #{sbscrbSttus}
+		</if>
+		<if test='searchCondition == "0"'>
+		   AND userId LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+		<if test='searchCondition == "1"'>
+		   AND userNm LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+	</select>
 
-    <insert id="insertMber">
-        INSERT INTO LETTNGNRLMBER (
-            ESNTL_ID, MBER_ID, MBER_NM, PASSWORD, PASSWORD_HINT, PASSWORD_CNSR,
-            IHIDNUM, SEXDSTN_CODE, ZIP, ADRES, AREA_NO, MBER_STTUS, DETAIL_ADRES,
-            END_TELNO, MBTLNUM, GROUP_ID, MBER_FXNUM, MBER_EMAIL_ADRES, MIDDLE_TELNO, SBSCRB_DE
-        ) VALUES (
-            #{uniqId}, #{mberId}, #{mberNm}, #{password}, #{passwordHint}, #{passwordCnsr},
-            #{ihidnum}, #{sexdstnCode}, #{zip}, #{adres}, #{areaNo}, #{mberSttus}, #{detailAdres},
-            #{endTelno}, #{moblphonNo}, #{groupId}, #{mberFxnum}, #{mberEmailAdres}, #{middleTelno}, SYSDATE()
-        )
-    </insert>
+	<!--
+	====================================================================================================
+	 3. 일반회원 정보 등록 (회원가입)
+	  - 설명: 신규 일반회원 계정을 생성합니다.
+	  - 파라미터: uniqId, mberId, mberNm, password, passwordHint, passwordCnsr, ihidnum, sexdstnCode, zip, adres, areaNo, mberSttus, detailAdres, endTelno, moblphonNo, groupId, mberFxnum, mberEmailAdres, middleTelno
+	====================================================================================================
+	-->
+	<insert id="insertMber">
+		/* com.portal.user.member.MberManageMapper.insertMber */
+		INSERT INTO LETTNGNRLMBER
+		(
+			ESNTL_ID, MBER_ID, MBER_NM, PASSWORD, PASSWORD_HINT, PASSWORD_CNSR,
+			IHIDNUM, SEXDSTN_CODE, ZIP, ADRES, AREA_NO, MBER_STTUS, DETAIL_ADRES,
+			END_TELNO, MBTLNUM, GROUP_ID, MBER_FXNUM, MBER_EMAIL_ADRES, MIDDLE_TELNO, SBSCRB_DE
+		)
+		VALUES
+		(
+			#{uniqId}, #{mberId}, #{mberNm}, #{password}, #{passwordHint}, #{passwordCnsr},
+			#{ihidnum}, #{sexdstnCode}, #{zip}, #{adres}, #{areaNo}, #{mberSttus}, #{detailAdres},
+			#{endTelno}, #{moblphonNo}, #{groupId}, #{mberFxnum}, #{mberEmailAdres}, #{middleTelno}, SYSDATE()
+		)
+	</insert>
 
-    <delete id="deleteMber">
-        DELETE FROM LETTNGNRLMBER WHERE ESNTL_ID = #{delId}
-    </delete>
+	<!--
+	====================================================================================================
+	 4. 일반회원 삭제
+	  - 설명: 회원 고유 식별자(delId: ESNTL_ID)를 기준으로 회원 정보를 삭제합니다.
+	  - 파라미터: delId
+	====================================================================================================
+	-->
+	<delete id="deleteMber">
+		/* com.portal.user.member.MberManageMapper.deleteMber */
+		DELETE FROM LETTNGNRLMBER
+		 WHERE ESNTL_ID = #{delId}
+	</delete>
 
-    <select id="selectMber" resultType="egovMap">
-        SELECT
-            ESNTL_ID uniqId, 'USR01' userTy, MBER_ID mberId, MBER_NM mberNm, PASSWORD password,
-            PASSWORD_HINT passwordHint, PASSWORD_CNSR passwordCnsr, IHIDNUM ihidnum, SEXDSTN_CODE sexdstnCode,
-            ZIP zip, ADRES adres, AREA_NO areaNo, MBER_STTUS mberSttus, DETAIL_ADRES detailAdres,
-            END_TELNO endTelno, MBTLNUM moblphonNo, GROUP_ID groupId, MBER_FXNUM mberFxnum,
-            MBER_EMAIL_ADRES mberEmailAdres, MIDDLE_TELNO middleTelno, DATE_FORMAT(SBSCRB_DE,'%Y-%m-%d') sbscrbDe
-        FROM LETTNGNRLMBER
-        WHERE ESNTL_ID = #{uniqId}
-    </select>
+	<!--
+	====================================================================================================
+	 5. 일반회원 단건 상세 조회
+	  - 설명: 특정 회원(uniqId)의 가입 상세 정보를 조회합니다.
+	  - 파라미터: uniqId (ESNTL_ID)
+	====================================================================================================
+	-->
+	<select id="selectMber" resultType="egovMap">
+		/* com.portal.user.member.MberManageMapper.selectMber */
+		SELECT
+			ESNTL_ID                               AS uniqId,
+			'USR01'                                AS userTy,
+			MBER_ID                                AS mberId,
+			MBER_NM                                AS mberNm,
+			PASSWORD                               AS password,
+			PASSWORD_HINT                          AS passwordHint,
+			PASSWORD_CNSR                          AS passwordCnsr,
+			IHIDNUM                                AS ihidnum,
+			SEXDSTN_CODE                           AS sexdstnCode,
+			ZIP                                    AS zip,
+			ADRES                                  AS adres,
+			AREA_NO                                AS areaNo,
+			MBER_STTUS                             AS mberSttus,
+			DETAIL_ADRES                           AS detailAdres,
+			END_TELNO                              AS endTelno,
+			MBTLNUM                                AS moblphonNo,
+			GROUP_ID                               AS groupId,
+			MBER_FXNUM                             AS mberFxnum,
+			MBER_EMAIL_ADRES                       AS mberEmailAdres,
+			MIDDLE_TELNO                           AS middleTelno,
+			DATE_FORMAT(SBSCRB_DE, '%Y-%m-%d')    AS sbscrbDe
+		  FROM LETTNGNRLMBER
+		 WHERE ESNTL_ID = #{uniqId}
+	</select>
 
-    <update id="updateMber">
-        UPDATE LETTNGNRLMBER SET
-            MBER_ID = #{mberId},
-            MBER_NM = #{mberNm},
-            PASSWORD_HINT = #{passwordHint},
-            PASSWORD_CNSR = #{passwordCnsr},
-            IHIDNUM = #{ihidnum},
-            SEXDSTN_CODE = #{sexdstnCode},
-            ZIP = #{zip},
-            ADRES = #{adres},
-            AREA_NO = #{areaNo},
-            MBER_STTUS = #{mberSttus},
-            DETAIL_ADRES = #{detailAdres},
-            END_TELNO = #{endTelno},
-            MBTLNUM = #{moblphonNo},
-            GROUP_ID = #{groupId},
-            MBER_FXNUM = #{mberFxnum},
-            MBER_EMAIL_ADRES = #{mberEmailAdres},
-            MIDDLE_TELNO = #{middleTelno}
-        WHERE ESNTL_ID = #{uniqId}
-    </update>
+	<!--
+	====================================================================================================
+	 6. 일반회원 정보 수정
+	  - 설명: 회원의 기본 프로필, 연락처, 주소 등의 정보를 수정합니다.
+	  - 파라미터: mberId, mberNm, passwordHint, passwordCnsr, ihidnum, sexdstnCode, zip, adres, areaNo, mberSttus, detailAdres, endTelno, moblphonNo, groupId, mberFxnum, mberEmailAdres, middleTelno, uniqId
+	====================================================================================================
+	-->
+	<update id="updateMber">
+		/* com.portal.user.member.MberManageMapper.updateMber */
+		UPDATE LETTNGNRLMBER
+		   SET MBER_ID          = #{mberId},
+		       MBER_NM          = #{mberNm},
+		       PASSWORD_HINT    = #{passwordHint},
+		       PASSWORD_CNSR    = #{passwordCnsr},
+		       IHIDNUM          = #{ihidnum},
+		       SEXDSTN_CODE     = #{sexdstnCode},
+		       ZIP              = #{zip},
+		       ADRES            = #{adres},
+		       AREA_NO          = #{areaNo},
+		       MBER_STTUS       = #{mberSttus},
+		       DETAIL_ADRES     = #{detailAdres},
+		       END_TELNO        = #{endTelno},
+		       MBTLNUM          = #{moblphonNo},
+		       GROUP_ID         = #{groupId},
+		       MBER_FXNUM       = #{mberFxnum},
+		       MBER_EMAIL_ADRES = #{mberEmailAdres},
+		       MIDDLE_TELNO     = #{middleTelno}
+		 WHERE ESNTL_ID         = #{uniqId}
+	</update>
 
-    <select id="selectStplat" resultType="egovMap">
-        SELECT USE_STPLAT_ID, USE_STPLAT_CN, INFO_PROVD_AGRE_CN      
-        FROM LETTNSTPLATINFO
-        WHERE USE_STPLAT_ID = #{stplatId}
-    </select>
+	<!--
+	====================================================================================================
+	 7. 가입 약관 내용 조회
+	  - 설명: 회원가입 시 동의해야 하는 이용약관 및 개인정보 제공동의 내용을 조회합니다.
+	  - 테이블: LETTNSTPLATINFO (약관 정보)
+	  - 파라미터: stplatId (약관 식별자)
+	====================================================================================================
+	-->
+	<select id="selectStplat" resultType="egovMap">
+		/* com.portal.user.member.MberManageMapper.selectStplat */
+		SELECT
+			USE_STPLAT_ID,
+			USE_STPLAT_CN,
+			INFO_PROVD_AGRE_CN
+		  FROM LETTNSTPLATINFO
+		 WHERE USE_STPLAT_ID = #{stplatId}
+	</select>
 
-    <update id="updatePassword">
-        UPDATE LETTNGNRLMBER SET PASSWORD = #{password} WHERE ESNTL_ID = #{uniqId}
-    </update>
+	<!--
+	====================================================================================================
+	 8. 회원 비밀번호 변경
+	  - 설명: 지정된 회원의 암호화된 비밀번호를 변경합니다.
+	  - 파라미터: password, uniqId
+	====================================================================================================
+	-->
+	<update id="updatePassword">
+		/* com.portal.user.member.MberManageMapper.updatePassword */
+		UPDATE LETTNGNRLMBER
+		   SET PASSWORD = #{password}
+		 WHERE ESNTL_ID = #{uniqId}
+	</update>
 
-    <select id="selectPassword" resultType="egovMap">
-        SELECT PASSWORD password FROM LETTNGNRLMBER WHERE ESNTL_ID = #{uniqId}
-    </select>
+	<!--
+	====================================================================================================
+	 9. 회원 기존 비밀번호 확인
+	  - 설명: 비밀번호 변경 전 기존 비밀번호 일치 여부를 검증하기 위해 조회합니다.
+	  - 파라미터: uniqId
+	====================================================================================================
+	-->
+	<select id="selectPassword" resultType="egovMap">
+		/* com.portal.user.member.MberManageMapper.selectPassword */
+		SELECT PASSWORD AS password
+		  FROM LETTNGNRLMBER
+		 WHERE ESNTL_ID = #{uniqId}
+	</select>
 
-    <select id="checkIdDplct" resultType="int">
-        SELECT COUNT(1) usedCnt
-        FROM (
-            SELECT EMPLYR_ID userId FROM LETTNEMPLYRINFO
-            UNION ALL
-            SELECT ENTRPRS_MBER_ID userId FROM LETTNENTRPRSMBER
-            UNION ALL
-            SELECT MBER_ID userId FROM LETTNGNRLMBER
-        ) A
-        WHERE userId = #{checkId}
-    </select>
+	<!--
+	====================================================================================================
+	 10. 회원 아이디 중복 체크 (통합 검사)
+	  - 설명: 업무사용자(LETTNEMPLYRINFO), 기업회원(LETTNENTRPRSMBER), 일반회원(LETTNGNRLMBER) 전체를 통틀어 동일한 ID가 존재하는지 확인합니다.
+	  - 파라미터: checkId
+	  - 반환값: Integer (1 이상이면 중복)
+	====================================================================================================
+	-->
+	<select id="checkIdDplct" resultType="int">
+		/* com.portal.user.member.MberManageMapper.checkIdDplct */
+		SELECT COUNT(1) AS usedCnt
+		  FROM (
+		       SELECT EMPLYR_ID       AS userId FROM LETTNEMPLYRINFO
+		        UNION ALL
+		       SELECT ENTRPRS_MBER_ID AS userId FROM LETTNENTRPRSMBER
+		        UNION ALL
+		       SELECT MBER_ID         AS userId FROM LETTNGNRLMBER
+		  ) a
+		 WHERE a.userId = #{checkId}
+	</select>
 
 </mapper>

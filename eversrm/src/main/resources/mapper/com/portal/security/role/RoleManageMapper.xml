@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.portal.security.role.RoleManageMapper">
+
+	<!--
+	====================================================================================================
+	 1. 롤(Role) 단건 상세 조회
+	  - 설명: 롤 코드(roleCode)에 해당하는 롤 패턴, 명칭, 설명, 유형, 정렬순서 등을 조회합니다.
+	  - 테이블: LETTNROLEINFO (롤 정보)
+	  - 파라미터: roleCode
+	====================================================================================================
+	-->
+	<select id="selectRole" resultType="egovMap">
+		/* com.portal.security.role.RoleManageMapper.selectRole */
+		SELECT
+			ROLE_CODE     AS roleCode,
+			ROLE_NM       AS roleNm,
+			ROLE_PTTRN    AS rolePtn,
+			ROLE_DC       AS roleDc,
+			ROLE_TY       AS roleTyp,
+			ROLE_SORT     AS roleSort,
+			ROLE_CREAT_DE AS roleCreatDe
+		  FROM LETTNROLEINFO
+		 WHERE ROLE_CODE = #{roleCode}
+	</select>
+
+	<!--
+	====================================================================================================
+	 2. 롤 목록 페이징 조회
+	  - 설명: 등록된 롤 목록을 페이징 및 롤명 검색 조건으로 조회합니다.
+	  - 조인: LETTCCMMNDETAILCODE (COM029 - 롤 유형 코드명)
+	  - 파라미터: searchCondition, searchKeyword, recordCountPerPage, firstIndex
+	====================================================================================================
+	-->
+	<select id="selectRoleList" resultType="egovMap">
+		/* com.portal.security.role.RoleManageMapper.selectRoleList */
+		SELECT
+			ROLE_CODE     AS roleCode,
+			ROLE_NM       AS roleNm,
+			ROLE_PTTRN    AS rolePtn,
+			ROLE_DC       AS roleDc,
+			(
+				SELECT c.CODE_NM
+				  FROM LETTCCMMNDETAILCODE c
+				 WHERE c.CODE_ID = 'COM029'
+				   AND c.CODE    = ROLE_TY
+			) AS roleTyp,
+			ROLE_SORT     AS roleSort,
+			ROLE_CREAT_DE AS roleCreatDe
+		  FROM LETTNROLEINFO
+		 WHERE 1 = 1
+		<if test="searchCondition == 1">
+		   AND ROLE_NM LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+		 ORDER BY ROLE_CREAT_DE DESC
+		 LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+	</select>
+
+	<!--
+	====================================================================================================
+	 3. 롤 정보 신규 등록
+	  - 설명: 새로운 접근 제어 롤(URL 패턴 등)을 등록합니다.
+	  - 파라미터: roleCode, roleNm, rolePtn (Ant 패턴 등), roleDc, roleTyp, roleSort
+	====================================================================================================
+	-->
+	<insert id="insertRole">
+		/* com.portal.security.role.RoleManageMapper.insertRole */
+		INSERT INTO LETTNROLEINFO
+		(
+			ROLE_CODE, ROLE_NM, ROLE_PTTRN, ROLE_DC,
+			ROLE_TY, ROLE_SORT, ROLE_CREAT_DE
+		)
+		VALUES
+		(
+			#{roleCode}, #{roleNm}, #{rolePtn}, #{roleDc},
+			#{roleTyp}, #{roleSort}, NOW()
+		)
+	</insert>
+
+	<!--
+	====================================================================================================
+	 4. 롤 정보 수정
+	  - 설명: 롤의 명칭, 패턴, 설명, 유형, 정렬순서를 수정합니다.
+	  - 파라미터: roleNm, rolePtn, roleDc, roleTyp, roleSort, roleCode
+	====================================================================================================
+	-->
+	<update id="updateRole">
+		/* com.portal.security.role.RoleManageMapper.updateRole */
+		UPDATE LETTNROLEINFO
+		   SET ROLE_NM       = #{roleNm},
+		       ROLE_PTTRN    = #{rolePtn},
+		       ROLE_DC       = #{roleDc},
+		       ROLE_TY       = #{roleTyp},
+		       ROLE_SORT     = #{roleSort},
+		       ROLE_CREAT_DE = NOW()
+		 WHERE ROLE_CODE = #{roleCode}
+	</update>
+
+	<!--
+	====================================================================================================
+	 5. 롤 삭제
+	  - 설명: 지정된 롤을 테이블에서 물리 삭제합니다.
+	  - 파라미터: roleCode
+	====================================================================================================
+	-->
+	<delete id="deleteRole">
+		/* com.portal.security.role.RoleManageMapper.deleteRole */
+		DELETE FROM LETTNROLEINFO
+		 WHERE ROLE_CODE = #{roleCode}
+	</delete>
+
+	<!--
+	====================================================================================================
+	 6. 롤 목록 총 건수 조회
+	  - 설명: 롤 목록 페이징용 총 건수를 계산합니다.
+	  - 파라미터: searchCondition, searchKeyword
+	====================================================================================================
+	-->
+	<select id="selectRoleListTotCnt" resultType="int">
+		/* com.portal.security.role.RoleManageMapper.selectRoleListTotCnt */
+		SELECT COUNT(*) AS totcnt
+		  FROM LETTNROLEINFO
+		 WHERE 1 = 1
+		<if test="searchCondition == 1">
+		   AND ROLE_NM LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+	</select>
+
+	<!--
+	====================================================================================================
+	 7. 전체 롤 목록 조회
+	  - 설명: 시스템에 등록된 모든 롤 목록을 조회합니다.
+	====================================================================================================
+	-->
+	<select id="selectRoleAllList" resultType="egovMap">
+		/* com.portal.security.role.RoleManageMapper.selectRoleAllList */
+		SELECT
+			ROLE_CODE     AS roleCode,
+			ROLE_NM       AS roleNm,
+			ROLE_PTTRN    AS rolePtn,
+			ROLE_DC       AS roleDc,
+			ROLE_TY       AS roleTyp,
+			ROLE_SORT     AS roleSort,
+			ROLE_CREAT_DE AS roleCreatDe
+		  FROM LETTNROLEINFO
+		 ORDER BY ROLE_SORT ASC
+	</select>
+
+</mapper>

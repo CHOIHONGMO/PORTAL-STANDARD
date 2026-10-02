@@ -1,8 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.portal.common.FileMngMapper">
 
+	<!--
+	====================================================================================================
+	 첨부파일 목록 resultMap (fileList)
+	  - ATCH_FILE_ID    : 파일 그룹 식별자
+	  - FILE_SN         : 파일 순번 (0, 1, 2...)
+	  - FILE_STRE_COURS : 서버 물리 저장 디렉토리 경로
+	  - STRE_FILE_NM    : 서버에 저장된 고유 파일명 (UUID 또는 타임스탬프)
+	  - ORIGNL_FILE_NM  : 사용자가 업로드한 원본 파일명
+	  - FILE_EXTSN      : 확장자 (jpg, pdf 등)
+	  - FILE_SIZE       : 파일 크기 (Byte) -> fileMg
+	  - FILE_CN         : 파일 내용/설명
+	  - CREAT_DT        : 파일 등록일자 (YYYY-MM-DD)
+	====================================================================================================
+	-->
 	<resultMap id="fileList" type="map">
 		<result property="atchFileId" column="ATCH_FILE_ID"/>
 		<result property="fileCn" column="FILE_CN"/>
@@ -12,9 +25,14 @@
 		<result property="fileStreCours" column="FILE_STRE_COURS"/>
 		<result property="orignlFileNm" column="ORIGNL_FILE_NM"/>
 		<result property="streFileNm" column="STRE_FILE_NM"/>
-		<result property="creatDt" column="CREAT_DT"/>			
+		<result property="creatDt" column="CREAT_DT"/>
 	</resultMap>
 
+	<!--
+	====================================================================================================
+	 첨부파일 단건 상세 resultMap (fileDetail)
+	====================================================================================================
+	-->
 	<resultMap id="fileDetail" type="map">
 		<result property="atchFileId" column="ATCH_FILE_ID"/>
 		<result property="fileCn" column="FILE_CN"/>
@@ -24,125 +42,226 @@
 		<result property="fileStreCours" column="FILE_STRE_COURS"/>
 		<result property="orignlFileNm" column="ORIGNL_FILE_NM"/>
 		<result property="streFileNm" column="STRE_FILE_NM"/>
-	</resultMap>	
+	</resultMap>
 
- 	<select id="selectFileList" parameterType="map" resultMap="fileList">
-			SELECT 
-				a.ATCH_FILE_ID, b.FILE_CN, b.FILE_SN, b.FILE_STRE_COURS, b.STRE_FILE_NM,
-				b.FILE_EXTSN, b.ORIGNL_FILE_NM, b.FILE_SIZE, DATE_FORMAT(a.CREAT_DT,'%Y-%m-%d') as CREAT_DT
-			FROM
-				LETTNFILE a, LETTNFILEDETAIL b
-			WHERE
-				a.ATCH_FILE_ID = #{atchFileId}
-			AND 
-				a.ATCH_FILE_ID = b.ATCH_FILE_ID
-			AND 
-				a.USE_AT = 'Y'				
-			ORDER BY b.FILE_SN	
- 	</select>
- 	
-	<insert id="insertFileMaster" parameterType="map">
-			INSERT INTO LETTNFILE
-			(ATCH_FILE_ID, CREAT_DT, USE_AT)
-			VALUES
-			( #{atchFileId}, SYSDATE(), 'Y')			
-	</insert>
-	
-	<insert id="insertFileDetail" parameterType="map">
-			INSERT INTO LETTNFILEDETAIL
-			( ATCH_FILE_ID, FILE_SN, FILE_STRE_COURS, STRE_FILE_NM, 
-			  ORIGNL_FILE_NM, FILE_EXTSN, FILE_SIZE, FILE_CN )
-			VALUES
-			( #{atchFileId}, #{fileSn}, #{fileStreCours}, #{streFileNm}, 
-			  #{orignlFileNm}, #{fileExtsn}, #{fileMg}, #{fileCn} )			
-	</insert>	
-	
-	<delete id="deleteFileDetail" parameterType="map">
-			DELETE FROM LETTNFILEDETAIL
-			WHERE
-				ATCH_FILE_ID = #{atchFileId}
-			AND	
-				FILE_SN = #{fileSn}			
-	</delete>
-  	
-	<select id="getMaxFileSN" parameterType="map" resultType="java.lang.Integer">
-			SELECT IFNULL(MAX(FILE_SN),0)+1 AS FILE_SN
-			FROM LETTNFILEDETAIL
-			WHERE ATCH_FILE_ID =  #{atchFileId}		
+	<!--
+	====================================================================================================
+	 1. 첨부파일 그룹 내 파일 목록 조회
+	  - 설명: 첨부파일 그룹 ID(atchFileId)에 속하고 활성화(USE_AT='Y')된 모든 파일 목록을 순번 오름차순으로 조회합니다.
+	  - 테이블: LETTNFILE a (파일 마스터), LETTNFILEDETAIL b (파일 상세)
+	  - 파라미터: atchFileId
+	  - 반환: List<Map> (resultMap="fileList")
+	====================================================================================================
+	-->
+	<select id="selectFileList" parameterType="map" resultMap="fileList">
+		/* com.portal.common.FileMngMapper.selectFileList */
+		SELECT
+			a.ATCH_FILE_ID,
+			b.FILE_CN,
+			b.FILE_SN,
+			b.FILE_STRE_COURS,
+			b.STRE_FILE_NM,
+			b.FILE_EXTSN,
+			b.ORIGNL_FILE_NM,
+			b.FILE_SIZE,
+			DATE_FORMAT(a.CREAT_DT, '%Y-%m-%d') AS CREAT_DT
+		  FROM LETTNFILE a
+		 INNER JOIN LETTNFILEDETAIL b
+		    ON a.ATCH_FILE_ID = b.ATCH_FILE_ID
+		 WHERE a.ATCH_FILE_ID = #{atchFileId}
+		   AND a.USE_AT = 'Y'
+		 ORDER BY b.FILE_SN ASC
 	</select>
 
- 	<select id="selectFileInf" parameterType="map" resultMap="fileDetail">
-			SELECT 
-				ATCH_FILE_ID, FILE_CN, FILE_SN, FILE_STRE_COURS, STRE_FILE_NM,
-				FILE_EXTSN, ORIGNL_FILE_NM, FILE_SIZE
-			FROM
-				LETTNFILEDETAIL
-			WHERE
-				ATCH_FILE_ID = #{atchFileId}
-			AND 
-				FILE_SN = #{fileSn}	
- 	</select>
+	<!--
+	====================================================================================================
+	 2. 파일 마스터 레코드 등록
+	  - 설명: 새로운 첨부파일 그룹(ATCH_FILE_ID)을 생성하고 마스터 정보를 등록합니다.
+	  - 파라미터: atchFileId
+	====================================================================================================
+	-->
+	<insert id="insertFileMaster" parameterType="map">
+		/* com.portal.common.FileMngMapper.insertFileMaster */
+		INSERT INTO LETTNFILE
+		(
+			ATCH_FILE_ID, CREAT_DT, USE_AT
+		)
+		VALUES
+		(
+			#{atchFileId}, SYSDATE(), 'Y'
+		)
+	</insert>
 
+	<!--
+	====================================================================================================
+	 3. 파일 상세 정보 등록
+	  - 설명: 파일 그룹(ATCH_FILE_ID) 내 개별 파일에 대한 물리 저장 정보 및 메타데이터를 등록합니다.
+	  - 파라미터: atchFileId, fileSn, fileStreCours, streFileNm, orignlFileNm, fileExtsn, fileMg, fileCn
+	====================================================================================================
+	-->
+	<insert id="insertFileDetail" parameterType="map">
+		/* com.portal.common.FileMngMapper.insertFileDetail */
+		INSERT INTO LETTNFILEDETAIL
+		(
+			ATCH_FILE_ID, FILE_SN, FILE_STRE_COURS, STRE_FILE_NM,
+			ORIGNL_FILE_NM, FILE_EXTSN, FILE_SIZE, FILE_CN
+		)
+		VALUES
+		(
+			#{atchFileId}, #{fileSn}, #{fileStreCours}, #{streFileNm},
+			#{orignlFileNm}, #{fileExtsn}, #{fileMg}, #{fileCn}
+		)
+	</insert>
+
+	<!--
+	====================================================================================================
+	 4. 파일 상세 단건 물리 삭제
+	  - 설명: 특정 파일 그룹의 특정 파일 순번(fileSn) 레코드를 상세 테이블에서 완전히 삭제합니다.
+	  - 파라미터: atchFileId, fileSn
+	====================================================================================================
+	-->
+	<delete id="deleteFileDetail" parameterType="map">
+		/* com.portal.common.FileMngMapper.deleteFileDetail */
+		DELETE FROM LETTNFILEDETAIL
+		 WHERE ATCH_FILE_ID = #{atchFileId}
+		   AND FILE_SN      = #{fileSn}
+	</delete>
+
+	<!--
+	====================================================================================================
+	 5. 다음 파일 순번(FILE_SN) 계산
+	  - 설명: 첨부파일 그룹 내에서 새로 추가될 파일의 순번(최대 FILE_SN + 1)을 구합니다.
+	  - 파라미터: atchFileId
+	  - 반환값: Integer (다음 FILE_SN, 첫 파일일 경우 1)
+	====================================================================================================
+	-->
+	<select id="getMaxFileSN" parameterType="map" resultType="java.lang.Integer">
+		/* com.portal.common.FileMngMapper.getMaxFileSN */
+		SELECT IFNULL(MAX(FILE_SN), 0) + 1 AS FILE_SN
+		  FROM LETTNFILEDETAIL
+		 WHERE ATCH_FILE_ID = #{atchFileId}
+	</select>
+
+	<!--
+	====================================================================================================
+	 6. 파일 단건 상세 조회 (다운로드용)
+	  - 설명: 파일 다운로드 또는 개별 파일 정보를 얻기 위해 ATCH_FILE_ID와 FILE_SN으로 상세 정보를 조회합니다.
+	  - 파라미터: atchFileId, fileSn
+	  - 반환: Map (resultMap="fileDetail")
+	====================================================================================================
+	-->
+	<select id="selectFileInf" parameterType="map" resultMap="fileDetail">
+		/* com.portal.common.FileMngMapper.selectFileInf */
+		SELECT
+			ATCH_FILE_ID,
+			FILE_CN,
+			FILE_SN,
+			FILE_STRE_COURS,
+			STRE_FILE_NM,
+			FILE_EXTSN,
+			ORIGNL_FILE_NM,
+			FILE_SIZE
+		  FROM LETTNFILEDETAIL
+		 WHERE ATCH_FILE_ID = #{atchFileId}
+		   AND FILE_SN      = #{fileSn}
+	</select>
+
+	<!--
+	====================================================================================================
+	 7. 파일 그룹 비활성화 (논리 삭제)
+	  - 설명: 게시글 삭제 등으로 인해 연결된 첨부파일 그룹 전체를 비활성화(USE_AT='N')합니다.
+	  - 파라미터: atchFileId
+	====================================================================================================
+	-->
 	<update id="deleteCOMTNFILE" parameterType="map">
-			UPDATE LETTNFILE
-			SET USE_AT = 'N'
-			WHERE ATCH_FILE_ID = #{atchFileId}
+		/* com.portal.common.FileMngMapper.deleteCOMTNFILE */
+		UPDATE LETTNFILE
+		   SET USE_AT = 'N'
+		 WHERE ATCH_FILE_ID = #{atchFileId}
 	</update>
 
- 	<select id="selectFileListByFileNm" parameterType="map" resultMap="fileList">
-			SELECT 
-				a.ATCH_FILE_ID, b.FILE_CN, b.FILE_SN, b.FILE_STRE_COURS, b.STRE_FILE_NM,
-				b.FILE_EXTSN, b.ORIGNL_FILE_NM, b.FILE_SIZE, DATE_FORMAT(a.CREAT_DT,'%Y-%m-%d') as CREAT_DT
-			FROM
-				LETTNFILE a, LETTNFILEDETAIL b
-			WHERE
-				a.ATCH_FILE_ID = b.ATCH_FILE_ID
-			AND 
-				a.USE_AT = 'Y'
- 		
-			<if test="searchCnd == 'streFileNm'">AND
-					b.STRE_FILE_NM LIKE CONCAT ('%', #{searchWrd},'%') 		
-			</if>
-			<if test="searchCnd == 'orignlFileNm'">AND
-					b.ORIGNL_FILE_NM LIKE CONCAT ('%', #{searchWrd},'%') 		
-			</if>	
-					
-			ORDER BY a.ATCH_FILE_ID, b.FILE_SN	
-			LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
- 	</select>
+	<!--
+	====================================================================================================
+	 8. 파일명 기준 파일 목록 페이징 검색
+	  - 설명: 저장파일명(streFileNm) 또는 원본파일명(orignlFileNm)으로 전체 첨부파일 목록을 검색 및 페이징 조회합니다.
+	  - 파라미터: searchCnd, searchWrd, recordCountPerPage, firstIndex
+	====================================================================================================
+	-->
+	<select id="selectFileListByFileNm" parameterType="map" resultMap="fileList">
+		/* com.portal.common.FileMngMapper.selectFileListByFileNm */
+		SELECT
+			a.ATCH_FILE_ID,
+			b.FILE_CN,
+			b.FILE_SN,
+			b.FILE_STRE_COURS,
+			b.STRE_FILE_NM,
+			b.FILE_EXTSN,
+			b.ORIGNL_FILE_NM,
+			b.FILE_SIZE,
+			DATE_FORMAT(a.CREAT_DT, '%Y-%m-%d') AS CREAT_DT
+		  FROM LETTNFILE a
+		 INNER JOIN LETTNFILEDETAIL b
+		    ON a.ATCH_FILE_ID = b.ATCH_FILE_ID
+		 WHERE a.USE_AT = 'Y'
+		<if test="searchCnd == 'streFileNm'">
+		   AND b.STRE_FILE_NM LIKE CONCAT('%', #{searchWrd}, '%')
+		</if>
+		<if test="searchCnd == 'orignlFileNm'">
+		   AND b.ORIGNL_FILE_NM LIKE CONCAT('%', #{searchWrd}, '%')
+		</if>
+		 ORDER BY a.ATCH_FILE_ID ASC, b.FILE_SN ASC
+		 LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+	</select>
 
- 	<select id="selectFileListCntByFileNm" parameterType="map" resultType="java.lang.Integer">
-			SELECT 
-				COUNT(a.ATCH_FILE_ID)
-			FROM
-				LETTNFILE a, LETTNFILEDETAIL b
-			WHERE
-				a.ATCH_FILE_ID = b.ATCH_FILE_ID
-			AND 
-				a.USE_AT = 'Y'				
- 		
-			<if test="searchCnd == 'streFileNm'">AND
-					b.STRE_FILE_NM LIKE CONCAT ('%', #{searchWrd},'%') 		
-			</if>
-			<if test="searchCnd == 'orignlFileNm'">AND
-					b.ORIGNL_FILE_NM LIKE CONCAT ('%', #{searchWrd},'%') 		
-			</if>	 		
- 	</select>
- 	
-  	<select id="selectImageFileList" parameterType="map" resultMap="fileList">
-			SELECT 
-				a.ATCH_FILE_ID, b.FILE_CN, b.FILE_SN, b.FILE_STRE_COURS, b.STRE_FILE_NM,
-				b.FILE_EXTSN, b.ORIGNL_FILE_NM, b.FILE_SIZE, DATE_FORMAT(a.CREAT_DT,'%Y-%m-%d') as CREAT_DT
-			FROM
-				LETTNFILE a, LETTNFILEDETAIL b
-			WHERE
-				a.ATCH_FILE_ID = #{atchFileId}
-			AND 
-				a.ATCH_FILE_ID = b.ATCH_FILE_ID
-			AND
-				UPPER(b.FILE_EXTSN) IN ('GIF','JPG','BMP','PNG')
-			AND 
-				a.USE_AT = 'Y'				
-			ORDER BY b.FILE_SN	
- 	</select>	
+	<!--
+	====================================================================================================
+	 9. 파일명 기준 파일 목록 총 건수
+	  - 설명: 파일명 검색 페이징용 총 건수를 계산합니다.
+	  - 파라미터: searchCnd, searchWrd
+	====================================================================================================
+	-->
+	<select id="selectFileListCntByFileNm" parameterType="map" resultType="java.lang.Integer">
+		/* com.portal.common.FileMngMapper.selectFileListCntByFileNm */
+		SELECT COUNT(a.ATCH_FILE_ID)
+		  FROM LETTNFILE a
+		 INNER JOIN LETTNFILEDETAIL b
+		    ON a.ATCH_FILE_ID = b.ATCH_FILE_ID
+		 WHERE a.USE_AT = 'Y'
+		<if test="searchCnd == 'streFileNm'">
+		   AND b.STRE_FILE_NM LIKE CONCAT('%', #{searchWrd}, '%')
+		</if>
+		<if test="searchCnd == 'orignlFileNm'">
+		   AND b.ORIGNL_FILE_NM LIKE CONCAT('%', #{searchWrd}, '%')
+		</if>
+	</select>
+
+	<!--
+	====================================================================================================
+	 10. 이미지 파일 목록 조회 (이미지 미리보기/갤러리용)
+	  - 설명: 특정 파일 그룹(atchFileId) 중 확장자가 이미지('GIF','JPG','BMP','PNG')인 파일만 필터링하여 조회합니다.
+	  - 파라미터: atchFileId
+	  - 반환: List<Map> (resultMap="fileList")
+	====================================================================================================
+	-->
+	<select id="selectImageFileList" parameterType="map" resultMap="fileList">
+		/* com.portal.common.FileMngMapper.selectImageFileList */
+		SELECT
+			a.ATCH_FILE_ID,
+			b.FILE_CN,
+			b.FILE_SN,
+			b.FILE_STRE_COURS,
+			b.STRE_FILE_NM,
+			b.FILE_EXTSN,
+			b.ORIGNL_FILE_NM,
+			b.FILE_SIZE,
+			DATE_FORMAT(a.CREAT_DT, '%Y-%m-%d') AS CREAT_DT
+		  FROM LETTNFILE a
+		 INNER JOIN LETTNFILEDETAIL b
+		    ON a.ATCH_FILE_ID = b.ATCH_FILE_ID
+		 WHERE a.ATCH_FILE_ID = #{atchFileId}
+		   AND a.USE_AT = 'Y'
+		   AND UPPER(b.FILE_EXTSN) IN ('GIF', 'JPG', 'BMP', 'PNG')
+		 ORDER BY b.FILE_SN ASC
+	</select>
+
 </mapper>

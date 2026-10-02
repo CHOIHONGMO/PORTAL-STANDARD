@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.portal.security.groupauthority.AuthorGroupMapper">
+
+	<!--
+	====================================================================================================
+	 1. 사용자별 권한 설정 목록 페이징 조회
+	  - 설명: 일반회원(USR01), 기업회원(USR02), 업무사용자(USR03)의 통합 사용자 목록과 부여된 보안 권한(AUTHOR_CODE)을 페이징 조회합니다.
+	  - 조인: LETTNEMPLYRSCRTYESTBS B (사용자 보안설정 매핑), LETTCCMMNDETAILCODE (COM012 - 회원유형명)
+	  - 검색조건(searchCondition):
+	      1 : 사용자 ID (A.USER_ID LIKE)
+	      2 : 사용자명 (A.USER_NM LIKE)
+	      3 : 그룹 ID (A.GROUP_ID = )
+	  - 페이징: LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+	====================================================================================================
+	-->
+	<select id="selectAuthorGroupList" resultType="egovMap">
+		/* com.portal.security.groupauthority.AuthorGroupMapper.selectAuthorGroupList */
+		SELECT
+			a.USER_ID      AS userId,
+			a.USER_NM      AS userNm,
+			a.GROUP_ID     AS groupId,
+			a.MBER_TY_CODE AS mberTyCode,
+			(
+				SELECT c.CODE_NM
+				  FROM LETTCCMMNDETAILCODE c
+				 WHERE c.CODE_ID = 'COM012'
+				   AND c.CODE    = a.MBER_TY_CODE
+				   AND c.USE_AT  = 'Y'
+			) AS mberTyNm,
+			b.AUTHOR_CODE  AS authorCode,
+			(CASE WHEN b.SCRTY_DTRMN_TRGET_ID IS NULL THEN 'N' ELSE 'Y' END) AS regYn,
+			a.ESNTL_ID     AS uniqId
+		  FROM (
+		       SELECT MBER_ID          AS USER_ID,
+		              MBER_NM          AS USER_NM,
+		              GROUP_ID,
+		              'USR01'          AS MBER_TY_CODE,
+		              ESNTL_ID
+		         FROM LETTNGNRLMBER
+		        UNION ALL
+		       SELECT ENTRPRS_MBER_ID  AS USER_ID,
+		              CMPNY_NM         AS USER_NM,
+		              GROUP_ID,
+		              'USR02'          AS MBER_TY_CODE,
+		              ESNTL_ID
+		         FROM LETTNENTRPRSMBER
+		        UNION ALL
+		       SELECT EMPLYR_ID        AS USER_ID,
+		              USER_NM          AS USER_NM,
+		              GROUP_ID,
+		              'USR03'          AS MBER_TY_CODE,
+		              ESNTL_ID
+		         FROM LETTNEMPLYRINFO
+		  ) a
+		  LEFT OUTER JOIN LETTNEMPLYRSCRTYESTBS b
+		    ON a.ESNTL_ID = b.SCRTY_DTRMN_TRGET_ID
+		 WHERE 1 = 1
+		<if test="searchKeyword != null and searchKeyword != ''">
+		   <if test="searchCondition == 1">
+		   AND a.USER_ID LIKE CONCAT('%', #{searchKeyword}, '%')
+		   </if>
+		   <if test="searchCondition == 2">
+		   AND a.USER_NM LIKE CONCAT('%', #{searchKeyword}, '%')
+		   </if>
+		   <if test="searchCondition == 3">
+		   AND a.GROUP_ID = #{searchKeyword}
+		   </if>
+		</if>
+		 LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+	</select>
+
+	<!--
+	====================================================================================================
+	 2. 사용자 권한 신규 부여
+	  - 설명: 사용자 고유식별자(ESNTL_ID)에 보안 권한(authorCode)과 회원유형(mberTyCode)을 등록합니다.
+	  - 파라미터: uniqId, mberTyCode, authorCode
+	====================================================================================================
+	-->
+	<insert id="insertAuthorGroup">
+		/* com.portal.security.groupauthority.AuthorGroupMapper.insertAuthorGroup */
+		INSERT INTO LETTNEMPLYRSCRTYESTBS
+		(
+			SCRTY_DTRMN_TRGET_ID, MBER_TY_CODE, AUTHOR_CODE
+		)
+		VALUES
+		(
+			#{uniqId}, #{mberTyCode}, #{authorCode}
+		)
+	</insert>
+
+	<!--
+	====================================================================================================
+	 3. 사용자 권한 정보 수정
+	  - 설명: 기 등록된 사용자의 보안 권한 코드 또는 회원 유형을 변경합니다.
+	  - 파라미터: mberTyCode, authorCode, uniqId
+	====================================================================================================
+	-->
+	<update id="updateAuthorGroup">
+		/* com.portal.security.groupauthority.AuthorGroupMapper.updateAuthorGroup */
+		UPDATE LETTNEMPLYRSCRTYESTBS
+		   SET MBER_TY_CODE = #{mberTyCode},
+		       AUTHOR_CODE  = #{authorCode}
+		 WHERE SCRTY_DTRMN_TRGET_ID = #{uniqId}
+	</update>
+
+	<!--
+	====================================================================================================
+	 4. 사용자 권한 설정 삭제 (권한 회수)
+	  - 설명: 사용자에 설정된 보안 권한 레코드를 물리 삭제합니다.
+	  - 파라미터: uniqId
+	====================================================================================================
+	-->
+	<delete id="deleteAuthorGroup">
+		/* com.portal.security.groupauthority.AuthorGroupMapper.deleteAuthorGroup */
+		DELETE FROM LETTNEMPLYRSCRTYESTBS
+		 WHERE SCRTY_DTRMN_TRGET_ID = #{uniqId}
+	</delete>
+
+	<!--
+	====================================================================================================
+	 5. 사용자별 권한 설정 목록 총 건수 조회
+	  - 설명: 사용자 권한 매핑 목록 페이징용 총 건수를 계산합니다.
+	  - 파라미터: searchCondition, searchKeyword
+	====================================================================================================
+	-->
+	<select id="selectAuthorGroupListTotCnt" resultType="int">
+		/* com.portal.security.groupauthority.AuthorGroupMapper.selectAuthorGroupListTotCnt */
+		SELECT COUNT(*) AS totcnt
+		  FROM (
+		       SELECT MBER_ID         AS USER_ID,
+		              MBER_NM         AS USER_NM,
+		              GROUP_ID,
+		              'USR01'         AS MBER_TY_CODE,
+		              ESNTL_ID
+		         FROM LETTNGNRLMBER
+		        UNION ALL
+		       SELECT ENTRPRS_MBER_ID AS USER_ID,
+		              CMPNY_NM        AS USER_NM,
+		              GROUP_ID,
+		              'USR02'         AS MBER_TY_CODE,
+		              ESNTL_ID
+		         FROM LETTNENTRPRSMBER
+		        UNION ALL
+		       SELECT EMPLYR_ID       AS USER_ID,
+		              USER_NM         AS USER_NM,
+		              GROUP_ID,
+		              'USR03'         AS MBER_TY_CODE,
+		              ESNTL_ID
+		         FROM LETTNEMPLYRINFO
+		  ) a
+		  LEFT OUTER JOIN LETTNEMPLYRSCRTYESTBS b
+		    ON a.ESNTL_ID = b.SCRTY_DTRMN_TRGET_ID
+		 WHERE 1 = 1
+		<if test="searchKeyword != null and searchKeyword != ''">
+		   <if test="searchCondition == 1">
+		   AND a.USER_ID LIKE CONCAT('%', #{searchKeyword}, '%')
+		   </if>
+		   <if test="searchCondition == 2">
+		   AND a.USER_NM LIKE CONCAT('%', #{searchKeyword}, '%')
+		   </if>
+		   <if test="searchCondition == 3">
+		   AND a.GROUP_ID = #{searchKeyword}
+		   </if>
+		</if>
+	</select>
+
+</mapper>

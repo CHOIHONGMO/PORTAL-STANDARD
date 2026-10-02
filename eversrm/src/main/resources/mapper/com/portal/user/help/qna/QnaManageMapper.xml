@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.portal.user.help.qna.QnaManageMapper">
+
+	<!--
+	====================================================================================================
+	 1. QnA 단건 상세 조회 (사용자 화면용)
+	  - 설명: 질문 내용과 함께 답변 정보, 답변 담당자명, 조직명을 함께 조회합니다.
+	  - 조인: LETTCCMMNDETAILCODE D (COM028 - 처리상태), LETTNEMPLYRINFO A (답변자), LETTNORGNZTINFO B (부서)
+	  - 파라미터: qaId
+	====================================================================================================
+	-->
+	<select id="selectQnaListDetail" resultType="egovMap">
+		/* com.portal.user.help.qna.QnaManageMapper.selectQnaListDetail */
+		SELECT
+			c.QA_ID                                       AS qaId,
+			c.QESTN_SJ                                     AS qestnSj,
+			c.QESTN_CN                                     AS qestnCn,
+			c.WRITNG_PASSWORD                              AS writngPassword,
+			c.AREA_NO                                      AS areaNo,
+			c.MIDDLE_TELNO                                 AS middleTelno,
+			c.END_TELNO                                    AS endTelno,
+			c.EMAIL_ADRES                                  AS emailAdres,
+			c.EMAIL_ANSWER_AT                              AS emailAnswerAt,
+			c.WRTER_NM                                     AS wrterNm,
+			c.WRITNG_DE                                    AS writngDe,
+			c.ANSWER_CN                                    AS answerCn,
+			c.ANSWER_DE                                    AS answerDe,
+			c.RDCNT                                        AS inqireCo,
+			c.QNA_PROCESS_STTUS_CODE                       AS qnaProcessSttusCode,
+			d.CODE_NM                                      AS qnaProcessSttusCodeNm,
+			a.USER_NM                                      AS emplyrNm,
+			a.OFFM_TELNO                                   AS offmTelno,
+			a.EMAIL_ADRES                                  AS aemailAdres,
+			b.ORGNZT_NM                                    AS orgnztNm,
+			DATE_FORMAT(c.FRST_REGIST_PNTTM, '%Y-%m-%d')  AS frstRegisterPnttm,
+			c.FRST_REGISTER_ID                             AS frstRegisterId,
+			DATE_FORMAT(c.LAST_UPDT_PNTTM, '%Y-%m-%d')    AS lastUpdusrPnttm,
+			c.LAST_UPDUSR_ID                               AS lastUpdusrId
+		  FROM LETTNQAINFO c
+		  LEFT OUTER JOIN LETTCCMMNDETAILCODE d
+		    ON d.CODE_ID = 'COM028'
+		   AND c.QNA_PROCESS_STTUS_CODE = d.CODE
+		  LEFT OUTER JOIN LETTNEMPLYRINFO a
+		    ON a.ESNTL_ID = c.LAST_UPDUSR_ID
+		  LEFT OUTER JOIN LETTNORGNZTINFO b
+		    ON a.ORGNZT_ID = b.ORGNZT_ID
+		 WHERE c.QA_ID = #{qaId}
+	</select>
+
+	<!--
+	====================================================================================================
+	 2. QnA 목록 페이징 조회 (사용자 화면용)
+	  - 설명: 등록된 QnA 질문 목록을 작성자명 또는 질문제목 검색 조건으로 페이징 조회합니다.
+	  - 파라미터: searchCondition, searchKeyword, recordCountPerPage, firstIndex
+	====================================================================================================
+	-->
+	<select id="selectQnaList" parameterType="map" resultType="egovMap">
+		/* com.portal.user.help.qna.QnaManageMapper.selectQnaList */
+		SELECT
+			a.QA_ID                                       AS qaId,
+			a.QESTN_SJ                                     AS qestnSj,
+			a.QESTN_CN                                     AS qestnCn,
+			a.WRITNG_PASSWORD                              AS writngPassword,
+			a.AREA_NO                                      AS areaNo,
+			a.MIDDLE_TELNO                                 AS middleTelno,
+			a.END_TELNO                                    AS endTelno,
+			a.EMAIL_ADRES                                  AS emailAdres,
+			a.EMAIL_ANSWER_AT                              AS emailAnswerAt,
+			a.WRTER_NM                                     AS wrterNm,
+			a.WRITNG_DE                                    AS writngDe,
+			a.ANSWER_CN                                    AS answerCn,
+			a.ANSWER_DE                                    AS answerDe,
+			a.RDCNT                                        AS inqireCo,
+			a.QNA_PROCESS_STTUS_CODE                       AS qnaProcessSttusCode,
+			b.CODE_NM                                      AS qnaProcessSttusCodeNm,
+			DATE_FORMAT(a.FRST_REGIST_PNTTM, '%Y-%m-%d')  AS frstRegisterPnttm,
+			a.FRST_REGISTER_ID                             AS frstRegisterId,
+			DATE_FORMAT(a.LAST_UPDT_PNTTM, '%Y-%m-%d')    AS lastUpdusrPnttm,
+			a.LAST_UPDUSR_ID                               AS lastUpdusrId
+		  FROM LETTNQAINFO a
+		  LEFT OUTER JOIN LETTCCMMNDETAILCODE b
+		    ON b.CODE_ID = 'COM028'
+		   AND a.QNA_PROCESS_STTUS_CODE = b.CODE
+		 WHERE 1 = 1
+		<if test="searchCondition == 'wrterNm'">
+		   AND a.WRTER_NM LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+		<if test="searchCondition == 'qestnSj'">
+		   AND a.QESTN_SJ LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+		 ORDER BY a.QA_ID DESC
+		 LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+	</select>
+
+	<!--
+	====================================================================================================
+	 3. QnA 목록 총 건수 조회
+	  - 설명: QnA 목록 페이징 처리를 위한 총 건수를 계산합니다.
+	  - 파라미터: searchCondition, searchKeyword
+	====================================================================================================
+	-->
+	<select id="selectQnaListTotCnt" parameterType="map" resultType="int">
+		/* com.portal.user.help.qna.QnaManageMapper.selectQnaListTotCnt */
+		SELECT COUNT(*) AS totcnt
+		  FROM LETTNQAINFO
+		 WHERE 1 = 1
+		<if test="searchCondition == 'wrterNm'">
+		   AND WRTER_NM LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+		<if test="searchCondition == 'qestnSj'">
+		   AND QESTN_SJ LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+	</select>
+
+	<!--
+	====================================================================================================
+	 4. QnA 질문 신규 등록
+	  - 설명: 사용자가 신규 QnA 질문을 등록합니다. (초기 상태는 접수 '1'로 세팅)
+	  - 파라미터: qaId, qestnSj, qestnCn, writngPassword, areaNo, middleTelno, endTelno, emailAdres, emailAnswerAt, wrterNm, frstRegisterId
+	====================================================================================================
+	-->
+	<insert id="insertQnaCn" parameterType="map">
+		/* com.portal.user.help.qna.QnaManageMapper.insertQnaCn */
+		INSERT INTO LETTNQAINFO
+		(
+			QA_ID, QESTN_SJ, QESTN_CN, WRITNG_PASSWORD,
+			AREA_NO, MIDDLE_TELNO, END_TELNO, EMAIL_ADRES,
+			EMAIL_ANSWER_AT, WRTER_NM, WRITNG_DE, RDCNT,
+			QNA_PROCESS_STTUS_CODE, FRST_REGIST_PNTTM, FRST_REGISTER_ID
+		)
+		VALUES
+		(
+			#{qaId}, #{qestnSj}, #{qestnCn}, #{writngPassword},
+			#{areaNo}, #{middleTelno}, #{endTelno}, #{emailAdres},
+			#{emailAnswerAt}, #{wrterNm}, DATE_FORMAT(SYSDATE(), '%Y%m%d'), 0,
+			'1', SYSDATE(), #{frstRegisterId}
+		)
+	</insert>
+
+	<!--
+	====================================================================================================
+	 5. QnA 조회수 1 증가
+	  - 설명: 상세 조회 시 해당 질문의 조회수(RDCNT)를 1 증가시킵니다.
+	  - 파라미터: qaId
+	====================================================================================================
+	-->
+	<update id="updateQnaInqireCo" parameterType="map">
+		/* com.portal.user.help.qna.QnaManageMapper.updateQnaInqireCo */
+		UPDATE LETTNQAINFO
+		   SET RDCNT = IFNULL(RDCNT, 0) + 1
+		 WHERE QA_ID = #{qaId}
+	</update>
+
+	<!--
+	====================================================================================================
+	 6. QnA 작성 비밀번호 일치 확인
+	  - 설명: 비회원 질문 수정/삭제 시 입력한 비밀번호가 일치하는지 확인합니다.
+	  - 파라미터: qaId, writngPassword
+	  - 반환값: Integer (1이면 일치)
+	====================================================================================================
+	-->
+	<select id="selectQnaPasswordConfirmCnt" parameterType="map" resultType="int">
+		/* com.portal.user.help.qna.QnaManageMapper.selectQnaPasswordConfirmCnt */
+		SELECT COUNT(*) AS totcnt
+		  FROM LETTNQAINFO
+		 WHERE QA_ID           = #{qaId}
+		   AND WRITNG_PASSWORD = #{writngPassword}
+	</select>
+
+	<!--
+	====================================================================================================
+	 7. QnA 질문 내용 수정
+	  - 설명: 사용자가 등록했던 질문의 제목, 내용, 연락처, 이메일 수신여부 등을 수정합니다.
+	  - 파라미터: qestnSj, qestnCn, writngPassword, areaNo, middleTelno, endTelno, emailAdres, emailAnswerAt, wrterNm, frstRegisterId, qaId
+	====================================================================================================
+	-->
+	<update id="updateQnaCn" parameterType="map">
+		/* com.portal.user.help.qna.QnaManageMapper.updateQnaCn */
+		UPDATE LETTNQAINFO
+		   SET QESTN_SJ          = #{qestnSj},
+		       QESTN_CN          = #{qestnCn},
+		       WRITNG_PASSWORD   = #{writngPassword},
+		       AREA_NO           = #{areaNo},
+		       MIDDLE_TELNO      = #{middleTelno},
+		       END_TELNO         = #{endTelno},
+		       EMAIL_ADRES       = #{emailAdres},
+		       EMAIL_ANSWER_AT   = IFNULL(#{emailAnswerAt}, 'N'),
+		       WRTER_NM          = #{wrterNm},
+		       WRITNG_DE         = DATE_FORMAT(SYSDATE(), '%Y%m%d'),
+		       FRST_REGIST_PNTTM = SYSDATE(),
+		       FRST_REGISTER_ID  = #{frstRegisterId}
+		 WHERE QA_ID             = #{qaId}
+	</update>
+
+	<!--
+	====================================================================================================
+	 8. QnA 질문 삭제
+	  - 설명: 지정된 QnA 레코드를 물리 삭제합니다.
+	  - 파라미터: qaId
+	====================================================================================================
+	-->
+	<delete id="deleteQnaCn" parameterType="map">
+		/* com.portal.user.help.qna.QnaManageMapper.deleteQnaCn */
+		DELETE FROM LETTNQAINFO
+		 WHERE QA_ID = #{qaId}
+	</delete>
+
+	<!--
+	====================================================================================================
+	 9. QnA 관리자 답변용 단건 상세 조회
+	  - 설명: 관리자가 답변 작성 또는 확인을 위해 QnA 상세 정보를 조회합니다.
+	  - 파라미터: qaId
+	====================================================================================================
+	-->
+	<select id="selectQnaAnswerListDetail" resultType="egovMap">
+		/* com.portal.user.help.qna.QnaManageMapper.selectQnaAnswerListDetail */
+		SELECT
+			c.QA_ID                                       AS qaId,
+			c.QESTN_SJ                                     AS qestnSj,
+			c.QESTN_CN                                     AS qestnCn,
+			c.WRITNG_PASSWORD                              AS writngPassword,
+			c.AREA_NO                                      AS areaNo,
+			c.MIDDLE_TELNO                                 AS middleTelno,
+			c.END_TELNO                                    AS endTelno,
+			c.EMAIL_ADRES                                  AS emailAdres,
+			c.EMAIL_ANSWER_AT                              AS emailAnswerAt,
+			c.WRTER_NM                                     AS wrterNm,
+			c.WRITNG_DE                                    AS writngDe,
+			c.ANSWER_CN                                    AS answerCn,
+			c.ANSWER_DE                                    AS answerDe,
+			c.RDCNT                                        AS inqireCo,
+			c.QNA_PROCESS_STTUS_CODE                       AS qnaProcessSttusCode,
+			d.CODE_NM                                      AS qnaProcessSttusCodeNm,
+			a.USER_NM                                      AS emplyrNm,
+			a.OFFM_TELNO                                   AS offmTelno,
+			a.EMAIL_ADRES                                  AS aemailAdres,
+			b.ORGNZT_NM                                    AS orgnztNm,
+			DATE_FORMAT(c.FRST_REGIST_PNTTM, '%Y-%m-%d')  AS frstRegisterPnttm,
+			c.FRST_REGISTER_ID                             AS frstRegisterId,
+			DATE_FORMAT(c.LAST_UPDT_PNTTM, '%Y-%m-%d')    AS lastUpdusrPnttm,
+			c.LAST_UPDUSR_ID                               AS lastUpdusrId
+		  FROM LETTNQAINFO c
+		  LEFT OUTER JOIN LETTCCMMNDETAILCODE d
+		    ON d.CODE_ID = 'COM028'
+		   AND c.QNA_PROCESS_STTUS_CODE = d.CODE
+		  LEFT OUTER JOIN LETTNEMPLYRINFO a
+		    ON a.ESNTL_ID = c.LAST_UPDUSR_ID
+		  LEFT OUTER JOIN LETTNORGNZTINFO b
+		    ON a.ORGNZT_ID = b.ORGNZT_ID
+		 WHERE c.QA_ID = #{qaId}
+	</select>
+
+	<!--
+	====================================================================================================
+	 10. QnA 관리자 답변용 목록 페이징 조회
+	  - 설명: 관리자 화면에서 답변 처리 대상 QnA 목록을 페이징 조회합니다.
+	  - 파라미터: searchCondition, searchKeyword, recordCountPerPage, firstIndex
+	====================================================================================================
+	-->
+	<select id="selectQnaAnswerList" parameterType="map" resultType="egovMap">
+		/* com.portal.user.help.qna.QnaManageMapper.selectQnaAnswerList */
+		SELECT
+			a.QA_ID                                       AS qaId,
+			a.QESTN_SJ                                     AS qestnSj,
+			a.QESTN_CN                                     AS qestnCn,
+			a.WRITNG_PASSWORD                              AS writngPassword,
+			a.AREA_NO                                      AS areaNo,
+			a.MIDDLE_TELNO                                 AS middleTelno,
+			a.END_TELNO                                    AS endTelno,
+			a.EMAIL_ADRES                                  AS emailAdres,
+			a.EMAIL_ANSWER_AT                              AS emailAnswerAt,
+			a.WRTER_NM                                     AS wrterNm,
+			a.WRITNG_DE                                    AS writngDe,
+			a.ANSWER_CN                                    AS answerCn,
+			a.ANSWER_DE                                    AS answerDe,
+			a.RDCNT                                        AS inqireCo,
+			a.QNA_PROCESS_STTUS_CODE                       AS qnaProcessSttusCode,
+			b.CODE_NM                                      AS qnaProcessSttusCodeNm,
+			DATE_FORMAT(a.FRST_REGIST_PNTTM, '%Y-%m-%d')  AS frstRegisterPnttm,
+			a.FRST_REGISTER_ID                             AS frstRegisterId,
+			DATE_FORMAT(a.LAST_UPDT_PNTTM, '%Y-%m-%d')    AS lastUpdusrPnttm,
+			a.LAST_UPDUSR_ID                               AS lastUpdusrId
+		  FROM LETTNQAINFO a
+		  LEFT OUTER JOIN LETTCCMMNDETAILCODE b
+		    ON b.CODE_ID = 'COM028'
+		   AND a.QNA_PROCESS_STTUS_CODE = b.CODE
+		 WHERE 1 = 1
+		<if test="searchCondition == 'wrterNm'">
+		   AND a.WRTER_NM LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+		<if test="searchCondition == 'qnaProcessSttusCodeNm'">
+		   AND b.CODE_NM LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+		 ORDER BY a.QA_ID DESC
+		 LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+	</select>
+
+	<!--
+	====================================================================================================
+	 11. QnA 관리자 답변용 목록 총 건수 조회
+	  - 설명: 관리자 답변 목록 페이징용 총 건수를 계산합니다.
+	  - 파라미터: searchCondition, searchKeyword
+	====================================================================================================
+	-->
+	<select id="selectQnaAnswerListTotCnt" parameterType="map" resultType="int">
+		/* com.portal.user.help.qna.QnaManageMapper.selectQnaAnswerListTotCnt */
+		SELECT COUNT(*) AS totcnt
+		  FROM LETTNQAINFO a
+		  LEFT OUTER JOIN LETTCCMMNDETAILCODE b
+		    ON b.CODE_ID = 'COM028'
+		   AND a.QNA_PROCESS_STTUS_CODE = b.CODE
+		 WHERE 1 = 1
+		<if test="searchCondition == 'wrterNm'">
+		   AND a.WRTER_NM LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+		<if test="searchCondition == 'qnaProcessSttusCodeNm'">
+		   AND b.CODE_NM LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+	</select>
+
+	<!--
+	====================================================================================================
+	 12. QnA 답변 등록 및 처리상태 변경
+	  - 설명: 관리자가 답변 내용을 등록하고 처리상태(qnaProcessSttusCode: 예 '3' 답변완료)를 갱신합니다.
+	  - 파라미터: qnaProcessSttusCode, answerCn, lastUpdusrId, qaId
+	====================================================================================================
+	-->
+	<update id="updateQnaCnAnswer" parameterType="map">
+		/* com.portal.user.help.qna.QnaManageMapper.updateQnaCnAnswer */
+		UPDATE LETTNQAINFO
+		   SET QNA_PROCESS_STTUS_CODE = #{qnaProcessSttusCode},
+		       ANSWER_CN              = #{answerCn},
+		       ANSWER_DE              = DATE_FORMAT(SYSDATE(), '%Y%m%d'),
+		       LAST_UPDT_PNTTM        = SYSDATE(),
+		       LAST_UPDUSR_ID         = #{lastUpdusrId}
+		 WHERE QA_ID                  = #{qaId}
+	</update>
+
+	<!--
+	====================================================================================================
+	 13. QnA 답변 삭제 (답변 초기화)
+	  - 설명: 답변 내용 삭제 요청 시 해당 레코드를 삭제합니다.
+	  - 파라미터: qaId
+	====================================================================================================
+	-->
+	<delete id="deleteQnaCnAnswer" parameterType="map">
+		/* com.portal.user.help.qna.QnaManageMapper.deleteQnaCnAnswer */
+		DELETE FROM LETTNQAINFO
+		 WHERE QA_ID = #{qaId}
+	</delete>
+
+</mapper>

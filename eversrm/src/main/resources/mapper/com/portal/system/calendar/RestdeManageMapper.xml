@@ -1,62 +1,97 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.portal.system.calendar.service.impl.RestdeManageMapper">
 
-    <select id="selectNormalRestdePopup" parameterType="com.portal.system.calendar.service.Restde" resultType="egovMap">
-        SELECT 1 /* 더미 쿼리 */
-    </select>
+	<!--
+	====================================================================================================
+	 휴일 관리 매퍼 (RestdeManageMapper)
+	  - 설명: 전자정부 프레임워크 달력/휴일 관리 인터페이스 연계를 위한 매퍼 파일입니다.
+	  - 현재 프로젝트에서는 컴파일 및 빈 주입 호환성을 위한 스텁(Stub) 쿼리가 정의되어 있습니다.
+	====================================================================================================
+	-->
 
-    <select id="selectAdministRestdePopup" parameterType="com.portal.system.calendar.service.Restde" resultType="egovMap">
-        SELECT 1
-    </select>
+	<!-- 1. 일반 휴일 팝업 조회 -->
+	<select id="selectNormalRestdePopup" parameterType="com.portal.system.calendar.service.Restde" resultType="egovMap">
+		/* com.portal.system.calendar.service.impl.RestdeManageMapper.selectNormalRestdePopup */
+		SELECT 1
+	</select>
 
-    <select id="selectNormalDayCal" parameterType="com.portal.system.calendar.service.Restde" resultType="egovMap">
-        SELECT 1
-    </select>
+	<!-- 2. 행정 휴일 팝업 조회 -->
+	<select id="selectAdministRestdePopup" parameterType="com.portal.system.calendar.service.Restde" resultType="egovMap">
+		/* com.portal.system.calendar.service.impl.RestdeManageMapper.selectAdministRestdePopup */
+		SELECT 1
+	</select>
 
-    <select id="selectNormalDayRestde" parameterType="com.portal.system.calendar.service.Restde" resultType="egovMap">
-        SELECT 1
-    </select>
+	<!-- 3. 일반 달력 일자 조회 -->
+	<select id="selectNormalDayCal" parameterType="com.portal.system.calendar.service.Restde" resultType="egovMap">
+		/* com.portal.system.calendar.service.impl.RestdeManageMapper.selectNormalDayCal */
+		SELECT 1
+	</select>
 
-    <select id="selectNormalMonthRestde" parameterType="com.portal.system.calendar.service.Restde" resultType="egovMap">
-        SELECT 1
-    </select>
+	<!-- 4. 일반 일별 휴일 조회 -->
+	<select id="selectNormalDayRestde" parameterType="com.portal.system.calendar.service.Restde" resultType="egovMap">
+		/* com.portal.system.calendar.service.impl.RestdeManageMapper.selectNormalDayRestde */
+		SELECT 1
+	</select>
 
-    <select id="selectAdministDayCal" parameterType="com.portal.system.calendar.service.Restde" resultType="egovMap">
-        SELECT 1
-    </select>
+	<!-- 5. 일반 월별 휴일 목록 조회 -->
+	<select id="selectNormalMonthRestde" parameterType="com.portal.system.calendar.service.Restde" resultType="egovMap">
+		/* com.portal.system.calendar.service.impl.RestdeManageMapper.selectNormalMonthRestde */
+		SELECT 1
+	</select>
 
-    <select id="selectAdministDayRestde" parameterType="com.portal.system.calendar.service.Restde" resultType="egovMap">
-        SELECT 1
-    </select>
+	<!-- 6. 행정 달력 일자 조회 -->
+	<select id="selectAdministDayCal" parameterType="com.portal.system.calendar.service.Restde" resultType="egovMap">
+		/* com.portal.system.calendar.service.impl.RestdeManageMapper.selectAdministDayCal */
+		SELECT 1
+	</select>
 
-    <select id="selectAdministMonthRestde" parameterType="com.portal.system.calendar.service.Restde" resultType="egovMap">
-        SELECT 1
-    </select>
+	<!-- 7. 행정 일별 휴일 조회 -->
+	<select id="selectAdministDayRestde" parameterType="com.portal.system.calendar.service.Restde" resultType="egovMap">
+		/* com.portal.system.calendar.service.impl.RestdeManageMapper.selectAdministDayRestde */
+		SELECT 1
+	</select>
 
-    <delete id="deleteRestde" parameterType="com.portal.system.calendar.service.Restde">
-        DELETE FROM LETTNCMMNDETAILCODE WHERE 1=0 /* 더미 쿼리 */
-    </delete>
+	<!-- 8. 행정 월별 휴일 목록 조회 -->
+	<select id="selectAdministMonthRestde" parameterType="com.portal.system.calendar.service.Restde" resultType="egovMap">
+		/* com.portal.system.calendar.service.impl.RestdeManageMapper.selectAdministMonthRestde */
+		SELECT 1
+	</select>
 
-    <insert id="insertRestde" parameterType="com.portal.system.calendar.service.Restde">
-        INSERT INTO LETTNCMMNDETAILCODE (CODE_ID, CODE, CODE_NM) VALUES ('DUMMY', 'DUMMY', 'DUMMY') /* 더미 쿼리 */
-    </insert>
+	<!-- 9. 휴일 정보 삭제 -->
+	<delete id="deleteRestde" parameterType="com.portal.system.calendar.service.Restde">
+		/* com.portal.system.calendar.service.impl.RestdeManageMapper.deleteRestde */
+		DELETE FROM LETTNCMMNDETAILCODE WHERE 1 = 0
+	</delete>
 
-    <select id="selectRestdeDetail" parameterType="com.portal.system.calendar.service.Restde" resultType="com.portal.system.calendar.service.Restde">
-        SELECT NULL AS restdeNo
-    </select>
+	<!-- 10. 휴일 정보 신규 등록 -->
+	<insert id="insertRestde" parameterType="com.portal.system.calendar.service.Restde">
+		/* com.portal.system.calendar.service.impl.RestdeManageMapper.insertRestde */
+		INSERT INTO LETTNCMMNDETAILCODE (CODE_ID, CODE, CODE_NM) VALUES ('DUMMY', 'DUMMY', 'DUMMY')
+	</insert>
 
-    <select id="selectRestdeList" parameterType="com.portal.system.calendar.service.RestdeVO" resultType="egovMap">
-        SELECT 1
-    </select>
+	<!-- 11. 휴일 정보 단건 상세 조회 -->
+	<select id="selectRestdeDetail" parameterType="com.portal.system.calendar.service.Restde" resultType="com.portal.system.calendar.service.Restde">
+		/* com.portal.system.calendar.service.impl.RestdeManageMapper.selectRestdeDetail */
+		SELECT NULL AS restdeNo
+	</select>
 
-    <select id="selectRestdeListTotCnt" parameterType="com.portal.system.calendar.service.RestdeVO" resultType="java.lang.Integer">
-        SELECT 0
-    </select>
+	<!-- 12. 휴일 목록 조회 -->
+	<select id="selectRestdeList" parameterType="com.portal.system.calendar.service.RestdeVO" resultType="egovMap">
+		/* com.portal.system.calendar.service.impl.RestdeManageMapper.selectRestdeList */
+		SELECT 1
+	</select>
 
-    <update id="updateRestde" parameterType="com.portal.system.calendar.service.Restde">
-        UPDATE LETTNCMMNDETAILCODE SET CODE_NM = 'DUMMY' WHERE 1=0 /* 더미 쿼리 */
-    </update>
+	<!-- 13. 휴일 목록 총 건수 조회 -->
+	<select id="selectRestdeListTotCnt" parameterType="com.portal.system.calendar.service.RestdeVO" resultType="java.lang.Integer">
+		/* com.portal.system.calendar.service.impl.RestdeManageMapper.selectRestdeListTotCnt */
+		SELECT 0
+	</select>
+
+	<!-- 14. 휴일 정보 수정 -->
+	<update id="updateRestde" parameterType="com.portal.system.calendar.service.Restde">
+		/* com.portal.system.calendar.service.impl.RestdeManageMapper.updateRestde */
+		UPDATE LETTNCMMNDETAILCODE SET CODE_NM = 'DUMMY' WHERE 1 = 0
+	</update>
 
 </mapper>

@@ -1,124 +1,204 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.portal.system.menu.MenuManageMapper">
 
-	
+	<!--
+	====================================================================================================
+	 1. 사용자 권한별 상단 대메뉴(GNB) 목록 조회
+	  - 설명: 사용자 고유식별자(tmp_UniqId)의 권한(AUTHOR_CODE)에 매핑된 최상위 메뉴(UPPER_MENU_NO = 0) 목록을 조회합니다.
+	  - 테이블: LETTNMENUCREATDTLS A (메뉴생성내역), LETTNMENUINFO B (메뉴정보), LETTNPROGRMLIST C (프로그램목록)
+	  - 파라미터: tmp_UniqId (사용자 ESNTL_ID)
+	====================================================================================================
+	-->
 	<select id="selectMainMenuHead" parameterType="map" resultType="egovMap">
-		 
-            SELECT
-			      B.MENU_NO AS menuNo
-				, B.MENU_ORDR AS menuOrdr
-				, B.MENU_NM AS menuNm
-				, B.UPPER_MENU_NO AS upperMenuId
-				, B.MENU_DC AS menuDc
-				, B.RELATE_IMAGE_PATH AS relateImagePath
-				, B.RELATE_IMAGE_NM AS relateImageNm
-				, B.PROGRM_FILE_NM AS progrmFileNm
-				, (SELECT C.URL FROM LETTNPROGRMLIST C WHERE B.PROGRM_FILE_NM = C.PROGRM_FILE_NM) AS chkURL
-			FROM LETTNMENUCREATDTLS A, LETTNMENUINFO B 
-			WHERE  B.Menu_NO &gt; 0 
-			AND    B.UPPER_MENU_NO = 0  
-			AND    A.MENU_NO  = B.MENU_NO 
-			AND    A.AUTHOR_CODE = (SELECT C.AUTHOR_CODE from LETTNEMPLYRSCRTYESTBS C
-	                                WHERE  C.SCRTY_DTRMN_TRGET_ID = #{tmp_UniqId})
-			ORDER BY MENU_ORDR
-		 
+		/* com.portal.system.menu.MenuManageMapper.selectMainMenuHead */
+		SELECT
+			b.MENU_NO           AS menuNo,
+			b.MENU_ORDR         AS menuOrdr,
+			b.MENU_NM           AS menuNm,
+			b.UPPER_MENU_NO     AS upperMenuId,
+			b.MENU_DC           AS menuDc,
+			b.RELATE_IMAGE_PATH AS relateImagePath,
+			b.RELATE_IMAGE_NM   AS relateImageNm,
+			b.PROGRM_FILE_NM    AS progrmFileNm,
+			(
+				SELECT c.URL
+				  FROM LETTNPROGRMLIST c
+				 WHERE b.PROGRM_FILE_NM = c.PROGRM_FILE_NM
+			) AS chkURL
+		  FROM LETTNMENUCREATDTLS a
+		 INNER JOIN LETTNMENUINFO b
+		    ON a.MENU_NO = b.MENU_NO
+		 WHERE b.MENU_NO > 0
+		   AND b.UPPER_MENU_NO = 0
+		   AND a.AUTHOR_CODE = (
+		       SELECT c.AUTHOR_CODE
+		         FROM LETTNEMPLYRSCRTYESTBS c
+		        WHERE c.SCRTY_DTRMN_TRGET_ID = #{tmp_UniqId}
+		   )
+		 ORDER BY b.MENU_ORDR ASC
 	</select>
 
+	<!--
+	====================================================================================================
+	 2. 사용자 권한별 좌측 서브메뉴(LNB) 전체 목록 조회
+	  - 설명: 사용자 고유식별자의 권한코드에 매핑된 모든 메뉴를 조회하여 좌측 메뉴 트리를 구성합니다.
+	  - 파라미터: tmp_UniqId (사용자 ESNTL_ID)
+	====================================================================================================
+	-->
 	<select id="selectMainMenuLeft" parameterType="map" resultType="egovMap">
-		 
-			SELECT
-			       B.MENU_NO AS menuNo
-				 , B.MENU_ORDR AS menuOrdr
-				 , B.MENU_NM AS menuNm
-				 , B.UPPER_MENU_NO AS upperMenuId
-				 , B.RELATE_IMAGE_PATH AS relateImagePath
-				 , B.RELATE_IMAGE_NM AS relateImageNm
-				 , (SELECT C.URL FROM LETTNPROGRMLIST C WHERE B.PROGRM_FILE_NM = C.PROGRM_FILE_NM) AS chkURL	
-			FROM   LETTNMENUCREATDTLS A, LETTNMENUINFO B
-			WHERE  A.MENU_NO  = B.MENU_NO 
-			AND    A.AUTHOR_CODE = (SELECT AUTHOR_CODE from LETTNEMPLYRSCRTYESTBS
-	                                WHERE  SCRTY_DTRMN_TRGET_ID = #{tmp_UniqId})
-			ORDER BY B.MENU_ORDR
-		 
+		/* com.portal.system.menu.MenuManageMapper.selectMainMenuLeft */
+		SELECT
+			b.MENU_NO           AS menuNo,
+			b.MENU_ORDR         AS menuOrdr,
+			b.MENU_NM           AS menuNm,
+			b.UPPER_MENU_NO     AS upperMenuId,
+			b.RELATE_IMAGE_PATH AS relateImagePath,
+			b.RELATE_IMAGE_NM   AS relateImageNm,
+			(
+				SELECT c.URL
+				  FROM LETTNPROGRMLIST c
+				 WHERE b.PROGRM_FILE_NM = c.PROGRM_FILE_NM
+			) AS chkURL
+		  FROM LETTNMENUCREATDTLS a
+		 INNER JOIN LETTNMENUINFO b
+		    ON a.MENU_NO = b.MENU_NO
+		 WHERE a.AUTHOR_CODE = (
+		       SELECT author_code
+		         FROM LETTNEMPLYRSCRTYESTBS
+		        WHERE SCRTY_DTRMN_TRGET_ID = #{tmp_UniqId}
+		   )
+		 ORDER BY b.MENU_ORDR ASC
 	</select>
 
+	<!--
+	====================================================================================================
+	 3. 메뉴 번호 기준 프로그램 실행 URL 조회
+	  - 설명: 특정 메뉴(menuNo)에 연결된 프로그램의 접근 URL을 조회합니다.
+	  - 파라미터: menuNo
+	====================================================================================================
+	-->
 	<select id="selectLastMenuURL" parameterType="map" resultType="String">
-		 
-			SELECT URL 
-			FROM   LETTNPROGRMLIST
-			WHERE  PROGRM_FILE_NM =
-			       (SELECT PROGRM_FILE_NM FROM LETTNMENUINFO
-				    WHERE MENU_NO = #{menuNo})
-		 
+		/* com.portal.system.menu.MenuManageMapper.selectLastMenuURL */
+		SELECT URL
+		  FROM LETTNPROGRMLIST
+		 WHERE PROGRM_FILE_NM = (
+		       SELECT PROGRM_FILE_NM
+		         FROM LETTNMENUINFO
+		        WHERE MENU_NO = #{menuNo}
+		 )
 	</select>
 
+	<!--
+	====================================================================================================
+	 4. 상위 메뉴 클릭 시 자동 진입할 첫 번째 하위 메뉴 번호 조회
+	  - 설명: 상위 메뉴(menuNo) 클릭 시 권한 내에서 정렬 순서(MENU_ORDR)가 가장 빠른 하위 자식 메뉴 번호를 구합니다.
+	  - 파라미터: menuNo, tempValue (사용자 식별자)
+	====================================================================================================
+	-->
 	<select id="selectLastMenuNo" parameterType="map" resultType="int">
-		 
-			select MIN(MENU_NO) 
-			from   LETTNMENUINFO
-			where  UPPER_MENU_NO = #{menuNo}
-			and    MENU_ORDR =
-			      (select MIN(MENU_ORDR) 
-			       from LETTNMENUCREATDTLS A, LETTNMENUINFO B
-			       where A.MENU_NO = B.MENU_NO
-			       AND   A.AUTHOR_CODE = (SELECT AUTHOR_CODE from LETTNEMPLYRSCRTYESTBS
-	                                      WHERE  SCRTY_DTRMN_TRGET_ID = #{tempValue})
-			       AND   B.UPPER_MENU_NO = #{menuNo})
-		 
+		/* com.portal.system.menu.MenuManageMapper.selectLastMenuNo */
+		SELECT MIN(MENU_NO)
+		  FROM LETTNMENUINFO
+		 WHERE UPPER_MENU_NO = #{menuNo}
+		   AND MENU_ORDR = (
+		       SELECT MIN(b.MENU_ORDR)
+		         FROM LETTNMENUCREATDTLS a
+		        INNER JOIN LETTNMENUINFO b
+		           ON a.MENU_NO = b.MENU_NO
+		        WHERE a.AUTHOR_CODE = (
+		              SELECT AUTHOR_CODE
+		                FROM LETTNEMPLYRSCRTYESTBS
+		               WHERE SCRTY_DTRMN_TRGET_ID = #{tempValue}
+		        )
+		          AND b.UPPER_MENU_NO = #{menuNo}
+		   )
 	</select>
 
+	<!--
+	====================================================================================================
+	 5. 하위 메뉴 존재 건수 확인
+	  - 설명: 상위 메뉴(menuNo) 하위에 사용자가 접근 가능한 메뉴가 존재하는지 개수를 확인합니다.
+	  - 파라미터: menuNo, tempValue
+	====================================================================================================
+	-->
 	<select id="selectLastMenuNoCnt" parameterType="map" resultType="int">
-		 
-			select count(MENU_NO) 
-			from   LETTNMENUINFO
-			where  UPPER_MENU_NO = #{menuNo}
-			and    MENU_ORDR =
-			      (select MIN(MENU_ORDR) 
-			       from LETTNMENUCREATDTLS A, LETTNMENUINFO B
-			       where A.MENU_NO = B.MENU_NO
-			       AND   A.AUTHOR_CODE = (SELECT AUTHOR_CODE from LETTNEMPLYRSCRTYESTBS
-	                                      WHERE  SCRTY_DTRMN_TRGET_ID = #{tempValue})
-			       AND   B.UPPER_MENU_NO = #{menuNo})
-		 
+		/* com.portal.system.menu.MenuManageMapper.selectLastMenuNoCnt */
+		SELECT COUNT(MENU_NO)
+		  FROM LETTNMENUINFO
+		 WHERE UPPER_MENU_NO = #{menuNo}
+		   AND MENU_ORDR = (
+		       SELECT MIN(b.MENU_ORDR)
+		         FROM LETTNMENUCREATDTLS a
+		        INNER JOIN LETTNMENUINFO b
+		           ON a.MENU_NO = b.MENU_NO
+		        WHERE a.AUTHOR_CODE = (
+		              SELECT AUTHOR_CODE
+		                FROM LETTNEMPLYRSCRTYESTBS
+		               WHERE SCRTY_DTRMN_TRGET_ID = #{tempValue}
+		        )
+		          AND b.UPPER_MENU_NO = #{menuNo}
+		   )
 	</select>
-	
-	<select id="selectMainMenuHeadByAuthor" parameterType="map" resultType="egovMap">
-         
-            SELECT
-                  B.MENU_NO AS menuNo
-                , B.MENU_ORDR AS menuOrdr
-                , B.MENU_NM AS menuNm
-                , B.UPPER_MENU_NO AS upperMenuId
-                , B.MENU_DC AS menuDc
-                , B.RELATE_IMAGE_PATH AS relateImagePath
-                , B.RELATE_IMAGE_NM AS relateImageNm
-                , B.PROGRM_FILE_NM AS progrmFileNm
-                , (SELECT C.URL FROM LETTNPROGRMLIST C WHERE B.PROGRM_FILE_NM = C.PROGRM_FILE_NM) AS chkURL
-            FROM LETTNMENUCREATDTLS A, LETTNMENUINFO B 
-            WHERE  B.Menu_NO &gt; 0 
-            AND    B.UPPER_MENU_NO = 0  
-            AND    A.MENU_NO  = B.MENU_NO 
-            AND    A.AUTHOR_CODE = #{authorCode}
-            ORDER BY B.MENU_ORDR
-         
-    </select>
 
-    <select id="selectMainMenuLeftByAuthor" parameterType="map" resultType="egovMap">
-         
-            SELECT
-                   B.MENU_NO AS menuNo
-                 , B.MENU_ORDR AS menuOrdr
-                 , B.MENU_NM AS menuNm
-                 , B.UPPER_MENU_NO AS upperMenuId
-                 , B.RELATE_IMAGE_PATH AS relateImagePath
-                 , B.RELATE_IMAGE_NM AS relateImageNm
-                 , (SELECT C.URL FROM LETTNPROGRMLIST C WHERE B.PROGRM_FILE_NM = C.PROGRM_FILE_NM) AS chkURL    
-            FROM   LETTNMENUCREATDTLS A, LETTNMENUINFO B
-            WHERE  A.MENU_NO  = B.MENU_NO 
-            AND    A.AUTHOR_CODE =  #{authorCode}
-            ORDER BY B.MENU_ORDR
-         
-    </select>
+	<!--
+	====================================================================================================
+	 6. 권한코드 직접 지정 상단 대메뉴(GNB) 목록 조회
+	  - 설명: 권한코드(authorCode)를 직접 파라미터로 받아 상단 대메뉴 목록을 조회합니다.
+	  - 파라미터: authorCode
+	====================================================================================================
+	-->
+	<select id="selectMainMenuHeadByAuthor" parameterType="map" resultType="egovMap">
+		/* com.portal.system.menu.MenuManageMapper.selectMainMenuHeadByAuthor */
+		SELECT
+			b.MENU_NO           AS menuNo,
+			b.MENU_ORDR         AS menuOrdr,
+			b.MENU_NM           AS menuNm,
+			b.UPPER_MENU_NO     AS upperMenuId,
+			b.MENU_DC           AS menuDc,
+			b.RELATE_IMAGE_PATH AS relateImagePath,
+			b.RELATE_IMAGE_NM   AS relateImageNm,
+			b.PROGRM_FILE_NM    AS progrmFileNm,
+			(
+				SELECT c.URL
+				  FROM LETTNPROGRMLIST c
+				 WHERE b.PROGRM_FILE_NM = c.PROGRM_FILE_NM
+			) AS chkURL
+		  FROM LETTNMENUCREATDTLS a
+		 INNER JOIN LETTNMENUINFO b
+		    ON a.MENU_NO = b.MENU_NO
+		 WHERE b.MENU_NO > 0
+		   AND b.UPPER_MENU_NO = 0
+		   AND a.AUTHOR_CODE = #{authorCode}
+		 ORDER BY b.MENU_ORDR ASC
+	</select>
+
+	<!--
+	====================================================================================================
+	 7. 권한코드 직접 지정 좌측 서브메뉴(LNB) 전체 목록 조회
+	  - 설명: 권한코드(authorCode)를 직접 파라미터로 받아 좌측 전체 메뉴 트리를 조회합니다.
+	  - 파라미터: authorCode
+	====================================================================================================
+	-->
+	<select id="selectMainMenuLeftByAuthor" parameterType="map" resultType="egovMap">
+		/* com.portal.system.menu.MenuManageMapper.selectMainMenuLeftByAuthor */
+		SELECT
+			b.MENU_NO           AS menuNo,
+			b.MENU_ORDR         AS menuOrdr,
+			b.MENU_NM           AS menuNm,
+			b.UPPER_MENU_NO     AS upperMenuId,
+			b.RELATE_IMAGE_PATH AS relateImagePath,
+			b.RELATE_IMAGE_NM   AS relateImageNm,
+			(
+				SELECT c.URL
+				  FROM LETTNPROGRMLIST c
+				 WHERE b.PROGRM_FILE_NM = c.PROGRM_FILE_NM
+			) AS chkURL
+		  FROM LETTNMENUCREATDTLS a
+		 INNER JOIN LETTNMENUINFO b
+		    ON a.MENU_NO = b.MENU_NO
+		 WHERE a.AUTHOR_CODE = #{authorCode}
+		 ORDER BY b.MENU_ORDR ASC
+	</select>
+
 </mapper>
